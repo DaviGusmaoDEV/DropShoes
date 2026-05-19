@@ -1,7 +1,7 @@
 // ==========================================================================
 // 🛒 ESTADO GLOBAL E CONFIGURAÇÕES
 // ==========================================================================
-const API_BASE = 'https://dropshoes-repd.onrender.com';
+const API_BASE = 'https://amaretto-diaphragm-calculate.ngrok-free.dev';
 let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
 let freteValor = 0;
 let usuarioLogado = JSON.parse(localStorage.getItem('usuario')) || null;
