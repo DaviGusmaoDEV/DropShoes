@@ -1,0 +1,754 @@
+/* ==========================================================================
+   🎨 DESIGN SYSTEM & VARIÁVEIS (DropShoes - Premium & Modern)
+   ========================================================================== */
+:root {
+    /* Paleta de Cores (Estética Hype/Sneakerhead) */
+    --primary: #00f5d4;           /* Turquesa Mint Elétrico (Destaques e Tags) */
+    --primary-hover: #00d2b4;     /* Variação de clique/interação */
+    --dark: #0f172a;              /* Azul Escuro Slate (Base Tipográfica Principal) */
+    --dark-muted: #1e293b;        /* Superfícies secundárias ou escuras */
+    --light: #f8fafc;             /* Fundo geral limpo, confortável e minimalista */
+    --card-bg: #ffffff;           /* Fundo de cards puros */
+    --text-main: #0f172a;         /* Texto de leitura padrão */
+    --text-muted: #64748b;        /* Subtítulos e dados secundários */
+    --border-color: #e2e8f0;      /* Linhas e divisórias finas cirúrgicas */
+    --success: #10b981;           /* Verde Flat Premium para Conversão e Stripe */
+    --success-hover: #059669;
+
+    /* Estrutura, Cantos e Elevações */
+    --radius-lg: 20px;            /* Banners e grandes seções */
+    --radius-md: 12px;            /* Cards de produtos e Sidebars */
+    --radius-sm: 8px;             /* Inputs, botões e pequenas tags */
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.03), 0 1px 2px rgba(15, 23, 42, 0.02);
+    --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
+    --shadow-lg: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Transição rápida e orgânica */
+}
+
+/* ==========================================================================
+   ⚙️ RESET & CONFIGURAÇÕES GERAIS
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    background-color: var(--light);
+    color: var(--text-main);
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Links Globais */
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+}
+
+/* ==========================================================================
+   🧱 COMPONENTES DE INTERFACE REUTILIZÁVEIS (UI)
+   ========================================================================== */
+/* Botões Modernos e Reativos */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 100%;
+    text-align: center;
+    letter-spacing: -0.2px;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-dark {
+    background-color: var(--dark);
+    color: #ffffff;
+}
+.btn-dark:hover {
+    background-color: var(--dark-muted);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+.btn-primary {
+    background-color: var(--dark); /* Visual editorial contemporâneo: Botão escuro de alto contraste */
+    color: #ffffff;
+}
+.btn-primary:hover {
+    background-color: var(--dark-muted);
+}
+
+.btn-success {
+    background-color: var(--success);
+    color: #ffffff;
+}
+.btn-success:hover {
+    background-color: var(--success-hover);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+/* Inputs e Elementos de Formulário */
+.form-group {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    background-color: #ffffff;
+    color: var(--text-main);
+    outline: none;
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    border-color: var(--dark);
+    box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.06);
+}
+
+/* ==========================================================================
+   🔝 HEADER & NAVEGAÇÃO (Efeito Glassmorphism / Borrado)
+   ========================================================================== */
+header {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    padding: 16px 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+}
+
+header .logo {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -1.2px;
+    text-transform: uppercase;
+    color: var(--dark);
+}
+
+header .logo span {
+    color: var(--primary-hover);
+}
+
+header nav {
+    display: flex;
+    align-items: center;
+}
+
+header nav a, header nav button {
+    color: var(--text-main);
+    margin-left: 28px;
+    font-weight: 700;
+    font-size: 14px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    padding: 4px 0;
+}
+
+header nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; width: 0; height: 2px;
+    background-color: var(--dark);
+    transition: var(--transition);
+}
+
+header nav a:hover::after {
+    width: 100%;
+}
+
+header nav a:hover, header nav button:hover {
+    color: var(--dark);
+}
+
+/* ==========================================================================
+   🏠 CONTAINER PRINCIPAL & LAYOUT (GRID INTERATIVO)
+   ========================================================================== */
+.container {
+    max-width: 1240px;
+    margin: 30px auto;
+    padding: 0 24px;
+    width: 100%;
+}
+
+/* Hero Banner Minimalista Premium */
+.hero {
+    background: linear-gradient(135deg, #0b0f19 0%, #1e2640 100%);
+    position: relative;
+    overflow: hidden;
+    color: #ffffff;
+    padding: 70px 40px;
+    border-radius: var(--radius-lg);
+    text-align: center;
+    margin-bottom: 40px;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 100%; height: 100%;
+    background: radial-gradient(circle, rgba(0, 245, 212, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.hero h1 {
+    font-size: 46px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    margin-bottom: 12px;
+    line-height: 1.1;
+}
+
+.hero p {
+    color: #94a3b8;
+    font-size: 16px;
+    font-weight: 500;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.hero:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Layout Duas Colunas Adaptável */
+.main-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+}
+
+@media (min-width: 992px) {
+    .main-layout {
+        grid-template-columns: 1.35fr 0.65fr;
+    }
+}
+
+/* ==========================================================================
+   🛍️ VITRINE & CARDS DE PRODUTO
+   ========================================================================== */
+.section-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 24px;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+}
+
+.grid-produtos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.card-tenis {
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    transition: var(--transition);
+}
+
+.card-tenis:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    border-color: #cbd5e1;
+}
+
+.card-tenis img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    margin-bottom: 16px;
+    background-color: #f1f5f9;
+}
+
+.card-tenis h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text-main);
+    letter-spacing: -0.3px;
+}
+
+.card-tenis .preco {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 16px;
+}
+
+/* ==========================================================================
+   🛒 COMPONENTE DE CARRINHO / CHECKOUT (Premium UI Reformulado)
+   ========================================================================== */
+.carrinho-principal-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-top: 20px;
+}
+
+@media (min-width: 992px) {
+    .carrinho-principal-wrapper {
+        grid-template-columns: 1.35fr 0.65fr;
+    }
+}
+
+.box-sidebar {
+    background: var(--card-bg);
+    padding: 32px;
+    border-radius: var(--radius-lg); 
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    height: fit-content;
+    transition: var(--transition);
+}
+
+.box-sidebar h3 {
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 24px;
+    border-bottom: 2px solid var(--dark);
+    padding-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Items do Carrinho */
+.item-carrinho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+    gap: 16px;
+    transition: var(--transition);
+}
+
+.item-carrinho:last-of-type {
+    border-bottom: none;
+}
+
+.item-carrinho h4 {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--dark);
+    letter-spacing: -0.3px;
+    margin: 0;
+}
+
+.item-carrinho p {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 600;
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.item-carrinho-preco-block {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.item-carrinho-preco-block b {
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--dark);
+}
+
+.item-carrinho .btn-remover {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 2px 0;
+    width: fit-content;
+    margin-left: auto;
+    opacity: 0.8;
+    transition: var(--transition);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.item-carrinho .btn-remover:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+    text-decoration: underline;
+}
+
+.carrinho-vazio-box {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+}
+
+.carrinho-vazio-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+/* Inline Shipping/Freight Container */
+.frete-container-inline {
+    display: flex;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.frete-container-inline .form-control {
+    flex: 1;
+}
+
+.frete-container-inline .btn {
+    width: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* Bloco Final de Totais */
+.total-box {
+    margin-top: 30px;
+    background: #f8fafc;
+    padding: 24px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.resumo-linha {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.resumo-linha span:last-child {
+    color: var(--dark);
+    font-weight: 700;
+}
+
+.resumo-linha.total-geral {
+    border-top: 2px dashed #cbd5e1;
+    padding-top: 16px;
+    margin-bottom: 0;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--dark);
+}
+
+.resumo-linha.total-geral span:last-child {
+    color: var(--dark);
+    font-size: 22px;
+}
+
+#info-frete {
+    font-size: 12px;
+    margin-top: 8px;
+    color: #0d9488;
+    font-weight: 700;
+    background: #ccfbf1;
+    padding: 6px 12px;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+/* ==========================================================================
+   🔑 TELAS DE AUTENTICAÇÃO ISOLADAS (LOGIN, REGISTRO)
+   ========================================================================== */
+.auth-container {
+    max-width: 400px;
+    margin: 60px auto;
+    background: var(--card-bg);
+    padding: 36px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+}
+
+.auth-container h2 {
+    font-size: 24px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 24px;
+    letter-spacing: -0.8px;
+}
+
+.auth-container p {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.auth-container p a {
+    color: var(--dark);
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   🔍 ESTRUTURA PARA DETALHES DO PRODUTO (PÁGINA INTERNA)
+   ========================================================================== */
+.produto-detalhe-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-top: 20px;
+}
+
+@media (min-width: 768px) {
+    .produto-detalhe-wrapper {
+        grid-template-columns: 1.1fr 0.9fr;
+    }
+}
+
+.produto-detalhe-imagem img {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.produto-detalhe-info h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.produto-detalhe-info .preco-grande {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 20px;
+}
+
+.produto-detalhe-info p {
+    color: var(--text-muted);
+    margin-bottom: 24px;
+}
+
+/* ==========================================================================
+   💻 PAINEL DE ADMINISTRAÇÃO (RESPONSIVO E INTEGRADO)
+   ========================================================================== */
+/* ==========================================================================
+   💻 PAINEL DE ADMINISTRAÇÃO (MODERNIZADO)
+   ========================================================================== */
+.admin-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.admin-header {
+    margin-bottom: 40px;
+}
+
+.admin-header h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--dark);
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+
+@media (min-width: 1024px) {
+    .admin-grid {
+        grid-template-columns: 350px 1fr;
+    }
+}
+
+.admin-card {
+    background: #ffffff;
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.admin-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+/* Tabela com visual Clean/Premium */
+.admin-table-container {
+    background: #ffffff;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.modern-table thead {
+    background: #f8fafc;
+}
+
+.modern-table th {
+    padding: 16px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.8px;
+}
+
+.modern-table td {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    font-size: 14px;
+    color: var(--dark);
+}
+
+/* Badge de Preço/Ação */
+.badge-preco {
+    font-weight: 800;
+    color: var(--dark);
+    font-family: 'monospace';
+}
+
+/* Estilo para imagem do produto na tabela */
+.img-preview {
+    width: 55px;
+    height: 55px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Botão de Excluir Minimalista */
+.btn-delete {
+    background: #fee2e2;
+    color: #ef4444;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 12px;
+    transition: var(--transition);
+}
+
+.btn-delete:hover {
+    background: #fecaca;
+}
+
+/* ==========================================================================
+   🛠️ MODAL LEGACY (COMPATIBILIDADE DE SEGURANÇA)
+   ========================================================================== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: var(--radius-md);
+    width: 100%;
+    max-width: 440px;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ==========================================================================
+   📱 ADAPTAÇÕES ADICIONAIS DISPOSITIVOS MÓVEIS (MOBILE)
+   ========================================================================== */
+@media (max-width: 768px) {
+    header {
+        padding: 16px 4%;
+        flex-direction: column;
+        gap: 14px;
+    }
+    header nav {
+        width: 100%;
+        justify-content: center;
+    }
+    header nav a, header nav button {
+        margin: 0 10px;
+        font-size: 13px;
+    }
+    .hero {
+        padding: 44px 20px;
+        margin-bottom: 24px;
+    }
+    .hero h1 {
+        font-size: 28px;
+    }
+}

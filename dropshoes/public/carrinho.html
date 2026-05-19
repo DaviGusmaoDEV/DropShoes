@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8"><title>DropShoes | Carrinho</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo">Drop<span>Shoes</span></a>
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="carrinho.html">Carrinho</a>
+            <a href="produto.html">Produtos</a>
+            <a href="login.html" id="btn-auth">Minha Conta</a>
+        </nav>
+    </header>
+<section class="box-sidebar">
+    <h3>🛒 Seu Carrinho</h3>
+    
+    <div id="itens-carrinho">
+        </div>
+
+    <div style="margin-top: 24px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+        <label style="font-size: 13px; font-weight: 700; text-transform: uppercase;">Calcular Entrega</label>
+        <div class="frete-container-inline">
+            <input type="text" id="cep" class="form-control" placeholder="Digite seu CEP">
+            <select id="tipo-envio" class="form-control" style="max-width: 120px;">
+                <option value="pac">PAC</option>
+                <option value="sedex">SEDEX</option>
+            </select>
+            <button onclick="calcularFrete()" class="btn btn-dark">Calcular</button>
+        </div>
+        <div id="info-frete" style="display: none;"></div>
+    </div>
+
+    <div class="total-box">
+        <div class="resumo-linha">
+            <span>Subtotal</span>
+            <span id="subtotal-val">R$ 0.00</span>
+        </div>
+        <div class="resumo-linha">
+            <span>Frete</span>
+            <span>R$ <span id="valor-frete">0.00</span></span>
+        </div>
+        <div class="resumo-linha total-geral">
+            <span>Total</span>
+            <span>R$ <span id="total-compra">0.00</span></span>
+        </div>
+    </div>
+
+    <button onclick="irParaPagamento()" class="btn btn-dark" style="margin-top: 20px; background-color: var(--success); color: #fff;">
+        Finalizar Pedido via Stripe
+    </button>
+</section>
+    <script src="js/main.js"></script>
+    <script>document.addEventListener("DOMContentLoaded", renderizarPaginaCarrinho);</script>
+</body>
+</html>
