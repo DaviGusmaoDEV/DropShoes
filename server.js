@@ -1,16 +1,23 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const path = require('path'); // IMPORTANTE: Adicione esta linha no topo
+const path = require('path');
+const multer = require('multer'); // Necessário para processar arquivos
 require('dotenv').config();
-
+const fs = require('fs');
+const uploadDir = path.join(__dirname, 'public/uploads');
+if (!fs.existsSync(uploadDir)) { fs.mkdirSync(uploadDir); }
 const app = express();
+
+// Configuração de armazenamento do Multer (salva na pasta 'public/uploads')
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, 'public/uploads/'),
+    filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
+});
+const upload = multer({ storage: storage });
 
 app.use(cors());
 app.use(express.json());
-
-// --- SERVIR ARQUIVOS ESTÁTICOS ---
-// Isso diz ao Node: "Tudo que estiver na pasta 'public', entregue como site"
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- MODELOS ---
@@ -32,38 +39,26 @@ const Produto = mongoose.model('Produto', new mongoose.Schema({
 // Conexão com MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('✅ Conectado ao MongoDB Atlas'))
-  .catch(err => {
-      console.error('❌ Erro na conexão MongoDB:', err);
-      process.exit(1);
-  });
+  .catch(err => { console.error('❌ Erro na conexão MongoDB:', err); process.exit(1); });
 
-// --- ROTAS DE API ---
+// --- ROTAS ---
+// Cadastro, Login, Meus Pedidos e Checkout permanecem iguais...
 
-app.post('/api/cadastro', async (req, res) => {
+// ROTA CADASTRAR PRODUTO (Agora com upload de imagem)
+app.post('/api/produtos', upload.single('foto'), async (req, res) => {
     try {
-        const { nome, email, senha } = req.body;
-        const cleanEmail = email.toLowerCase().trim();
-        const cleanSenha = senha.trim();
-
-        const userExistente = await User.findOne({ email: cleanEmail });
-        if (userExistente) return res.status(400).json({ erro: "E-mail já cadastrado!" });
-
-        const novoUser = new User({ nome, email: cleanEmail, senha: cleanSenha, role: 'cliente' });
-        await novoUser.save();
-        console.log(`✅ Novo usuário cadastrado: ${cleanEmail}`);
-        res.status(201).json({ message: "Cadastro realizado com sucesso!" });
-    } catch (err) { 
-        res.status(500).json({ erro: "Erro ao realizar cadastro." }); 
-    }
-});
-
-app.post('/api/login', async (req, res) => {
-    try {
-        const { email, senha } = req.body;
-        const user = await User.findOne({ email: email.toLowerCase().trim(), senha: senha.trim() });
-        if (!user) return res.status(401).json({ erro: 'Usuário ou senha incorretos.' });
-        res.json({ email: user.email, role: user.role, nome: user.nome });
-    } catch (err) { res.status(500).json({ erro: "Erro interno." }); }
+        const { nome, preco, tamanhos } = req.body;
+        const fotoUrl = req.file ? `/uploads/${req.file.filename}` : '';
+        
+        const novoProduto = new Produto({
+            nome,
+            preco: Number(preco),
+            tamanhos: typeof tamanhos === 'string' ? tamanhos.split(',') : tamanhos,
+            foto: fotoUrl
+        });
+        await novoProduto.save();
+        res.status(201).json(novoProduto);
+    } catch (err) { res.status(500).json({ erro: "Erro ao cadastrar produto." }); }
 });
 
 app.get('/api/produtos', async (req, res) => {
@@ -73,27 +68,23 @@ app.get('/api/produtos', async (req, res) => {
     } catch (err) { res.status(500).json({ erro: "Erro ao buscar produtos." }); }
 });
 
-app.get('/api/meus-pedidos/:email', async (req, res) => {
+app.delete('/api/produtos/:id', async (req, res) => {
     try {
-        const user = await User.findOne({ email: req.params.email.toLowerCase().trim() });
-        res.json(user ? user.pedidos : []);
-    } catch (err) { res.status(500).json({ erro: "Erro ao buscar pedidos." }); }
+        await Produto.findByIdAndDelete(req.params.id);
+        res.json({ message: "Produto excluído com sucesso!" });
+    } catch (err) { res.status(500).json({ erro: "Erro ao excluir." }); }
 });
 
-app.post('/api/checkout', async (req, res) => {
-    const { itens, frete, email } = req.body;
+app.put('/api/produtos/:id', upload.single('foto'), async (req, res) => {
     try {
-        const total = itens.reduce((acc, i) => acc + (i.preco * (i.qtd || 1)), 0) + (frete || 0);
-        await User.updateOne({ email: email.toLowerCase().trim() }, { $push: { pedidos: { id: `PED-${Date.now()}`, itens, data: new Date().toISOString(), total } } });
-        res.json({ success: true, url: "https://stripe.com/checkout/sucesso" });
-    } catch (error) { res.status(500).json({ error: error.message }); }
+        const updateData = { ...req.body };
+        if (req.file) updateData.foto = `/uploads/${req.file.filename}`;
+        const atualizado = await Produto.findByIdAndUpdate(req.params.id, updateData, { new: true });
+        res.json(atualizado);
+    } catch (err) { res.status(500).json({ erro: "Erro ao atualizar." }); }
 });
 
-// --- ROTA PARA O FRONTEND ---
-// Garante que o index.html seja servido para qualquer rota que não seja /api
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));

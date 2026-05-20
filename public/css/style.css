@@ -777,3 +777,114 @@ header nav a:hover, header nav button:hover {
         font-size: 28px;
     }
 }
+.admin-body {
+    background-color: #f1f5f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--dark);
+    margin: 0;
+}
+
+.admin-header {
+    background: #fff;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+}
+
+.admin-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.admin-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.admin-group {
+    margin-bottom: 1.5rem;
+}
+
+.admin-control {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    box-sizing: border-box;
+}
+
+.file-wrapper {
+    display: block;
+    border: 2px dashed var(--border);
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.file-wrapper:hover {
+    border-color: var(--primary);
+}
+
+.file-wrapper input { display: none; }
+
+.btn-salvar {
+    background: var(--dark);
+    color: var(--light);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    width: 100%;
+    font-weight: bold;
+    cursor: pointer;
+}
+.btn-salvar:hover {
+    background: var(--success-hover);
+    color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.modern-table th, .modern-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+.tamanho-selector { 
+    display: flex; 
+    gap: 10px; 
+    flex-wrap: wrap; 
+    margin-top: 10px; 
+}
+.tamanho-selector label { 
+    position: relative; 
+}
+.tamanho-selector input { 
+    display: none; 
+}
+.tamanho-selector span { 
+    display: block; 
+    width: 40px; 
+    height: 40px; 
+    border: 1px solid var(--border);
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    cursor: pointer; 
+    border-radius: 4px;
+}
+.tamanho-selector input:checked + span { background: var(--success-hover); 
+    color: white; 
+}
