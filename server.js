@@ -1,12 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path'); // IMPORTANTE: Adicione esta linha no topo
 require('dotenv').config();
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// --- SERVIR ARQUIVOS ESTÁTICOS ---
+// Isso diz ao Node: "Tudo que estiver na pasta 'public', entregue como site"
+app.use(express.static(path.join(__dirname, 'public')));
 
 // --- MODELOS ---
 const User = mongoose.model('User', new mongoose.Schema({
@@ -32,10 +37,8 @@ mongoose.connect(process.env.MONGODB_URI)
       process.exit(1);
   });
 
-// --- ROTAS ---
+// --- ROTAS DE API ---
 
-// CADASTRO
-// CADASTRO
 app.post('/api/cadastro', async (req, res) => {
     try {
         const { nome, email, senha } = req.body;
@@ -47,32 +50,22 @@ app.post('/api/cadastro', async (req, res) => {
 
         const novoUser = new User({ nome, email: cleanEmail, senha: cleanSenha, role: 'cliente' });
         await novoUser.save();
-        
-        // --- LOG QUE APARECERÁ NO RENDER ---
-        console.log(`✅ Novo usuário cadastrado com sucesso: ${cleanEmail}`);
-        
+        console.log(`✅ Novo usuário cadastrado: ${cleanEmail}`);
         res.status(201).json({ message: "Cadastro realizado com sucesso!" });
     } catch (err) { 
-        console.error("❌ Erro no servidor durante cadastro:", err);
         res.status(500).json({ erro: "Erro ao realizar cadastro." }); 
     }
 });
 
-// LOGIN
 app.post('/api/login', async (req, res) => {
     try {
         const { email, senha } = req.body;
-        const cleanEmail = email.toLowerCase().trim();
-        const cleanSenha = senha.trim();
-
-        const user = await User.findOne({ email: cleanEmail, senha: cleanSenha });
+        const user = await User.findOne({ email: email.toLowerCase().trim(), senha: senha.trim() });
         if (!user) return res.status(401).json({ erro: 'Usuário ou senha incorretos.' });
-        
         res.json({ email: user.email, role: user.role, nome: user.nome });
-    } catch (err) { res.status(500).json({ erro: "Erro interno no servidor." }); }
+    } catch (err) { res.status(500).json({ erro: "Erro interno." }); }
 });
 
-// LISTAR PRODUTOS
 app.get('/api/produtos', async (req, res) => {
     try {
         const produtos = await Produto.find().lean();
@@ -80,32 +73,26 @@ app.get('/api/produtos', async (req, res) => {
     } catch (err) { res.status(500).json({ erro: "Erro ao buscar produtos." }); }
 });
 
-// MEUS PEDIDOS
 app.get('/api/meus-pedidos/:email', async (req, res) => {
     try {
-        const cleanEmail = req.params.email.toLowerCase().trim();
-        const user = await User.findOne({ email: cleanEmail });
+        const user = await User.findOne({ email: req.params.email.toLowerCase().trim() });
         res.json(user ? user.pedidos : []);
     } catch (err) { res.status(500).json({ erro: "Erro ao buscar pedidos." }); }
 });
 
-// CHECKOUT
 app.post('/api/checkout', async (req, res) => {
     const { itens, frete, email } = req.body;
     try {
-        const cleanEmail = email.toLowerCase().trim();
         const total = itens.reduce((acc, i) => acc + (i.preco * (i.qtd || 1)), 0) + (frete || 0);
-        
-        const novoPedido = { 
-            id: `PED-${Date.now()}`, 
-            itens, 
-            data: new Date().toISOString(),
-            total
-        };
-        
-        await User.updateOne({ email: cleanEmail }, { $push: { pedidos: novoPedido } });
+        await User.updateOne({ email: email.toLowerCase().trim() }, { $push: { pedidos: { id: `PED-${Date.now()}`, itens, data: new Date().toISOString(), total } } });
         res.json({ success: true, url: "https://stripe.com/checkout/sucesso" });
     } catch (error) { res.status(500).json({ error: error.message }); }
+});
+
+// --- ROTA PARA O FRONTEND ---
+// Garante que o index.html seja servido para qualquer rota que não seja /api
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 const PORT = process.env.PORT || 3000;
