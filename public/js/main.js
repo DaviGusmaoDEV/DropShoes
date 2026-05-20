@@ -4,6 +4,7 @@
 const API_BASE = window.location.hostname === 'localhost' 
     ? 'http://localhost:3000' 
     : 'https://dropshoes-repd.onrender.com';
+
 let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
 let freteValor = 0;
 let usuarioLogado = JSON.parse(localStorage.getItem('usuario')) || null;
@@ -15,24 +16,41 @@ document.addEventListener("DOMContentLoaded", () => {
     inicializarAuth();
     if (document.getElementById('lista-produtos')) carregarProdutos();
     if (document.getElementById('itens-carrinho')) atualizarCarrinho();
-    if (document.getElementById('lista-pedidos')) carregarMeusPedidos(); // Nova chamada
+    if (document.getElementById('lista-pedidos')) carregarMeusPedidos();
 });
 
 // ==========================================================================
-// 👤 AUTENTICAÇÃO E CADASTRO
+// 👤 AUTENTICAÇÃO E ADMIN
 // ==========================================================================
 function inicializarAuth() {
     const btnAuth = document.getElementById('btn-auth');
-    if (usuarioLogado && btnAuth) {
-        btnAuth.innerText = `Olá, ${usuarioLogado.nome.split(' ')[0]} (Sair)`;
+    if (!btnAuth) return;
+
+    if (usuarioLogado) {
+        btnAuth.innerText = `Olá, ${usuarioLogado.nome ? usuarioLogado.nome.split(' ')[0] : 'Usuário'} (Sair)`;
         btnAuth.onclick = (e) => {
             e.preventDefault();
             localStorage.clear();
             window.location.href = 'index.html';
         };
+
+        // Correção: Injeção do botão Admin de forma robusta
+        if (usuarioLogado.role === 'admin') {
+            const nav = btnAuth.parentElement;
+            if (nav && !document.getElementById('btn-admin-panel')) {
+                const adminLink = document.createElement('a');
+                adminLink.id = 'btn-admin-panel';
+                adminLink.href = 'admin.html';
+                adminLink.innerText = '⚙️ Painel Admin';
+                adminLink.style.marginRight = '15px';
+                adminLink.style.fontWeight = 'bold';
+                nav.insertBefore(adminLink, btnAuth);
+            }
+        }
     }
 }
 
+// ... (Restante das funções: cadastrarUsuario, fazerLogin, carregarProdutos, etc.)
 async function cadastrarUsuario(e) {
     e.preventDefault();
     const nome = document.getElementById('nome').value;
