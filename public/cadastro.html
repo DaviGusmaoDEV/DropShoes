@@ -1,19 +1,33 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8"><title>DropShoes | Registo</title>
-    <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <title>DropShoes | Registro</title>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
     <header><a href="index.html" class="logo">Drop<span>Shoes</span></a></header>
     <main class="container">
-        <div class="auth-box">
+        <form class="auth-container" onsubmit="cadastrarUsuario(event)">
             <h2>Criar Conta</h2><br>
-            <div class="form-group"><label>Nome</label><input type="text"></div>
-            <div class="form-group"><label>E-mail</label><input type="email"></div>
-            <div class="form-group"><label>Senha</label><input type="password"></div>
-            <button class="btn-primary" onclick="alert('Conta simulada! Pode fazer login.')">Registar</button>
-        </div>
+            
+            <div class="nome">
+                <label>Nome</label>
+                <input type="text" id="nome" required>
+            </div>
+            <div class="email">
+                <label>E-mail</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="senha">
+                <label>Senha</label>
+                <input type="password" id="senha" required>
+            </div>
+            
+            <button type="submit" class="btn-cadastro">Registar</button>
+        </form>
     </main>
+
+    <script src="js/main.js"></script>
 </body>
 </html>
