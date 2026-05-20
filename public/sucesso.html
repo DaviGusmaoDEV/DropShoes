@@ -1,5 +1,22 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head><meta charset="UTF-8"><title>Compra Aprovada!</title><link rel="stylesheet" href="css/style.css"></head>
-<body><div style="text-align:center; margin-top:100px;"><h1>🎉 Pagamento Confirmado!</h1><p>Seu pedido foi processado e enviado para a nossa planilha de logística.</p><a href="index.html">Voltar para a Loja</a></div></body>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>DropShoes | Obrigado pela Compra</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body style="display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center;">
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Pagamento Confirmado!',
+            text: 'Seu pedido já começou a ser separado. Obrigado por comprar na DropShoes!',
+            confirmButtonText: 'Voltar para a Loja',
+            confirmButtonColor: '#2980b9'
+        }).then(() => {
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
 </html>

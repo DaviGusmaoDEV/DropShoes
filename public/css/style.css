@@ -122,6 +122,14 @@ a {
     background-color: var(--primary);
     box-shadow: 0 4px 12px rgba(0, 245, 212, 0.2);
 }
+.btn-finalizar-compra {
+    background-color: var(--success);
+    color: #ffffff;
+}
+.btn-finalizar-compra:hover {
+    background-color: var(--success-hover);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
 /* Inputs e Elementos de Formulário */
 .form-group, .nome, .email, .senha {
     margin-bottom: 20px;
@@ -446,12 +454,21 @@ header nav a:hover, header nav button:hover {
     letter-spacing: 0.5px;
 }
 
-.item-carrinho .btn-remover:hover {
+.item-carrinho{
     opacity: 1;
     transform: translateY(-1px);
     text-decoration: underline;
 }
-
+.btn-remover:hover {
+    opacity: 1;
+    color: #fafdff;
+    transform: translateY(-4px);
+    background: #dc2626;
+    border: 1px transparent solid;
+    border-radius: 10px;
+    padding: 10px;
+    inline-size: none;
+}
 .carrinho-vazio-box {
     text-align: center;
     padding: 40px 20px;
@@ -887,4 +904,201 @@ header nav a:hover, header nav button:hover {
 }
 .tamanho-selector input:checked + span { background: var(--success-hover); 
     color: white; 
+
+}
+/* Container da Vitrine (Adicione isso no elemento pai que segura os cards, ex: #lista-produtos) */
+#lista-produtos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+/* O Card do Produto */
+.produto-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px var(--text-main);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #eaeaea;
+    padding: 15px;
+}
+
+/* Efeito Hover (Passar o mouse) */
+.produto-card:hover {
+    transform: translateY(-5px);
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 8px 15px var(--primary-hover);
+}
+
+/* Container da Imagem (Garante proporção e corte perfeito) */
+.produto-imagem-wrapper {
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background-color: #f9f9f9;
+}
+
+.produto-imagem {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Faz a imagem preencher o espaço sem distorcer */
+    transition: transform 0.5s ease;
+}
+
+.produto-card:hover .produto-imagem {
+    transform: scale(1.05); /* Zoom suave na foto ao passar o mouse */
+}
+
+/* Informações do Produto */
+.produto-info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Faz o botão ficar sempre alinhado embaixo */
+}
+
+.produto-titulo {
+    font-size: 1.1rem;
+    color: #333333;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+    /* Limita o texto a 2 linhas se o nome do tênis for gigante */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.produto-preco {
+    font-size: 1.3rem;
+    color: var(--primary-hover); /* Cor verde moderna para o preço */
+    font-weight: 700;
+    margin: 0 0 15px 0;
+}
+
+/* Seletor de Tamanhos */
+.produto-opcoes {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100px;
+}
+
+.produto-label {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+    font-weight: 500;
+    width: 100px;
+}
+
+.produto-select {
+    flex-grow: 1;
+    padding: 8px 12px;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #333333;
+    font-size: 0.9rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    width: 100px;
+}
+
+.produto-select:focus {
+    border-color: #3498db;
+}
+
+/* Botão de Compra */
+.btn-produto {
+    width: 100%;
+    padding: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: auto; /* Empurra o botão para o fim do card */
+}
+
+/* Caso queira estilizar o btn-primary padrão do seu app se ele já não existir */
+.btn-primary {
+    background-color: var(--dark);
+    color: #ffffff;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: var(--primary-hover);
+}
+select{
+    width: 100%;
+    padding: 8px 12px;
+    margin-top: 10px;
+    border:  transparent ;
+    border-radius: 10px;
+    background-color: #ffffff;
+    color: #333333;
+    font-size: 1.1rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+/* Container dos tamanhos */
+.produto-opcoes-checkboxes {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tamanhos-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* Esconde o círculo padrão do input radio */
+.checkbox-tamanho-label input[type="radio"] {
+    display: none;
+}
+
+/* Estiliza o quadradinho/botão de tamanho */
+.checkbox-tamanho-label span {
+    display: inline-block;
+    min-width: 38px;
+    height: 38px;
+    padding: 0 6px;
+    line-height: 36px;
+    text-align: center;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #444;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+/* Efeito ao passar o mouse */
+.checkbox-tamanho-label:hover span {
+    border-color: #999;
+    background-color: #fafdff;
+}
+
+/* Estilo mágico: Quando o input escondido for selecionado, altera o design do span ao lado dele */
+.checkbox-tamanho-label input[type="radio"]:checked + span {
+    border-color: #2980b9;
+    background-color: var(--success-hover);
+    color: #ffffff;
+    box-shadow: 0 2px 5px rgba(41, 128, 185, 0.3);
 }

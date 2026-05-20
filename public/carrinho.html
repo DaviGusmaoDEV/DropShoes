@@ -2,7 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8"><title>DropShoes | Carrinho</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <header>
@@ -33,24 +34,22 @@
         <div id="info-frete" style="display: none;"></div>
     </div>
 
-    <div class="total-box">
-        <div class="resumo-linha">
-            <span>Subtotal</span>
-            <span id="subtotal-val">R$ 0.00</span>
-        </div>
-        <div class="resumo-linha">
-            <span>Frete</span>
-            <span>R$ <span id="valor-frete">0.00</span></span>
-        </div>
-        <div class="resumo-linha total-geral">
-            <span>Total</span>
-            <span>R$ <span id="total-compra">0.00</span></span>
-        </div>
-    </div>
+<div class="resumo-carrinho">
+    <h3>Resumo do Pedido</h3>
+    <hr>
+    <div class="resumo-linha">
+        <span>Subtotal:</span>
+        <strong id="cart-subtotal">R$ 0,00</strong> </div>
+    <div class="resumo-linha">
+        <span>Taxa de Entrega:</span>
+        <strong id="cart-frete">R$ 0,00</strong>    </div>
+    <hr>
+    <div class="resumo-linha total">
+        <span>Total:</span>
+        <strong id="cart-total">R$ 0,00</strong>    </div>
+       <button class="btn-finalizar" onclick="finalizarCompra()">Finalizar Compra</button>
+</div>
 
-    <button onclick="irParaPagamento()" class="btn btn-dark" style="margin-top: 20px; background-color: var(--success); color: #fff;">
-        Finalizar Pedido via Stripe
-    </button>
 </section>
     <script src="js/main.js"></script>
     <script>document.addEventListener("DOMContentLoaded", renderizarPaginaCarrinho);</script>
