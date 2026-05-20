@@ -7,33 +7,21 @@ const API_BASE = window.location.hostname === 'localhost'
 
 let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
 let usuarioLogado = JSON.parse(localStorage.getItem('usuario')) || null;
+let freteValor = 0;
 
 // ==========================================================================
-// 🎬 INICIALIZAÇÃO
+// 🎬 INICIALIZAÇÃO UNIFICADA
 // ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Sempre inicializa a autenticação primeiro
     inicializarAuth();
-
-    // 2. Carrega produtos baseado na página onde você está
-    // Se a página tem o elemento 'lista-produtos', carrega a vitrine da loja
-    if (document.getElementById('lista-produtos')) {
-        carregarProdutosVitrine(); 
-    }
     
-    // Se a página tem a tabela do admin, carrega a gestão de produtos
-    if (document.getElementById('tabela-admin-produtos')) {
-        carregarProdutos(); 
-    }
-
-    // 3. Inicializa o carrinho se a página for a do carrinho
-    if (document.getElementById('itens-carrinho')) {
-        atualizarCarrinho();
-    }
+    if (document.getElementById('lista-produtos')) carregarProdutosVitrine();
+    if (document.getElementById('tabela-admin-produtos')) carregarProdutos();
+    if (document.getElementById('itens-carrinho')) atualizarCarrinho();
 });
 
 // ==========================================================================
-// 👤 AUTENTICAÇÃO E ADMIN
+// 👤 AUTENTICAÇÃO E LOGIN
 // ==========================================================================
 function inicializarAuth() {
     const btnAuth = document.getElementById('btn-auth');
@@ -58,13 +46,76 @@ function inicializarAuth() {
     }
 }
 
+async function fazerLogin(e) {
+    if (e) e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const senha = document.getElementById('login-senha').value;
+
+    try {
+        const res = await fetch(`${API_BASE}/api/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, senha })
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+            localStorage.setItem('usuario', JSON.stringify(data));
+            // Redirecionamento baseado na role
+            window.location.href = data.role === 'admin' ? 'admin.html' : 'index.html';
+        } else {
+            alert(data.erro || 'Login falhou.');
+        }
+    } catch (err) { 
+        console.error(err);
+        alert("Erro de conexão."); 
+    }
+}
+
 // ==========================================================================
-// 📦 PRODUTOS E ADMIN
+// 📦 GESTÃO DE PRODUTOS
 // ==========================================================================
+async function cadastrarProduto(e) {
+    e.preventDefault();
+    const form = document.getElementById('form-produto');
+    const formData = new FormData(form);
+    const selecionados = Array.from(document.querySelectorAll('input[name="tamanho"]:checked')).map(cb => cb.value);
+    
+    if (selecionados.length === 0) return alert("Selecione pelo menos um tamanho!");
+    formData.append('tamanhos', selecionados.join(','));
+
+    try {
+        const res = await fetch(`${API_BASE}/api/produtos`, { method: 'POST', body: formData });
+        if (res.ok) {
+            Swal.fire('Sucesso!', 'Produto cadastrado!', 'success');
+            form.reset();
+            carregarProdutos();
+        } else {
+            alert("Erro ao cadastrar.");
+        }
+    } catch (err) { console.error(err); }
+}
+
+async function carregarProdutos() {
+    const res = await fetch(`${API_BASE}/api/produtos`);
+    const produtos = await res.json();
+    const tabela = document.getElementById('tabela-admin-produtos');
+    if (tabela) {
+        tabela.innerHTML = produtos.map(p => `
+            <tr>
+                <td><img src="${p.foto}" width="50"></td>
+                <td>${p.nome}</td>
+                <td>R$ ${Number(p.preco).toFixed(2)}</td>
+                <td>${Array.isArray(p.tamanhos) ? p.tamanhos.join(', ') : p.tamanhos}</td>
+                <td><button onclick="excluirProduto('${p._id}')" style="color:red">Excluir</button></td>
+            </tr>
+        `).join('');
+    }
+}
+
 async function carregarProdutosVitrine() {
     const container = document.getElementById('lista-produtos');
-    if (!container) return;
-
     const res = await fetch(`${API_BASE}/api/produtos`);
     const produtos = await res.json();
     
@@ -72,9 +123,9 @@ async function carregarProdutosVitrine() {
         <div class="produto-card">
             <img src="${p.foto}" alt="${p.nome}">
             <h3>${p.nome}</h3>
-            <p>R$ ${p.preco.toFixed(2)}</p>
+            <p>R$ ${Number(p.preco).toFixed(2)}</p>
             <select id="tam-${p._id}">
-                ${p.tamanhos.map(t => `<option value="${t}">${t}</option>`).join('')}
+                ${Array.isArray(p.tamanhos) ? p.tamanhos.map(t => `<option value="${t}">${t}</option>`).join('') : '<option>U</option>'}
             </select>
             <button onclick="adicionarAoCarrinho('${p._id}', '${p.nome}', ${p.preco})">Adicionar</button>
         </div>
@@ -82,13 +133,14 @@ async function carregarProdutosVitrine() {
 }
 
 async function excluirProduto(id) {
-    if(confirm('Tem certeza que deseja excluir este produto?')) {
+    if(confirm('Tem certeza?')) {
         await fetch(`${API_BASE}/api/produtos/${id}`, { method: 'DELETE' });
         carregarProdutos();
     }
 }
+
 // ==========================================================================
-// 🛒 CARRINHO E PAGAMENTO
+// 🛒 CARRINHO (Mantido funcional)
 // ==========================================================================
 function salvarNoCarrinho(id, nome, preco, tamanho = "U", qtd = 1) {
     const itemExistente = carrinho.find(i => i.id === id && i.tamanho === tamanho);
@@ -106,44 +158,17 @@ function adicionarAoCarrinho(id, nome, preco) {
 function atualizarCarrinho() {
     const container = document.getElementById('itens-carrinho');
     if (!container) return;
-    
-    let subtotal = 0;
-    container.innerHTML = carrinho.map((item, index) => {
-        subtotal += item.preco * item.qtd;
-        return `
-            <div class="item-carrinho">
-                <h4>${item.nome} (x${item.qtd})</h4>
-                <p>Tamanho: ${item.tamanho}</p>
-                <b>R$ ${(item.preco * item.qtd).toFixed(2)}</b>
-                <button onclick="removerDoCarrinho(${index})">Remover</button>
-            </div>`;
-    }).join('');
-    
-    if (document.getElementById('subtotal-val')) 
-        document.getElementById('subtotal-val').innerText = `R$ ${subtotal.toFixed(2)}`;
+    container.innerHTML = carrinho.map((item, index) => `
+        <div class="item-carrinho">
+            <h4>${item.nome} (x${item.qtd})</h4>
+            <p>Tamanho: ${item.tamanho}</p>
+            <b>R$ ${(item.preco * item.qtd).toFixed(2)}</b>
+            <button onclick="removerDoCarrinho(${index})">Remover</button>
+        </div>`).join('');
 }
 
 function removerDoCarrinho(index) {
     carrinho.splice(index, 1);
     localStorage.setItem('carrinho', JSON.stringify(carrinho));
     atualizarCarrinho();
-}
-
-async function irParaPagamento() {
-    if (carrinho.length === 0) return alert('Carrinho vazio!');
-    if (!usuarioLogado) return window.location.href = 'login.html';
-    
-    try {
-        const res = await fetch(`${API_BASE}/api/checkout`, { 
-            method: 'POST', 
-            headers: {'Content-Type': 'application/json'}, 
-            body: JSON.stringify({ 
-                itens: carrinho, 
-                frete: freteValor, 
-                email: usuarioLogado.email 
-            }) 
-        });
-        const dados = await res.json();
-        if (dados.url) window.location.href = dados.url;
-    } catch (err) { alert("Erro ao processar pagamento."); }
 }
