@@ -1,7 +1,8 @@
 // ==========================================================================
 // 🛒 CONFIGURAÇÕES GERAIS
 // ==========================================================================
-const API_BASE = window.location.hostname === 'localhost' 
+// CORREÇÃO CRÍTICA: Definição correta da URL base para evitar requests para "false/api/..."
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:3000' 
     : 'https://dropshoes-repd.onrender.com';
 
@@ -29,7 +30,11 @@ function inicializarAuth() {
 
     if (usuarioLogado) {
         btnAuth.innerText = `Olá, ${usuarioLogado.nome?.split(' ')[0] || 'Usuário'} (Sair)`;
-        btnAuth.onclick = (e) => { e.preventDefault(); localStorage.clear(); window.location.href = 'index.html'; };
+        btnAuth.onclick = (e) => { 
+            e.preventDefault(); 
+            localStorage.clear(); 
+            window.location.href = 'index.html'; 
+        };
 
         if (usuarioLogado.role === 'admin') {
             const nav = btnAuth.parentElement;
@@ -62,14 +67,13 @@ async function fazerLogin(e) {
         
         if (res.ok) {
             localStorage.setItem('usuario', JSON.stringify(data));
-            // Redirecionamento baseado na role
             window.location.href = data.role === 'admin' ? 'admin.html' : 'index.html';
         } else {
             alert(data.erro || 'Login falhou.');
         }
     } catch (err) { 
-        console.error(err);
-        alert("Erro de conexão."); 
+        console.error("Erro no fetch de login:", err);
+        alert("Erro de conexão. Verifique se o servidor está online."); 
     }
 }
 
@@ -88,64 +92,101 @@ async function cadastrarProduto(e) {
     try {
         const res = await fetch(`${API_BASE}/api/produtos`, { method: 'POST', body: formData });
         if (res.ok) {
-            Swal.fire('Sucesso!', 'Produto cadastrado!', 'success');
+            if (typeof Swal !== 'undefined') {
+                Swal.fire('Sucesso!', 'Produto cadastrado!', 'success');
+            } else {
+                alert('Produto cadastrado com sucesso!');
+            }
             form.reset();
             carregarProdutos();
         } else {
-            alert("Erro ao cadastrar.");
+            alert("Erro ao cadastrar o produto no banco de dados.");
         }
-    } catch (err) { console.error(err); }
+    } catch (err) { 
+        console.error("Erro no fetch de cadastro:", err); 
+        alert("Falha de conexão ao tentar cadastrar.");
+    }
+}
+
+// Função auxiliar para garantir que a imagem carregue mesmo se frontend/backend estiverem separados
+function formatarUrlImagem(caminho) {
+    if (!caminho) return 'placeholder.jpg';
+    if (caminho.startsWith('http')) return caminho;
+    return `${API_BASE}${caminho}`;
 }
 
 async function carregarProdutos() {
-    const res = await fetch(`${API_BASE}/api/produtos`);
-    const produtos = await res.json();
-    const tabela = document.getElementById('tabela-admin-produtos');
-    if (tabela) {
-        tabela.innerHTML = produtos.map(p => `
-            <tr>
-                <td><img src="${p.foto}" width="50"></td>
-                <td>${p.nome}</td>
-                <td>R$ ${Number(p.preco).toFixed(2)}</td>
-                <td>${Array.isArray(p.tamanhos) ? p.tamanhos.join(', ') : p.tamanhos}</td>
-                <td><button onclick="excluirProduto('${p._id}')" style="color:red">Excluir</button></td>
-            </tr>
-        `).join('');
+    try {
+        const res = await fetch(`${API_BASE}/api/produtos`);
+        const produtos = await res.json();
+        const tabela = document.getElementById('tabela-admin-produtos');
+        if (tabela) {
+            tabela.innerHTML = produtos.map(p => `
+                <tr>
+                    <td><img src="${formatarUrlImagem(p.foto)}" width="50" style="object-fit: cover; border-radius: 4px;"></td>
+                    <td>${p.nome}</td>
+                    <td>R$ ${Number(p.preco).toFixed(2)}</td>
+                    <td>${Array.isArray(p.tamanhos) ? p.tamanhos.join(', ') : p.tamanhos}</td>
+                    <td><button onclick="excluirProduto('${p._id}')" style="color:white; background-color:red; padding: 5px 10px; border:none; border-radius:3px; cursor:pointer;">Excluir</button></td>
+                </tr>
+            `).join('');
+        }
+    } catch (err) {
+        console.error("Erro ao carregar tabela de produtos:", err);
     }
 }
 
 async function carregarProdutosVitrine() {
-    const container = document.getElementById('lista-produtos');
-    const res = await fetch(`${API_BASE}/api/produtos`);
-    const produtos = await res.json();
-    
-    container.innerHTML = produtos.map(p => `
-        <div class="produto-card">
-            <img src="${p.foto}" alt="${p.nome}">
-            <h3>${p.nome}</h3>
-            <p>R$ ${Number(p.preco).toFixed(2)}</p>
-            <select id="tam-${p._id}">
-                ${Array.isArray(p.tamanhos) ? p.tamanhos.map(t => `<option value="${t}">${t}</option>`).join('') : '<option>U</option>'}
-            </select>
-            <button onclick="adicionarAoCarrinho('${p._id}', '${p.nome}', ${p.preco})">Adicionar</button>
-        </div>
-    `).join('');
+    try {
+        const container = document.getElementById('lista-produtos');
+        if (!container) return;
+
+        const res = await fetch(`${API_BASE}/api/produtos`);
+        const produtos = await res.json();
+        
+        container.innerHTML = produtos.map(p => `
+            <div class="produto-card">
+                <img src="${formatarUrlImagem(p.foto)}" alt="${p.nome}" onerror="this.src='placeholder.jpg'">
+                <h3>${p.nome}</h3>
+                <p>R$ ${Number(p.preco).toFixed(2)}</p>
+                <select id="tam-${p._id}">
+                    ${Array.isArray(p.tamanhos) && p.tamanhos.length > 0 
+                        ? p.tamanhos.map(t => `<option value="${t}">${t}</option>`).join('') 
+                        : '<option value="U">Tamanho Único</option>'}
+                </select>
+                <button onclick="adicionarAoCarrinho('${p._id}', '${p.nome}', ${p.preco})">Adicionar</button>
+            </div>
+        `).join('');
+    } catch (err) {
+        console.error("Erro ao carregar vitrine de produtos:", err);
+    }
 }
 
 async function excluirProduto(id) {
-    if(confirm('Tem certeza?')) {
-        await fetch(`${API_BASE}/api/produtos/${id}`, { method: 'DELETE' });
-        carregarProdutos();
+    if(confirm('Tem certeza que deseja excluir este produto?')) {
+        try {
+            const res = await fetch(`${API_BASE}/api/produtos/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                carregarProdutos();
+            } else {
+                alert("Erro ao excluir o produto.");
+            }
+        } catch (err) {
+            console.error("Erro ao excluir:", err);
+        }
     }
 }
 
 // ==========================================================================
-// 🛒 CARRINHO (Mantido funcional)
+// 🛒 CARRINHO
 // ==========================================================================
 function salvarNoCarrinho(id, nome, preco, tamanho = "U", qtd = 1) {
     const itemExistente = carrinho.find(i => i.id === id && i.tamanho === tamanho);
-    if (itemExistente) { itemExistente.qtd += qtd; } 
-    else { carrinho.push({ id, nome, preco: Number(preco), tamanho, qtd }); }
+    if (itemExistente) { 
+        itemExistente.qtd += qtd; 
+    } else { 
+        carrinho.push({ id, nome, preco: Number(preco), tamanho, qtd }); 
+    }
     localStorage.setItem('carrinho', JSON.stringify(carrinho));
     window.location.href = 'carrinho.html';
 }
@@ -158,12 +199,18 @@ function adicionarAoCarrinho(id, nome, preco) {
 function atualizarCarrinho() {
     const container = document.getElementById('itens-carrinho');
     if (!container) return;
+    
+    if (carrinho.length === 0) {
+        container.innerHTML = '<p>Seu carrinho está vazio.</p>';
+        return;
+    }
+
     container.innerHTML = carrinho.map((item, index) => `
         <div class="item-carrinho">
             <h4>${item.nome} (x${item.qtd})</h4>
             <p>Tamanho: ${item.tamanho}</p>
-            <b>R$ ${(item.preco * item.qtd).toFixed(2)}</b>
-            <button onclick="removerDoCarrinho(${index})">Remover</button>
+            <b>R$ ${(Number(item.preco) * item.qtd).toFixed(2)}</b>
+            <button onclick="removerDoCarrinho(${index})" style="margin-left: 10px; cursor: pointer;">Remover</button>
         </div>`).join('');
 }
 
