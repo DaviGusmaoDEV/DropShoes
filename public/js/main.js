@@ -84,6 +84,71 @@ async function fazerLogin(e) {
     }
 }
 
+
+// ==========================================================================
+// 📝 CADASTRO DE NOVO USUÁRIO
+// ==========================================================================
+async function cadastrarUsuario(e) {
+    if (e) e.preventDefault();
+
+    const nome = document.getElementById('registro-nome').value;
+    const email = document.getElementById('registro-email').value;
+    const senha = document.getElementById('registro-senha').value;
+
+    // Alerta visual de carregamento
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'Criando sua conta...',
+            text: 'Aguarde enquanto registramos seus dados.',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/api/registro`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome, email, senha })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            // 🎉 ALERTA DE SUCESSO SOLICITADO
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Conta criada com sucesso!',
+                    text: 'Agora você já pode fazer o seu login.',
+                    confirmButtonColor: '#2ecc71'
+                }).then(() => {
+                    // Redireciona o usuário para a página de login após clicar em OK
+                    window.location.href = 'login.html'; 
+                });
+            } else {
+                alert("Usuário cadastrado com sucesso!");
+                window.location.href = 'login.html';
+            }
+        } else {
+            // Se o backend recusar (ex: email repetido)
+            throw new Error(data.erro || "Erro ao realizar cadastro.");
+        }
+
+    } catch (err) {
+        console.error("Erro no fetch de cadastro:", err);
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Falha no cadastro',
+                text: err.message,
+                confirmButtonColor: '#e74c3c'
+            });
+        } else {
+            alert(err.message);
+        }
+    }
+}
 // ==========================================================================
 // 📦 GESTÃO DE PRODUTOS (CRUD completo)
 // ==========================================================================

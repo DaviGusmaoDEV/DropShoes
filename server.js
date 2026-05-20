@@ -58,21 +58,60 @@ const Produto = mongoose.model('Produto', new mongoose.Schema({
 // ==========================================================================
 // 👤 ROTAS DE AUTENTICAÇÃO
 // ==========================================================================
-app.post('/api/login', async (req, res) => {
-    console.log("Tentativa de login recebida para:", req.body.email);
+// ==========================================================================
+// 👤 ROTAS DE CADASTRO E AUTENTICAÇÃO
+// ==========================================================================
+
+// 🆕 NOVA ROTA: Cadastro de Usuário com Logs para o Render e Mongo
+app.post('/api/registro', async (req, res) => {
+    // Esse log vai aparecer imediatamente no painel de Logs do Render!
+    console.log("📢 [RENDER LOG] Tentativa de cadastro recebida para o email:", req.body.email);
+
     try {
-        const { email, senha } = req.body;
-        const user = await User.findOne({ email: email.toLowerCase().trim(), senha: senha.trim() });
-        
-        if (!user) {
-            console.log("Usuário não encontrado ou senha inválida");
-            return res.status(401).json({ erro: 'Usuário ou senha incorretos.' });
+        const { nome, email, senha } = req.body;
+
+        if (!nome || !email || !senha) {
+            console.log("⚠️ [RENDER LOG] Cadastro recusado: Campos obrigatórios ausentes.");
+            return res.status(400).json({ erro: "Todos os campos (nome, email, senha) são obrigatórios." });
         }
-        
-        res.json({ nome: user.nome, email: user.email, role: user.role });
-    } catch (err) { 
-        console.error("Erro na rota de login:", err);
-        res.status(500).json({ erro: "Erro interno no servidor." }); 
+
+        const emailFormatado = email.toLowerCase().trim();
+
+        // Verifica se o usuário já existe no banco
+        const usuarioExistente = await User.findOne({ email: emailFormatado });
+        if (usuarioExistente) {
+            console.log(`⚠️ [RENDER LOG] Cadastro recusado: O email ${emailFormatado} já está registrado.`);
+            return res.status(400).json({ erro: "Este e-mail já está cadastrado em nossa loja." });
+        }
+
+        // Cria o novo usuário no MongoDB
+        const novoUsuario = new User({
+            nome: nome.trim(),
+            email: emailFormatado,
+            senha: senha.trim(), // Se futuramente quiser segurança, use bcrypt aqui
+            role: 'cliente'      // Padrão como cliente
+        });
+
+        // Salva de fato no banco de dados
+        await novoUsuario.save();
+
+        // 🔥 LOG CRUCIAL: Confirmação visual no Render mostrando que salvou no Mongo
+        console.log(`✅ [RENDER LOG] SUCESSO! Novo usuário gravado no MongoDB.`);
+        console.log(`💾 [MONGO DATA] ID: ${novoUsuario._id} | Nome: ${novoUsuario.nome} | Email: ${novoUsuario.email}`);
+
+        // Retorna status 201 (Criado) e os dados para o front-end saber que deu certo
+        return res.status(201).json({
+            mensagem: "Usuário cadastrado com sucesso!",
+            usuario: {
+                nome: novoUsuario.nome,
+                email: novoUsuario.email,
+                role: novoUsuario.role
+            }
+        });
+
+    } catch (err) {
+        console.error("❌ [RENDER LOG] ERRO CRÍTICO AO SALVAR USUÁRIO NO MONGO:", err);
+        return res.status(500).json({ erro: "Erro interno do servidor ao salvar cadastro." });
     }
 });
 
