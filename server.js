@@ -56,65 +56,55 @@ const Produto = mongoose.model('Produto', new mongoose.Schema({
 }));
 
 // ==========================================================================
-// 👤 ROTAS DE AUTENTICAÇÃO
-// ==========================================================================
-// ==========================================================================
 // 👤 ROTAS DE CADASTRO E AUTENTICAÇÃO
 // ==========================================================================
 
 // 🆕 NOVA ROTA: Cadastro de Usuário com Logs para o Render e Mongo
+// ==========================================================================
+// 🚀 ROTA DE REGISTRO COM LOGS EXPLICITOS PARA MONGODB E RENDER
+// ==========================================================================
 app.post('/api/registro', async (req, res) => {
-    // Esse log vai aparecer imediatamente no painel de Logs do Render!
-    console.log("📢 [RENDER LOG] Tentativa de cadastro recebida para o email:", req.body.email);
+    console.log("📢 [RENDER LOG] Tentativa de cadastro recebida para:", req.body.email);
 
     try {
         const { nome, email, senha } = req.body;
 
         if (!nome || !email || !senha) {
-            console.log("⚠️ [RENDER LOG] Cadastro recusado: Campos obrigatórios ausentes.");
-            return res.status(400).json({ erro: "Todos os campos (nome, email, senha) são obrigatórios." });
+            console.log("⚠️ [RENDER LOG] Cadastro rejeitado: dados incompletos recebidos do front.");
+            return res.status(400).json({ erro: "Todos os campos (nome, email e senha) são obrigatórios." });
         }
 
         const emailFormatado = email.toLowerCase().trim();
 
-        // Verifica se o usuário já existe no banco
+        // Valida duplicação no MongoDB Atlas
         const usuarioExistente = await User.findOne({ email: emailFormatado });
         if (usuarioExistente) {
-            console.log(`⚠️ [RENDER LOG] Cadastro recusado: O email ${emailFormatado} já está registrado.`);
-            return res.status(400).json({ erro: "Este e-mail já está cadastrado em nossa loja." });
+            console.log(`⚠️ [RENDER LOG] Cadastro recusado: O email ${emailFormatado} já consta no banco.`);
+            return res.status(400).json({ erro: "Este e-mail já está cadastrado." });
         }
 
-        // Cria o novo usuário no MongoDB
+        // Instancia o novo usuário no modelo do Mongoose
         const novoUsuario = new User({
             nome: nome.trim(),
             email: emailFormatado,
-            senha: senha.trim(), // Se futuramente quiser segurança, use bcrypt aqui
-            role: 'cliente'      // Padrão como cliente
+            senha: senha.trim(), // Nota: Em ambiente produtivo, recomenda-se encriptar com bcrypt
+            role: 'cliente'
         });
 
-        // Salva de fato no banco de dados
+        // Salva o registro no MongoDB
         await novoUsuario.save();
 
-        // 🔥 LOG CRUCIAL: Confirmação visual no Render mostrando que salvou no Mongo
-        console.log(`✅ [RENDER LOG] SUCESSO! Novo usuário gravado no MongoDB.`);
-        console.log(`💾 [MONGO DATA] ID: ${novoUsuario._id} | Nome: ${novoUsuario.nome} | Email: ${novoUsuario.email}`);
+        // 🔥 LOGS EM TEMPO REAL PARA O CONSOLE DO RENDER
+        console.log(`✅ [RENDER LOG] SUCESSO! Usuário criado com êxito.`);
+        console.log(`💾 [MONGO DATA] Registro -> ID: ${novoUsuario._id} | Nome: ${novoUsuario.nome} | Email: ${novoUsuario.email}`);
 
-        // Retorna status 201 (Criado) e os dados para o front-end saber que deu certo
-        return res.status(201).json({
-            mensagem: "Usuário cadastrado com sucesso!",
-            usuario: {
-                nome: novoUsuario.nome,
-                email: novoUsuario.email,
-                role: novoUsuario.role
-            }
-        });
+        return res.status(201).json({ mensagem: "Usuário cadastrado com sucesso!" });
 
     } catch (err) {
-        console.error("❌ [RENDER LOG] ERRO CRÍTICO AO SALVAR USUÁRIO NO MONGO:", err);
-        return res.status(500).json({ erro: "Erro interno do servidor ao salvar cadastro." });
+        console.error("❌ [RENDER LOG] ERRO INTERNO NO BANCO DE DADOS:", err);
+        return res.status(500).json({ erro: "Erro ao salvar usuário no banco de dados." });
     }
 });
-
 // ==========================================================================
 // 📦 ROTAS DE PRODUTOS (CRUD Completo)
 // ==========================================================================

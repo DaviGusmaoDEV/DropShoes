@@ -1,5 +1,5 @@
 // ==========================================================================
-// 🛒 CONFIGURAÇÕES GERAIS
+// 🛒 CONFIGURAÇÕES GERAIS E AMBIENTE
 // ==========================================================================
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:3000' 
@@ -9,27 +9,32 @@ let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
 let usuarioLogado = JSON.parse(localStorage.getItem('usuario')) || null;
 let freteValor = 0;
 let idProdutoEmEdicao = null; 
-let produtosLocais = []; // Guarda a lista vinda do banco para a edição ler instantaneamente
+let produtosLocais = []; 
 
 // ==========================================================================
-// 🎬 INICIALIZAÇÃO UNIFICADA
+// 🎬 INICIALIZAÇÃO UNIFICADA E ESCUTADORES
 // ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
     inicializarAuth();
     
+    // Renderização de Telas Específicas
     if (document.getElementById('lista-produtos')) carregarProdutosVitrine();
     if (document.getElementById('tabela-admin-produtos')) carregarProdutos();
     if (document.getElementById('itens-carrinho')) atualizarCarrinho();
     
-    // Vincula o evento de submit do formulário de forma segura se ele existir na página
+    // Vinculação de Formulários de Forma Segura (Prevenção de Erros de Elemento Nulo)
     const formProduto = document.getElementById('form-produto');
-    if (formProduto) {
-        formProduto.addEventListener('submit', salvarProduto);
-    }
+    if (formProduto) formProduto.addEventListener('submit', salvarProduto);
+
+    const formCadastro = document.getElementById('form-cadastro') || document.querySelector('.form-cadastro');
+    if (formCadastro) formCadastro.addEventListener('submit', cadastrarUsuario);
+
+    const formLogin = document.getElementById('form-login') || document.querySelector('.form-login');
+    if (formLogin) formLogin.addEventListener('submit', fazerLogin);
 });
 
 // ==========================================================================
-// 👤 AUTENTICAÇÃO E LOGIN
+// 👤 SEÇÃO: AUTENTICAÇÃO (LOGIN, LOGOUT, REGISTRO)
 // ==========================================================================
 function inicializarAuth() {
     const btnAuth = document.getElementById('btn-auth');
@@ -60,8 +65,14 @@ function inicializarAuth() {
 
 async function fazerLogin(e) {
     if (e) e.preventDefault();
-    const email = document.getElementById('login-email').value;
-    const senha = document.getElementById('login-senha').value;
+    
+    const form = e.target;
+    const email = form.querySelector('[name="email"], #login-email, #email')?.value;
+    const senha = form.querySelector('[name="senha"], #login-senha, #senha')?.value;
+
+    if (!email || !senha) {
+        return Swal.fire('Atenção', 'Por favor, preencha todos os campos de login.', 'warning');
+    }
 
     try {
         const res = await fetch(`${API_BASE}/api/login`, {
@@ -76,34 +87,32 @@ async function fazerLogin(e) {
             localStorage.setItem('usuario', JSON.stringify(data));
             window.location.href = data.role === 'admin' ? 'admin.html' : 'index.html';
         } else {
-            alert(data.erro || 'Login falhou.');
+            Swal.fire('Falha no Login', data.erro || 'Credenciais incorretas.', 'error');
         }
     } catch (err) { 
         console.error("Erro no fetch de login:", err);
-        alert("Erro de conexão. Verifique se o servidor está online."); 
+        Swal.fire('Erro de Conexão', 'Não foi possível estabelecer contato com o servidor.', 'error');
     }
 }
 
-
-// ==========================================================================
-// 📝 CADASTRO DE NOVO USUÁRIO
-// ==========================================================================
 async function cadastrarUsuario(e) {
     if (e) e.preventDefault();
 
-    const nome = document.getElementById('registro-nome').value;
-    const email = document.getElementById('registro-email').value;
-    const senha = document.getElementById('registro-senha').value;
+    const form = e.target;
+    const nome = form.querySelector('[name="nome"], #registro-nome, #nome')?.value;
+    const email = form.querySelector('[name="email"], #registro-email, #email')?.value;
+    const senha = form.querySelector('[name="senha"], #registro-senha, #senha')?.value;
 
-    // Alerta visual de carregamento
-    if (typeof Swal !== 'undefined') {
-        Swal.fire({
-            title: 'Criando sua conta...',
-            text: 'Aguarde enquanto registramos seus dados.',
-            allowOutsideClick: false,
-            didOpen: () => { Swal.showLoading(); }
-        });
+    if (!nome || !email || !senha) {
+        return Swal.fire('Ops!', 'Por favor, preencha todos os campos do formulário.', 'warning');
     }
+
+    Swal.fire({
+        title: 'Criando sua conta...',
+        text: 'Aguarde enquanto registramos seus dados no banco.',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+    });
 
     try {
         const res = await fetch(`${API_BASE}/api/registro`, {
@@ -115,44 +124,27 @@ async function cadastrarUsuario(e) {
         const data = await res.json();
 
         if (res.ok) {
-            // 🎉 ALERTA DE SUCESSO SOLICITADO
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Conta criada com sucesso!',
-                    text: 'Agora você já pode fazer o seu login.',
-                    confirmButtonColor: '#2ecc71'
-                }).then(() => {
-                    // Redireciona o usuário para a página de login após clicar em OK
-                    window.location.href = 'login.html'; 
-                });
-            } else {
-                alert("Usuário cadastrado com sucesso!");
-                window.location.href = 'login.html';
-            }
-        } else {
-            // Se o backend recusar (ex: email repetido)
-            throw new Error(data.erro || "Erro ao realizar cadastro.");
-        }
-
-    } catch (err) {
-        console.error("Erro no fetch de cadastro:", err);
-        if (typeof Swal !== 'undefined') {
             Swal.fire({
-                icon: 'error',
-                title: 'Falha no cadastro',
-                text: err.message,
-                confirmButtonColor: '#e74c3c'
+                icon: 'success',
+                title: 'Usuário Cadastrado!',
+                text: 'Sua conta foi criada e armazenada com sucesso.',
+                confirmButtonColor: '#2ecc71',
+                confirmButtonText: 'Ir para o Login'
+            }).then(() => {
+                window.location.href = 'login.html'; 
             });
         } else {
-            alert(err.message);
+            throw new Error(data.erro || "Erro interno ao processar cadastro.");
         }
+    } catch (err) {
+        console.error("Erro na requisição de cadastro:", err);
+        Swal.fire({ icon: 'error', title: 'Falha no cadastro', text: err.message, confirmButtonColor: '#e74c3c' });
     }
 }
-// ==========================================================================
-// 📦 GESTÃO DE PRODUTOS (CRUD completo)
-// ==========================================================================
 
+// ==========================================================================
+// 📦 SEÇÃO: GESTÃO DE PRODUTOS (CRUD & VITRINE)
+// ==========================================================================
 async function salvarProduto(e) {
     if (e) e.preventDefault(); 
     
@@ -160,51 +152,30 @@ async function salvarProduto(e) {
     if (!form) return;
 
     const formData = new FormData(form);
-    
     const selecionados = Array.from(document.querySelectorAll('input[name="tamanho"]:checked')).map(cb => cb.value);
+    
     if (selecionados.length === 0) {
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Atenção!',
-                text: 'Selecione pelo menos um tamanho para o tênis.',
-                confirmButtonColor: '#2980b9'
-            });
-        } else {
-            alert("Selecione pelo menos um tamanho!");
-        }
-        return;
+        return Swal.fire('Atenção!', 'Selecione pelo menos um tamanho para o tênis.', 'warning');
     }
     formData.append('tamanhos', selecionados.join(','));
 
     const url = idProdutoEmEdicao ? `${API_BASE}/api/produtos/${idProdutoEmEdicao}` : `${API_BASE}/api/produtos`;
     const metodo = idProdutoEmEdicao ? 'PUT' : 'POST';
 
-    if (typeof Swal !== 'undefined') {
-        Swal.fire({
-            title: 'Salvando produto...',
-            text: 'Aguarde um momento.',
-            allowOutsideClick: false,
-            didOpen: () => { Swal.showLoading(); }
-        });
-    }
+    Swal.fire({ title: 'Salvando produto...', text: 'Aguarde um momento.', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
     try {
         const res = await fetch(url, { method: metodo, body: formData });
         
         if (res.ok) {
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    icon: 'success',
-                    title: idProdutoEmEdicao ? 'Modificação feita com sucesso!' : 'Produto cadastrado!',
-                    text: idProdutoEmEdicao ? 'As novas informações já estão na vitrine.' : 'O produto foi adicionado ao estoque.',
-                    showConfirmButton: false,
-                    timer: 2000,
-                    timerProgressBar: true
-                });
-            } else {
-                alert(idProdutoEmEdicao ? 'Seu produto foi atualizado com sucesso!' : 'Produto cadastrado com sucesso!');
-            }
+            Swal.fire({
+                icon: 'success',
+                title: idProdutoEmEdicao ? 'Modificação feita com sucesso!' : 'Produto cadastrado!',
+                text: idProdutoEmEdicao ? 'As novas informações já estão na vitrine.' : 'O produto foi adicionado ao estoque.',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
             
             form.reset();
             idProdutoEmEdicao = null;
@@ -213,24 +184,13 @@ async function salvarProduto(e) {
             if (btnSubmit) btnSubmit.innerText = 'Publicar na Vitrine';
             
             carregarProdutos();
-            if (document.getElementById('lista-produtos')) carregarProdutosVitrine();
-
         } else {
             const data = await res.json();
             throw new Error(data.erro || "Erro na resposta do servidor");
         }
     } catch (err) { 
-        console.error("Erro no salvamento:", err); 
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                icon: 'error',
-                title: 'Ops! Algo deu errado',
-                text: 'Não foi possível salvar as alterações. Verifique sua conexão.',
-                confirmButtonColor: '#e74c3c'
-            });
-        } else {
-            alert("Falha de conexão ao tentar salvar.");
-        }
+        console.error("Erro ao salvar produto:", err); 
+        Swal.fire('Ops! Algo deu errado', err.message || 'Não foi possível salvar as alterações.', 'error');
     }
 }
 
@@ -260,31 +220,25 @@ function prepararEdicao(id) {
     document.getElementById('form-produto')?.scrollIntoView({ behavior: 'smooth' });
 }
 
-function formatarUrlImagem(caminho) {
-    if (!caminho) return 'placeholder.jpg';
-    if (caminho.startsWith('http')) return caminho;
-    return `${API_BASE}${caminho}`;
-}
-
 async function carregarProdutos() {
     try {
         const res = await fetch(`${API_BASE}/api/produtos`);
         produtosLocais = await res.json(); 
         const tabela = document.getElementById('tabela-admin-produtos');
-        if (tabela) {
-            tabela.innerHTML = produtosLocais.map(p => `
-                <tr>
-                    <td><img src="${formatarUrlImagem(p.foto)}" width="70" style="object-fit: cover; border-radius: 4px;"></td>
-                    <td>${p.nome}</td>
-                    <td>R$ ${Number(p.preco).toFixed(2)}</td>
-                    <td>${Array.isArray(p.tamanhos) ? p.tamanhos.join(', ') : p.tamanhos}</td>
-                    <td>
-                        <button onclick="prepararEdicao('${p._id}')" style="color:white; background-color:blue; padding: 5px 10px; border:none; border-radius:3px; cursor:pointer; margin-right:5px;">Editar</button>
-                        <button onclick="excluirProduto('${p._id}')" style="color:white; background-color:red; padding: 5px 10px; border:none; border-radius:3px; cursor:pointer;">Excluir</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
+        if (!tabela) return;
+
+        tabela.innerHTML = produtosLocais.map(p => `
+            <tr>
+                <td><img src="${formatarUrlImagem(p.foto)}" width="70" style="object-fit: cover; border-radius: 4px;"></td>
+                <td>${p.nome}</td>
+                <td>R$ ${Number(p.preco).toFixed(2)}</td>
+                <td>${Array.isArray(p.tamanhos) ? p.tamanhos.join(', ') : p.tamanhos}</td>
+                <td>
+                    <button onclick="prepararEdicao('${p._id}')" style="color:white; background-color:blue; padding: 5px 10px; border:none; border-radius:3px; cursor:pointer; margin-right:5px;">Editar</button>
+                    <button onclick="excluirProduto('${p._id}')" style="color:white; background-color:red; padding: 5px 10px; border:none; border-radius:3px; cursor:pointer;">Excluir</button>
+                </td>
+            </tr>
+        `).join('');
     } catch (err) {
         console.error("Erro ao carregar tabela de produtos:", err);
     }
@@ -305,14 +259,12 @@ async function carregarProdutosVitrine() {
                     <label class="checkbox-tamanho-label">
                         <input type="radio" name="tam-${p._id}" value="${t}">
                         <span>${t}</span>
-                    </label>
-                  `).join('')
+                    </label>`).join('')
                 : `
                     <label class="checkbox-tamanho-label">
                         <input type="radio" name="tam-${p._id}" value="U" checked>
                         <span>U</span>
-                    </label>
-                  `;
+                    </label>`;
 
             return `
                 <div class="produto-card">
@@ -330,12 +282,11 @@ async function carregarProdutosVitrine() {
                             </div>
                         </div>
                         
-                        <button class="btn btn-primary btn-produto" onclick="adicionarAoCarrinhoComCheckbox('${p._id}', '${p.nome}', ${p.preco})">
+                        <button class="btn btn-primary btn-produto" onclick="adicionarAoCarrinho('${p._id}', '${p.nome}', ${p.preco})">
                             Adicionar ao Carrinho
                         </button>
                     </div>
-                </div>
-            `;
+                </div>`;
         }).join('');
     } catch (err) {
         console.error("Erro ao carregar vitrine de produtos:", err);
@@ -349,7 +300,7 @@ async function excluirProduto(id) {
             if (res.ok) {
                 carregarProdutos();
             } else {
-                alert("Erro ao excluir the produto.");
+                Swal.fire('Erro', 'Não foi possível remover o produto.', 'error');
             }
         } catch (err) {
             console.error("Erro ao excluir:", err);
@@ -357,24 +308,35 @@ async function excluirProduto(id) {
     }
 }
 
-// ==========================================================================
-// 🛒 CARRINHO
-// ==========================================================================
-function salvarNoCarrinho(id, nome, preco, tamanho = "U", qtd = 1) {
-    const itemExistente = carrinho.find(i => i.id === id && i.tamanho === tamanho);
-    if (itemExistente) { 
-        itemExistente.qtd += qtd; 
-    } else { 
-        // CORREÇÃO: Garante o mapeamento tanto de 'id' quanto de '_id' para compatibilidade com o checkout
-        carrinho.push({ id, _id: id, nome, preco: Number(preco), tamanho, qtd }); 
-    }
-    localStorage.setItem('carrinho', JSON.stringify(carrinho));
-    window.location.href = 'carrinho.html';
+function formatarUrlImagem(caminho) {
+    if (!caminho) return 'placeholder.jpg';
+    if (caminho.startsWith('http')) return caminho;
+    return `${API_BASE}${caminho}`;
 }
 
+// ==========================================================================
+// 🛒 SEÇÃO: OPERAÇÕES DO CARRINHO DE COMPRAS
+// ==========================================================================
 function adicionarAoCarrinho(id, nome, preco) {
-    const tam = document.getElementById(`tam-${id}`)?.value || "U";
-    salvarNoCarrinho(id, nome, preco, tam);
+    // Busca inteligente: verifica o botão de rádio selecionado para a vitrine
+    const radioSelecionado = document.querySelector(`input[name="tam-${id}"]:checked`);
+    const tamanhoEscolhido = radioSelecionado ? radioSelecionado.value : "U";
+    
+    if (!radioSelecionado && document.getElementsByName(`tam-${id}`).length > 0) {
+        Swal.fire('Aviso', 'Por favor, selecione um tamanho antes de adicionar ao carrinho!', 'warning');
+        return;
+    }
+
+    const itemExistente = carrinho.find(i => i.id === id && i.tamanho === tamanhoEscolhido);
+    if (itemExistente) { 
+        itemExistente.qtd += 1; 
+    } else { 
+        // Preserva o espelhamento de ID e _id exigido pelo Checkout do back-end
+        carrinho.push({ id, _id: id, nome, preco: Number(preco), tamanho: tamanhoEscolhido, qtd: 1 }); 
+    }
+
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    window.location.href = 'carrinho.html';
 }
 
 function atualizarCarrinho() {
@@ -383,9 +345,10 @@ function atualizarCarrinho() {
     
     if (carrinho.length === 0) {
         container.innerHTML = '<p style="text-align:center; padding: 20px; color: var(--text-muted);">Seu carrinho está vazio.</p>';
-        if (document.getElementById('cart-subtotal')) document.getElementById('cart-subtotal').innerText = 'R$ 0,00';
-        if (document.getElementById('cart-frete')) document.getElementById('cart-frete').innerText = 'R$ 0,00';
-        if (document.getElementById('cart-total')) document.getElementById('cart-total').innerText = 'R$ 0,00';
+        const zeros = 'R$ 0,00';
+        if (document.getElementById('cart-subtotal')) document.getElementById('cart-subtotal').innerText = zeros;
+        if (document.getElementById('cart-frete')) document.getElementById('cart-frete').innerText = zeros;
+        if (document.getElementById('cart-total')) document.getElementById('cart-total').innerText = zeros;
         return;
     }
 
@@ -420,18 +383,9 @@ function removerDoCarrinho(index) {
     atualizarCarrinho();
 }
 
-function adicionarAoCarrinhoComCheckbox(id, nome, preco) {
-    const radioSelecionado = document.querySelector(`input[name="tam-${id}"]:checked`);
-    
-    if (!radioSelecionado) {
-        alert("Por favor, selecione um tamanho antes de adicionar ao carrinho!");
-        return;
-    }
-    
-    const tamanhoEscolhido = radioSelecionado.value;
-    salvarNoCarrinho(id, nome, preco, tamanhoEscolhido);
-}
-
+// ==========================================================================
+// 💳 SEÇÃO: INTEGRAÇÃO MERCADO PAGO (CHECKOUT)
+// ==========================================================================
 async function finalizarCompra() {
     if (carrinho.length === 0) {
         return Swal.fire('Ops!', 'Seu carrinho está vazio.', 'warning');
@@ -460,27 +414,32 @@ async function finalizarCompra() {
         });
 
         const data = await res.json();
-        
-        // Captura o link de forma flexível
         const linkPagamento = data.init_point || (data.body && data.body.init_point);
 
         if (res.ok && linkPagamento) {
             localStorage.removeItem('carrinho');
             carrinho = [];
-            
-            // Redireciona com segurança para o Mercado Pago
             window.location.href = linkPagamento;
         } else {
-            // Joga a mensagem exata do erro vinda do backend para o bloco catch
-            throw new Error(data.erro || "O servidor não retornou um link de pagamento válido.");
+            throw new Error(data.erro || "O servidor recusou a criação do link de pagamento.");
         }
-
     } catch (err) {
-        console.error("Erro capturado no front:", err);
+        console.error("Erro no checkout:", err);
         Swal.fire({
             icon: 'error',
             title: 'Não foi possível gerar o link para pagamento',
-            text: err.message
+            text: err.message || 'Falha ao conectar com o gateway de pagamento.'
         });
     }
 }
+
+// ==========================================================================
+// 🌍 EXPOSIÇÃO GLOBAL PARA EXECUÇÃO EM ATRIBUTOS INLINE (HTML)
+// ==========================================================================
+window.fazerLogin = fazerLogin;
+window.cadastrarUsuario = cadastrarUsuario;
+window.prepararEdicao = prepararEdicao;
+window.excluirProduto = excluirProduto;
+window.adicionarAoCarrinho = adicionarAoCarrinho;
+window.removerDoCarrinho = removerDoCarrinho;
+window.finalizarCompra = finalizarCompra;

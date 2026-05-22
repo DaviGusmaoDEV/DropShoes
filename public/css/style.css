@@ -7,7 +7,7 @@
     --primary-hover: #00d2b4;     /* Variação de clique/interação */
     --dark: #0f172a;              /* Azul Escuro Slate (Base Tipográfica Principal) */
     --dark-muted: #1e293b;        /* Superfícies secundárias ou escuras */
-    --light: #f8fafc;             /* Fundo geral limpo, confortável e minimalista */
+    --light: #F8F9FA;             /* Fundo geral limpo, confortável e minimalista */
     --card-bg: #ffffff;           /* Fundo de cards puros */
     --text-main: #0f172a;         /* Texto de leitura padrão */
     --text-muted: #64748b;        /* Subtítulos e dados secundários */
@@ -167,7 +167,7 @@ a {
    🔝 HEADER & NAVEGAÇÃO (Efeito Glassmorphism / Borrado)
    ========================================================================== */
 header {
-    background: rgba(255, 255, 255, 0.85);
+    background: #0B0B0B;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(226, 232, 240, 0.8);
@@ -186,7 +186,7 @@ header .logo {
     font-weight: 900;
     letter-spacing: -1.2px;
     text-transform: uppercase;
-    color: var(--dark);
+    color: #F2F4F5;
 }
 
 header .logo span {
@@ -1101,4 +1101,96 @@ select{
     background-color: var(--success-hover);
     color: #ffffff;
     box-shadow: 0 2px 5px rgba(41, 128, 185, 0.3);
+}
+input{
+    width: 100%;
+    padding: 12px 16px; 
+    margin-top: 10px;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    background-color: #F4F4F6;
+    color: #333333;
+    font-size: 1.1rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+input:focus {
+    border-color: #7FFFD4;
+    transition: border-color 1s;
+}
+input[type="submit"] {
+    background-color: var(--dark);
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.btn-entrar {
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease-in-out;
+    display: inline-flex;
+    text-align: center;
+    letter-spacing: -0.2px;
+    width: 100%;
+    padding: 12px 24px;
+    font-size: 14px;
+    height: 40px;
+    background-color: #3cc2bf;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease
+
+}
+.btn-entrar:hover {
+    background-color: #2da19f;
+    color: #fff;
+    transition: all 0.5s ease-in-out;
+    transform: translateY(-1px);
+}
+.auth-login{
+    max-width: 600px;
+    margin: 60px auto;
+    background: #FFFFFF;
+    padding: 36px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+}
+.auth-login h2 {
+    font-size: 24px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 24px;
+    letter-spacing: -0.8px;
+}
+.auth-login p {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+.auth-login p a {
+    color: var(--dark);
+    font-weight: 700;
+    text-decoration: underline;
+}
+.auth-login .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.auth-login:hover {
+    transition: all 0.3s ease-in-out;
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+
 }

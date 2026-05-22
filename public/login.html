@@ -10,25 +10,16 @@
     <header>
         <a href="index.html" class="logo">Drop<span>Shoes</span></a>
     </header>
-
     <main class="container">
-        <div class="auth-container">
-            <h2>Login</h2>
+        <div class="auth-login">
+            <h2 class="auth-title">Seja bem-vindo a nossa Loja!</h2>
+        <form class="login-form" id="form-login">
+            <input type="email" name="email" placeholder="Seu E-mail" required>
+            <input type="password" name="senha" placeholder="Sua Senha" required>
             
-<form onsubmit="fazerLogin(event)">
-    <div class="form-group">
-         <label for="login-email">E-mail</label>
-         <input type="email" id="login-email" class="form-control" required>
-    </div>
-
-    <div class="form-group">
-        <label for="login-senha">Senha</label>
-        <input type="password" id="login-senha" class="form-control" required>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Entrar</button>
-</form>
+            <button class="btn-entrar" type="submit">Entrar</button>
             <p style="margin-top: 15px; text-align: center;">Não tem conta? <a href="cadastro.html">Criar conta</a></p>
+        </form>
         </div>
     </main>
 
