@@ -4,48 +4,63 @@ const cors = require('cors');
 const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
-// Importação do Mercado Pago SDK v2
 const { MercadoPagoConfig, Preference } = require('mercadopago');
 require('dotenv').config();
 
 const app = express();
 
-// --- CONFIGURAÇÃO DE UPLOADS ---
+// ==========================================================================
+// 📂 UPLOADS
+// ==========================================================================
 const uploadDir = path.join(__dirname, 'public/uploads');
-if (!fs.existsSync(uploadDir)) { fs.mkdirSync(uploadDir); }
+
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, 'public/uploads/'));
+        cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
+        cb(null, `${Date.now()}${path.extname(file.originalname)}`);
     }
 });
-const upload = multer({ storage: storage });
 
-// --- MIDDLEWARES ---
-app.use(cors());
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    next();
-});
+const upload = multer({ storage });
+
+// ==========================================================================
+// 🌍 MIDDLEWARES
+// ==========================================================================
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- CONFIGURAÇÃO MERCADO PAGO ---
-const mpClient = new MercadoPagoConfig({ 
-    accessToken: process.env.MP_ACCESS_TOKEN || 'APP_USR-TESTE-SEU-TOKEN-AQUI' 
+// ==========================================================================
+// 💳 MERCADO PAGO
+// ==========================================================================
+const mpClient = new MercadoPagoConfig({
+    accessToken: process.env.MP_ACCESS_TOKEN
 });
 
-// --- MODELOS ---
+// ==========================================================================
+// 📦 MODELOS
+// ==========================================================================
 const User = mongoose.model('User', new mongoose.Schema({
     nome: String,
-    email: { type: String, required: true, unique: true },
-    senha: { type: String, required: true },
-    role: { type: String, default: 'cliente' }
+    email: { type: String, unique: true },
+    senha: String,
+    role: {
+        type: String,
+        default: 'cliente'
+    }
 }));
 
 const Produto = mongoose.model('Produto', new mongoose.Schema({
@@ -56,222 +71,329 @@ const Produto = mongoose.model('Produto', new mongoose.Schema({
 }));
 
 // ==========================================================================
-// 👤 ROTAS DE CADASTRO E AUTENTICAÇÃO
+// 👑 ADMIN PADRÃO
 // ==========================================================================
+async function criarAdminPadrao() {
+    try {
+        const adminExiste = await User.findOne({
+            email: 'admin@dropshoes.com'
+        });
 
-// 🆕 NOVA ROTA: Cadastro de Usuário com Logs para o Render e Mongo
+        if (!adminExiste) {
+            await User.create({
+                nome: 'Administrador',
+                email: 'admin@dropshoes.com',
+                senha: '123456',
+                role: 'admin'
+            });
+
+            console.log('✅ Admin padrão criado');
+        }
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 // ==========================================================================
-// 🚀 ROTA DE REGISTRO COM LOGS EXPLICITOS PARA MONGODB E RENDER
+// 📝 REGISTRO
 // ==========================================================================
 app.post('/api/registro', async (req, res) => {
-    console.log("📢 [RENDER LOG] Tentativa de cadastro recebida para:", req.body.email);
 
     try {
+
         const { nome, email, senha } = req.body;
 
         if (!nome || !email || !senha) {
-            console.log("⚠️ [RENDER LOG] Cadastro rejeitado: dados incompletos recebidos do front.");
-            return res.status(400).json({ erro: "Todos os campos (nome, email e senha) são obrigatórios." });
+            return res.status(400).json({
+                erro: 'Todos os campos são obrigatórios.'
+            });
         }
 
         const emailFormatado = email.toLowerCase().trim();
 
-        // Valida duplicação no MongoDB Atlas
-        const usuarioExistente = await User.findOne({ email: emailFormatado });
-        if (usuarioExistente) {
-            console.log(`⚠️ [RENDER LOG] Cadastro recusado: O email ${emailFormatado} já consta no banco.`);
-            return res.status(400).json({ erro: "Este e-mail já está cadastrado." });
+        const existe = await User.findOne({
+            email: emailFormatado
+        });
+
+        if (existe) {
+            return res.status(400).json({
+                erro: 'Email já cadastrado.'
+            });
         }
 
-        // Instancia o novo usuário no modelo do Mongoose
         const novoUsuario = new User({
-            nome: nome.trim(),
+            nome,
             email: emailFormatado,
-            senha: senha.trim(), // Nota: Em ambiente produtivo, recomenda-se encriptar com bcrypt
+            senha,
             role: 'cliente'
         });
 
-        // Salva o registro no MongoDB
         await novoUsuario.save();
 
-        // 🔥 LOGS EM TEMPO REAL PARA O CONSOLE DO RENDER
-        console.log(`✅ [RENDER LOG] SUCESSO! Usuário criado com êxito.`);
-        console.log(`💾 [MONGO DATA] Registro -> ID: ${novoUsuario._id} | Nome: ${novoUsuario.nome} | Email: ${novoUsuario.email}`);
-
-        return res.status(201).json({ mensagem: "Usuário cadastrado com sucesso!" });
+        res.status(201).json({
+            mensagem: 'Usuário criado com sucesso.'
+        });
 
     } catch (err) {
-        console.error("❌ [RENDER LOG] ERRO INTERNO NO BANCO DE DADOS:", err);
-        return res.status(500).json({ erro: "Erro ao salvar usuário no banco de dados." });
+
+        console.error(err);
+
+        res.status(500).json({
+            erro: 'Erro ao cadastrar usuário.'
+        });
     }
 });
-// ==========================================================================
-// 📦 ROTAS DE PRODUTOS (CRUD Completo)
-// ==========================================================================
 
-app.post('/api/produtos', upload.single('foto'), async (req, res) => {
+// ==========================================================================
+// 🔐 LOGIN
+// ==========================================================================
+app.post('/api/login', async (req, res) => {
+
     try {
+
+        const { email, senha } = req.body;
+
+        if (!email || !senha) {
+            return res.status(400).json({
+                erro: 'Email e senha obrigatórios.'
+            });
+        }
+
+        const usuario = await User.findOne({
+            email: email.toLowerCase().trim()
+        });
+
+        if (!usuario) {
+            return res.status(401).json({
+                erro: 'Usuário não encontrado.'
+            });
+        }
+
+        if (usuario.senha !== senha.trim()) {
+            return res.status(401).json({
+                erro: 'Senha incorreta.'
+            });
+        }
+
+        return res.json({
+            _id: usuario._id,
+            nome: usuario.nome,
+            email: usuario.email,
+            role: usuario.role
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            erro: 'Erro no login.'
+        });
+    }
+});
+
+// ==========================================================================
+// 📦 PRODUTOS
+// ==========================================================================
+app.post('/api/produtos', upload.single('foto'), async (req, res) => {
+
+    try {
+
         const { nome, preco, tamanhos } = req.body;
-        const fotoUrl = req.file ? `/uploads/${req.file.filename}` : '';
-        const novoProduto = new Produto({
+
+        const foto = req.file
+            ? `/uploads/${req.file.filename}`
+            : '';
+
+        const produto = new Produto({
             nome,
             preco: Number(preco),
-            tamanhos: typeof tamanhos === 'string' ? tamanhos.split(',') : tamanhos,
-            foto: fotoUrl
+            tamanhos: typeof tamanhos === 'string'
+                ? tamanhos.split(',')
+                : [],
+            foto
         });
-        await novoProduto.save();
-        res.status(201).json(novoProduto);
-    } catch (err) { 
-        console.error("Erro ao cadastrar produto:", err);
-        res.status(500).json({ erro: "Erro ao cadastrar." }); 
+
+        await produto.save();
+
+        res.status(201).json(produto);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            erro: 'Erro ao cadastrar produto.'
+        });
     }
 });
 
 app.get('/api/produtos', async (req, res) => {
+
     try {
+
         const produtos = await Produto.find().lean();
+
         res.json(produtos);
+
     } catch (err) {
-        res.status(500).json({ erro: "Erro ao buscar produtos." });
+
+        console.error(err);
+
+        res.status(500).json({
+            erro: 'Erro ao buscar produtos.'
+        });
     }
 });
 
 app.put('/api/produtos/:id', upload.single('foto'), async (req, res) => {
+
     try {
+
         const { nome, preco, tamanhos } = req.body;
-        
+
         const updateData = {
             nome,
             preco: Number(preco),
-            tamanhos: typeof tamanhos === 'string' ? tamanhos.split(',') : tamanhos
+            tamanhos: typeof tamanhos === 'string'
+                ? tamanhos.split(',')
+                : []
         };
 
         if (req.file) {
-            updateData.foto = `/uploads/${req.file.filename}`;
+            updateData.foto =
+                `/uploads/${req.file.filename}`;
         }
 
-        const atualizado = await Produto.findByIdAndUpdate(
-            req.params.id, 
-            updateData, 
-            { new: true }
-        );
-
-        if (!atualizado) return res.status(404).json({ erro: "Produto não encontrado." });
+        const atualizado =
+            await Produto.findByIdAndUpdate(
+                req.params.id,
+                updateData,
+                { new: true }
+            );
 
         res.json(atualizado);
-    } catch (err) { 
-        console.error("Erro ao atualizar produto:", err);
-        res.status(500).json({ erro: "Erro ao atualizar produto no banco." }); 
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            erro: 'Erro ao atualizar produto.'
+        });
     }
 });
 
 app.delete('/api/produtos/:id', async (req, res) => {
+
     try {
-        const deletado = await Produto.findByIdAndDelete(req.params.id);
-        if (!deletado) return res.status(404).json({ erro: "Produto não encontrado." });
-        res.json({ message: "Produto excluído com sucesso!" });
-    } catch (err) { 
-        res.status(500).json({ erro: "Erro ao excluir." }); 
+
+        await Produto.findByIdAndDelete(req.params.id);
+
+        res.json({
+            mensagem: 'Produto removido.'
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            erro: 'Erro ao remover produto.'
+        });
     }
 });
+
 // ==========================================================================
-// 💳 ROTA DE PAGAMENTO (Mercado Pago - PRODUÇÃO REAL)
+// 💳 CHECKOUT
 // ==========================================================================
 app.post('/api/pagamentos/checkout', async (req, res) => {
+
     try {
+
         const { itens, frete } = req.body;
 
         if (!itens || itens.length === 0) {
-            return res.status(400).json({ erro: "O carrinho está vazio." });
+            return res.status(400).json({
+                erro: 'Carrinho vazio.'
+            });
         }
 
-        // 1. Mapeia os itens garantindo os tipos de dados que a API exige
-        const itemsPreference = itens.map(item => {
-            const precoBruto = parseFloat(item.preco);
-            const precoTratado = isNaN(precoBruto) ? 10.00 : parseFloat(precoBruto.toFixed(2));
-            const tituloTratado = String(item.nome || 'Tênis DropShoes').substring(0, 50);
+        const itemsPreference = itens.map(item => ({
+            id: String(item.id),
+            title: item.nome,
+            quantity: Number(item.qtd),
+            unit_price: Number(item.preco),
+            currency_id: 'BRL'
+        }));
 
-            return {
-                id: String(item.id || item._id || 'produto'),
-                title: tituloTratado,
-                quantity: parseInt(item.qtd) || 1,
-                unit_price: precoTratado,
-                currency_id: 'BRL'
-            };
-        });
-
-        // 2. Adiciona o valor do frete se houver
-        const freteBruto = parseFloat(frete);
-        if (!isNaN(freteBruto) && freteBruto > 0) {
+        if (frete > 0) {
             itemsPreference.push({
-                id: 'frete-entrega',
-                title: 'Taxa de Entrega / Frete',
+                id: 'frete',
+                title: 'Frete',
                 quantity: 1,
-                unit_price: parseFloat(freteBruto.toFixed(2)),
+                unit_price: Number(frete),
                 currency_id: 'BRL'
             });
         }
 
-        // Captura a URL de onde veio a requisição (localhost ou dropshoes-repd.onrender.com)
-        let origin = req.headers.origin || 'http://localhost:3000';
-        if (origin.endsWith('/')) { origin = origin.slice(0, -1); }
-
-        console.log("🚀 Gerando link oficial de produção no Mercado Pago...");
-
-        // 3. Cria a preferência de produção
         const preference = new Preference(mpClient);
+
         const response = await preference.create({
             body: {
                 items: itemsPreference,
-                // Em produção, NÃO enviamos e-mail de payer fixo falso. 
-                // O próprio cliente vai digitar o e-mail dele na tela do Mercado Pago.
                 back_urls: {
-                    success: `${origin}/index.html`, // Volta para a página inicial ao aprovar
-                    failure: `${origin}/carrinho.html`, // Volta para o carrinho se falhar
-                    pending: `${origin}/carrinho.html`
+                    success: 'https://dropshoes-repd.onrender.com',
+                    failure: 'https://dropshoes-repd.onrender.com/carrinho.html',
+                    pending: 'https://dropshoes-repd.onrender.com/carrinho.html'
                 },
-                // Em produção real, o 'approved' funciona perfeitamente para mandar o cliente de volta na hora
-                auto_return: 'approved' 
+                auto_return: 'approved'
             }
         });
 
-        // 4. Captura o link de redirecionamento oficial
-        let linkPagamento = response.init_point;
-        let preferenceId = response.id;
-
-        if (response.body) {
-            linkPagamento = linkPagamento || response.body.init_point;
-            preferenceId = preferenceId || response.body.id;
-        }
-
-        if (!linkPagamento) {
-            console.error("⚠️ Falha ao obter init_point em produção:", response);
-            return res.status(500).json({ erro: "O Mercado Pago não gerou o link de produção." });
-        }
-
-        console.log(`✅ Link de Produção criado! ID: ${preferenceId}`);
-
-        return res.json({ 
-            id: preferenceId, 
-            init_point: linkPagamento 
+        res.json({
+            init_point: response.init_point
         });
 
     } catch (err) {
-        console.error("❌ ERRO CRÍTICO EM PRODUÇÃO NO MERCADO PAGO:", err.message || err);
-        if (err.api_response) {
-            console.error("🔍 DETALHES DO ERRO DA API:", JSON.stringify(err.api_response, null, 2));
-        }
-        return res.status(500).json({ erro: "Erro ao processar checkout em produção." });
+
+        console.error(err);
+
+        res.status(500).json({
+            erro: 'Erro ao gerar checkout.'
+        });
     }
 });
 
-// --- ROTA CORINGA (Sempre por último) ---
-app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+// ==========================================================================
+// 🌍 ROTA CORINGA
+// ==========================================================================
+app.get('*', (req, res) => {
 
-// --- INICIALIZAÇÃO DO BANCO E SERVIDOR ---
+    if (req.path.startsWith('/api')) {
+        return res.status(404).json({
+            erro: 'Rota API não encontrada.'
+        });
+    }
+
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+// ==========================================================================
+// 🚀 START SERVER
+// ==========================================================================
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => {
-      const PORT = process.env.PORT || 3000;
-      app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
-  })
-  .catch(err => console.error('❌ Erro MongoDB:', err));
+.then(async () => {
+
+    await criarAdminPadrao();
+
+    const PORT = process.env.PORT || 3000;
+
+    app.listen(PORT, () => {
+        console.log(`🚀 Servidor rodando na porta ${PORT}`);
+    });
+
+})
+.catch(err => {
+    console.error('Erro MongoDB:', err);
+});

@@ -1,0 +1,1010 @@
+/* ==========================================================================
+   🎨 DESIGN SYSTEM, APARÊNCIA & VARIÁVEIS (Velune Premium)
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    /* Paleta de Cores High-End */
+    --primary: #E5B2B2;           
+    --primary-hover: #D49A9A;     
+    --primary-light: rgba(229, 178, 178, 0.15);
+    --dark: #4A1E28;              
+    --dark-muted: #6B2D3A;        
+    --light: #FAF6F6;             
+    --card-bg: #ffffff;           
+    --text-main: #2C2526;         
+    --text-muted: #8E7F81;        
+    --border-color: #F0E4E5;      
+    --success: #3E6B5C;           
+    --success-hover: #2E5246;
+    --error: #C0392B;
+    --error-light: #FCECEE;
+
+    /* Tipografia Fluida (CSS Clamp - Adapta dinamicamente entre Mobile e Desktop) */
+    --fs-hero-title: clamp(2rem, 5vw + 1rem, 3rem);
+    --fs-section-title: clamp(1.25rem, 2vw + 1rem, 1.75rem);
+    --fs-body: 0.9375rem;
+
+    /* Arquitetura de Layout, Cantos e Curvaturas */
+    --radius-lg: 24px;            
+    --radius-md: 16px;            
+    --radius-sm: 10px;            
+    --radius-xs: 6px;
+
+    /* Sombras Orgânicas e Dinâmicas */
+    --shadow-sm: 0 4px 12px rgba(74, 30, 40, 0.02);
+    --shadow-md: 0 12px 30px rgba(74, 30, 40, 0.04);
+    --shadow-lg: 0 24px 50px rgba(74, 30, 40, 0.06);
+    
+    /* Curva de animação premium (Efeito elástico natural) */
+    --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); 
+}
+
+/* ==========================================================================
+   ⚙️ RESET, ACESSIBILIDADE & FUNDAÇÃO
+   ========================================================================== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    text-size-adjust: none;
+    -webkit-text-size-adjust: none;
+}
+
+body {
+    background-color: var(--light);
+    color: var(--text-main);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+    height: auto;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+}
+
+/* Acessibilidade de Foco aprimorada para navegação via teclado */
+input:focus-visible, 
+select:focus-visible, 
+button:focus-visible, 
+a:focus-visible {
+    outline: 2px solid var(--dark);
+    outline-offset: 3px;
+}
+
+/* ==========================================================================
+   🧱 COMPONENTES TIPO ATÔMICO (BOTÕES & INPUTS)
+   ========================================================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    user-select: none;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-dark {
+    background-color: var(--dark);
+    color: #ffffff;
+}
+.btn-dark:hover {
+    background-color: var(--dark-muted);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background-color: var(--dark);
+    color: #ffffff;
+    margin-top: 10px;
+}
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    color: var(--dark);
+    transform: translateY(-2px);
+}
+
+.btn-cadastro {
+    background-color: transparent;
+    border: 2px solid var(--primary);
+    color: var(--dark);
+}
+.btn-cadastro:hover {
+    background-color: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(229, 178, 178, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-finalizar {
+    background-color: var(--dark);
+    color: #ffffff;
+}
+.btn-finalizar:hover {
+    background-color: var(--success);
+    box-shadow: 0 10px 24px rgba(62, 107, 92, 0.25);
+    transform: translateY(-3px);
+}
+
+.btn-entrar {
+    height: 52px;
+    background-color: var(--dark);
+    color: #ffffff;
+    margin-top: 15px;
+}
+.btn-entrar:hover {
+    background-color: var(--primary-hover);
+    color: var(--dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-header-voltar {
+    width: auto;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    padding: 10px 20px;
+}
+.btn-header-voltar:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #ffffff;
+}
+.btn-entrar{
+    width: 100%;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8125rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.btn-finalizar {
+    background-color: var(--dark);
+    color: #ffffff;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: var(--radius-sm);
+}
+.btn-finalizar:hover {
+    background-color: var(--success);
+    box-shadow: 0 10px 24px rgba(62, 107, 92, 0.25);
+    transform: translateY(-3px);
+    transition: var(--transition);
+}
+
+
+/* Formulários Inteligentes e Semânticos */
+.form-group, .nome, .email, .senha {
+    margin-bottom: 22px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label, .nome label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--dark);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+input, .form-control, .nome input, .email input, .senha input, select {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    background-color: #FFFDFD;
+    color: var(--text-main);
+    outline: none;
+    transition: var(--transition);
+}
+
+input:focus, .form-control:focus, select:focus {
+    border-color: var(--primary-hover);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+/* ==========================================================================
+   🔝 HEADER & NAVEGAÇÃO (Glassmorphism Avançado)
+   ========================================================================== */
+header, .admin-header {
+    background: rgba(74, 30, 40, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 18px max(24px, 8%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+}
+
+header .logo, .admin-header .logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+}
+
+header .logo span, .admin-header .logo span {
+    color: var(--primary);
+    font-weight: 300;
+}
+
+header nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2vw, 2rem);
+}
+
+header nav a, header nav button {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+    font-size: 0.875rem;
+    position: relative;
+    padding: 6px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+header nav a::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; width: 0; height: 2px;
+    background-color: var(--primary);
+    transition: var(--transition);
+}
+
+header nav a:hover::after {
+    width: 100%;
+}
+
+header nav a:hover, header nav button:hover {
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   🏠 CONTAINER GLOBAL & HERO EDITORIAL
+   ========================================================================== */
+.container {
+    max-width: 1240px;
+    margin: clamp(20px, 4vw, 40px) auto;
+    padding: 0 24px;
+    width: 100%;
+}
+
+.hero {
+    background: linear-gradient(135deg, #311118 0%, #5C2531 100%);
+    position: relative;
+    overflow: hidden;
+    color: #ffffff;
+    padding: clamp(40px, 8vw, 90px) 40px;
+    border-radius: var(--radius-lg);
+    text-align: center;
+    margin-bottom: clamp(30px, 5vw, 50px);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 100%; height: 100%;
+    background: radial-gradient(circle, rgba(229, 178, 178, 0.15) 0%, transparent 65%);
+    pointer-events: none;
+}
+
+.hero h1 {
+    font-size: var(--fs-hero-title);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    line-height: 1.15;
+}
+
+.hero p {
+    color: var(--primary);
+    font-size: 1rem;
+    max-width: 550px;
+    margin: 0 auto;
+}
+
+.hero:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Grid Principal Flexível Autogerenciável */
+.main-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+}
+
+@media (min-width: 992px) {
+    .main-layout {
+        grid-template-columns: 1.3fr 0.7fr;
+    }
+}
+
+/* ==========================================================================
+   🛍️ VITRINE DE PRODUTOS & CARDS SATIN
+   ========================================================================== */
+.section-title {
+    font-size: var(--fs-section-title);
+    font-weight: 800;
+    margin-bottom: 30px;
+    color: var(--dark);
+    letter-spacing: -0.01em;
+}
+
+#lista-produtos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+    gap: 30px;
+}
+
+.produto-card {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    padding: 18px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+}
+
+.produto-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-hover);
+}
+
+.produto-imagem-wrapper {
+    width: 100%;
+    aspect-ratio: 4 / 4.3; /* Mantém proporção perfeita independente da tela */
+    overflow: hidden;
+    background-color: var(--light);
+    border-radius: calc(var(--radius-md) - 4px);
+    position: relative;
+}
+
+.produto-imagem {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.produto-card:hover .produto-imagem {
+    transform: scale(1.05);
+}
+
+.produto-info {
+    padding-top: 16px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.produto-titulo {
+    font-size: 1rem;
+    color: var(--text-main);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.produto-preco {
+    font-size: 1.125rem;
+    color: var(--dark);
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+.produto-opcoes {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.produto-label {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.produto-select {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    background-color: #ffffff;
+    font-size: 0.8125rem;
+    border-radius: var(--radius-xs);
+}
+
+.btn-add-carrinho {
+    background-color: var(--dark);
+    color: #ffffff;
+    border: none;
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8125rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    width: 100%;
+    margin-top: auto;
+    transition: var(--transition);
+}
+.btn-add-carrinho:hover {
+    background-color: var(--primary);
+    color: var(--dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(229, 178, 178, 0.25);
+}
+
+/* ==========================================================================
+   🛒 CARRINHO & FLUXO DE CHECKOUT
+   ========================================================================== */
+.carrinho-principal-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-top: 20px;
+    justify-content: center; /* Centraliza horizontalmente no container principal */
+}
+
+@media (min-width: 992px) {
+    .carrinho-principal-wrapper {
+        /* Restringe o grid a uma largura ideal e centralizada para o checkout solo */
+        grid-template-columns: minmax(300px, 760px);
+        justify-content: center;
+    }
+}
+
+.box-sidebar {
+    background: var(--card-bg);
+    padding: clamp(20px, 4vw, 36px);
+    border-radius: var(--radius-lg); 
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    height: fit-content;
+    width: 100%;
+}
+
+.box-sidebar h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 26px;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 14px;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.carrinho-vazio {
+    display: none; 
+    text-align: center; 
+    padding: 24px; 
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Alinhamento de Itens Dinâmicos */
+.item-carrinho-linha {
+    border-bottom: 1px solid var(--border-color) !important;
+    padding-bottom: 16px !important;
+    margin-bottom: 16px !important;
+}
+
+.item-carrinho-linha h4 {
+    color: var(--dark);
+    font-weight: 700;
+    font-size: 0.9375rem;
+}
+
+.item-carrinho-flex {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap; /* Evita estouro de conteúdo em telas pequenas */
+}
+
+.item-carrinho-detalhes-texto {
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+}
+
+.item-carrinho-acoes-qtd {
+    display: flex; 
+    align-items: center; 
+    gap: 12px;
+}
+
+.btn-controle-qtd, .btn-qtd-menos, .btn-qtd-mais {
+    background: var(--light) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-xs) !important;
+    width: 32px;
+    height: 32px;
+    font-weight: 700;
+    color: var(--dark);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+.btn-qtd-menos:hover, .btn-qtd-mais:hover {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #ffffff;
+}
+
+.btn-remover {
+    background: none;
+    border: none;
+    color: var(--error);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: var(--transition);
+}
+.btn-remover:hover {
+    color: #FF4D4D;
+    transform: scale(1.05);
+}
+
+/* Zona de Cálculo de Entrega */
+.frete-calculo-container {
+    margin-top: 24px; 
+    border-top: 1px solid var(--border-color); 
+    padding-top: 20px;
+}
+
+.frete-label {
+    font-size: 0.6875rem; 
+    font-weight: 700; 
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--dark);
+    display: block;
+    margin-bottom: 8px;
+}
+
+.frete-container-inline {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+.frete-container-inline .form-control {
+    flex: 1;
+}
+.frete-container-inline .btn-dark {
+    width: auto;
+    padding: 0 24px;
+}
+
+.select-frete-largura {
+    max-width: 120px;
+}
+
+.info-frete-dinamico, #info-frete {
+    font-size: 0.8125rem;
+    margin-top: 12px;
+    color: var(--success-hover);
+    font-weight: 700;
+    background: #E8F4F0;
+    padding: 8px 16px;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+/* Box Resumo do Pedido */
+.resumo-carrinho {
+    margin-top: 30px;
+    background: var(--light);
+    padding: 26px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+.resumo-carrinho h3 {
+    font-size: 1rem;
+    color: var(--dark);
+    margin-bottom: 15px;
+}
+.resumo-carrinho hr {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 15px 0;
+}
+
+.resumo-linha {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.resumo-linha strong {
+    color: var(--dark);
+    font-weight: 700;
+}
+
+.resumo-linha.total {
+    padding-top: 10px;
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--dark);
+}
+.resumo-linha.total strong {
+    font-size: 1.375rem;
+    color: var(--dark);
+}
+
+/* ==========================================================================
+   🔑 AUTENTICAÇÃO (Módulos Editorial Clean)
+   ========================================================================== */
+.auth-container, .auth-login {
+    max-width: 480px;
+    width: 100%;
+    margin: clamp(40px, 8vw, 80px) auto;
+    background: var(--card-bg);
+    padding: clamp(24px, 5vw, 44px);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.auth-container:hover, .auth-login:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 30px 60px rgba(74, 30, 40, 0.08);
+}
+
+.auth-container h2, .auth-login h2 {
+    font-size: 1.625rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--dark);
+    letter-spacing: -0.02em;
+}
+
+.auth-container p, .auth-login p {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.auth-container p a, .auth-login p a {
+    color: var(--dark);
+    font-weight: 700;
+    border-bottom: 2px solid var(--primary);
+}
+.auth-container p a:hover, .auth-login p a:hover {
+    border-bottom-color: var(--dark);
+}
+
+/* Seletores Customizados Avançados de Grades e Tamanhos */
+.tamanhos-container {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tamanhos-grid, .tamanho-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.checkbox-tamanhos-label input[type="radio"],
+.tamanho-selector input[type="radio"],
+.tamanho-selector input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-tamanhos-label span,
+.tamanho-selector span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.8125rem;
+    color: var(--dark);
+    background-color: #ffffff;
+    user-select: none;
+    transition: var(--transition);
+}
+
+.checkbox-tamanhos-label:hover span,
+.tamanho-selector label:hover span {
+    border-color: var(--primary-hover);
+    background-color: var(--light);
+}
+
+.checkbox-tamanhos-label input[type="radio"]:checked + span {
+    border-color: var(--dark);
+    background-color: var(--primary);
+    color: var(--dark);
+    box-shadow: 0 4px 12px rgba(229, 178, 178, 0.4);
+}
+
+.tamanho-selector input:checked + span {
+    background: var(--success-hover); 
+    border-color: var(--success-hover);
+    color: white; 
+}
+
+/* ==========================================================================
+   💻 PAINEL DE ADMINISTRAÇÃO AVANÇADO
+   ========================================================================== */
+.admin-body {
+    background-color: var(--light);
+}
+
+.admin-container {
+    max-width: 1140px;
+    margin: 40px auto;
+    padding: 0 24px;
+}
+
+.admin-card {
+    background: #ffffff;
+    padding: clamp(20px, 4vw, 36px);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-section-cadastro {
+    margin-bottom: 40px;
+}
+
+.admin-subtitle {
+    margin-bottom: 30px;
+}
+
+/* Áreas de Arrastar/Upload Premium */
+.file-wrapper {
+    display: block;
+    border: 2px dashed var(--primary);
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    background-color: var(--light);
+    transition: var(--transition);
+}
+.file-wrapper:hover {
+    border-color: var(--dark);
+    background-color: #ffffff;
+}
+
+.file-icon-span {
+    font-size: 1.75rem; 
+    display: block; 
+    margin-bottom: 8px;
+}
+
+.file-text-span {
+    font-size: 0.8125rem; 
+    color: var(--text-muted); 
+    font-weight: 600; 
+    display: block;
+}
+
+.btn-admin-publicar {
+    margin-top: 10px;
+}
+
+/* Containers Responsivos Avançados de Tabelas (Sem quebrar layouts) */
+.admin-table-container {
+    background: #ffffff;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    overflow-x: auto; /* Rolagem lateral interna suave apenas para a tabela se necessário */
+    box-shadow: var(--shadow-sm);
+    -webkit-overflow-scrolling: touch;
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 650px; /* Garante legibilidade em dispositivos muito pequenos */
+}
+
+.modern-table th {
+    background: var(--light);
+    padding: 18px 24px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--dark);
+    letter-spacing: 0.08em;
+}
+
+.modern-table td {
+    padding: 18px 24px;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-main);
+    vertical-align: middle;
+}
+
+.img-preview {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: var(--radius-xs);
+    border: 1px solid var(--border-color);
+}
+
+.td-titulo-produto {
+    font-size: 0.875rem;
+}
+
+.td-preco-produto {
+    font-size: 0.9375rem; 
+    margin-bottom: 0;
+}
+
+.td-tamanhos-lista {
+    font-size: 0.8125rem; 
+    font-weight: 600; 
+    color: var(--text-muted);
+}
+
+/* Botões do Painel Admnistrativo */
+.acoes-flex-container {
+    display: flex; 
+    gap: 10px;
+}
+
+.btn-editar-tabela {
+    background: var(--light); 
+    color: var(--dark); 
+    border: 1px solid var(--border-color); 
+    padding: 8px 16px; 
+    border-radius: var(--radius-xs); 
+    font-weight: 700; 
+    font-size: 0.75rem; 
+    text-transform: uppercase; 
+    cursor: pointer; 
+    transition: var(--transition);
+}
+.btn-editar-tabela:hover {
+    background: var(--border-color);
+    color: var(--dark-muted);
+}
+
+.btn-delete {
+    background: var(--error-light);
+    color: var(--error);
+    padding: 8px 16px;
+    border-radius: var(--radius-xs); 
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    transition: var(--transition);
+}
+.btn-delete:hover {
+    background: var(--error);
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   📱 DISPOSITIVOS MÓVEIS (Otimizações Responsivas Mobile First / Intermediárias)
+   ========================================================================== */
+@media (max-width: 768px) {
+    header, .admin-header {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px 24px;
+        text-align: center;
+    }
+
+    header nav {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 16px 24px;
+    }
+
+    .frete-container-inline {
+        flex-direction: column;
+    }
+
+    .select-frete-largura {
+        max-width: 100%;
+    }
+
+    .frete-container-inline .btn-dark {
+        width: 100%;
+    }
+
+    .acoes-flex-container {
+        flex-direction: column;
+    }
+}
+
+/* Otimização para telas de alta densidade (Retina Displays) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    body {
+        letter-spacing: -0.005em; /* Melhora leitura em telas de ultra resolução */
+    }
+}
+
+/* Suporte para modo de economia de dados e remoção voluntária de animações */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
