@@ -9,7 +9,6 @@ const usuario =
 if (!usuario || usuario.role !== 'admin') {
 
     window.location.href = 'login.html';
-    window.location.href = 'login-souvelune.html';
 }
 
 async function cadastrarProduto(event) {
