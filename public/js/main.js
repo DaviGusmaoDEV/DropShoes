@@ -344,6 +344,9 @@ function formatarUrlImagem(caminho) {
 // ==========================================================================
 // ✨ COMPLEMENTOS EXTRAS (Garante que as tabelas/vitrines funcionem se chamadas)
 // ==========================================================================
+// ==========================================================================
+// ✨ COMPLEMENTOS EXTRAS (Garante que as tabelas/vitrines funcionem se chamadas)
+// ==========================================================================
 async function carregarProdutos() {
     try {
         const res = await fetch(`${API_BASE}/api/produtos`);
@@ -354,15 +357,21 @@ async function carregarProdutos() {
         if (!tbody) return;
         
         tbody.innerHTML = '';
+        
+        if (produtosLocais.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Nenhum produto cadastrado ainda.</td></tr>';
+            return;
+        }
+
         produtosLocais.forEach(p => {
             tbody.innerHTML += `
                 <tr>
-                    <td><img src="${formatarUrlImagem(p.foto)}" width="50" style="border-radius:5px;"></td>
+                    <td><img src="${formatarUrlImagem(p.foto)}" width="50" style="border-radius:5px; object-fit: cover; height:50px;"></td>
                     <td><strong>${p.nome}</strong></td>
-                    <td>R$ ${p.preco.toFixed(2)}</td>
+                    <td>R$ ${Number(p.preco).toFixed(2)}</td>
                     <td>${Array.isArray(p.tamanhos) ? p.tamanhos.join(', ') : p.tamanhos}</td>
                     <td>
-                        <button onclick="prepararEdicao('${p._id}')" class="btn-edit" style="background:#3498db; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">Editar</button>
+                        <button onclick="prepararEdicao('${p._id}')" class="btn-edit" style="background:#3498db; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer; margin-right:5px;">Editar</button>
                         <button onclick="excluirProduto('${p._id}')" class="btn-delete" style="background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">Excluir</button>
                     </td>
                 </tr>
@@ -383,8 +392,40 @@ async function carregarProdutosVitrine() {
         if (!grid) return;
         
         grid.innerHTML = '';
+
+        if (produtos.length === 0) {
+            grid.innerHTML = '<p style="text-align:center; color:var(--text-muted); grid-column: 1/-1;">Nenhum tênis disponível na vitrine no momento.</p>';
+            return;
+        }
+
         produtos.forEach(p => {
-            // Desenha seus cards de tênis da vitrine aqui dentro
+            // Gera as opções de botões de tamanho de forma dinâmica para cada tênis
+            const tamanhosHtml = Array.isArray(p.tamanhos) 
+                ? p.tamanhos.map(t => `<label class="radio-tamanho"><input type="radio" name="tam-${p._id}" value="${t}"><span>${t}</span></label>`).join('')
+                : '';
+
+            grid.innerHTML += `
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="${formatarUrlImagem(p.foto)}" alt="${p.nome}">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${p.nome}</h3>
+                        <p class="product-price">R$ ${Number(p.preco).toFixed(2)}</p>
+                        
+                        <div class="product-sizes">
+                            <span class="sizes-label">Tamanhos:</span>
+                            <div class="sizes-grid">
+                                ${tamanhosHtml}
+                            </div>
+                        </div>
+                        
+                        <button onclick="adicionarAoCarrinho('${p._id}', '${p.nome}', ${p.preco})" class="btn-add-carrinho">
+                            🛒 Adicionar ao Carrinho
+                        </button>
+                    </div>
+                </div>
+            `;
         });
     } catch (err) {
         console.error("Erro na vitrine:", err);
