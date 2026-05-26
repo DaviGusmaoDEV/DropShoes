@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (formProduto) {
         formProduto.addEventListener(
             'submit',
-            salvarProduto
+            salvarProduto()
         );
     }
 });
@@ -299,61 +299,93 @@ async function cadastrarUsuario(e) {
 
 // ==========================================================================
 // 📦 PRODUTOS
-// ==========================================================================
-async function carregarProdutos() {
+async function salvarProduto(e) {
+    if (e) e.preventDefault(); 
+    
+    const form = document.getElementById('form-produto');
+    if (!form) return;
+
+    const formData = new FormData(form);
+    const selecionados = Array.from(document.querySelectorAll('input[name="tamanho"]:checked')).map(cb => cb.value);
+    
+    if (selecionados.length === 0) {
+        return Swal.fire('Atenção!', 'Selecione pelo menos um tamanho para o tênis.', 'warning');
+    }
+    formData.append('tamanhos', selecionados.join(','));
+
+    const url = idProdutoEmEdicao ? `${API_BASE}/api/produtos/${idProdutoEmEdicao}` : `${API_BASE}/api/produtos`;
+    const metodo = idProdutoEmEdicao ? 'PUT' : 'POST';
+
+    Swal.fire({ title: 'Salvando produto...', text: 'Aguarde um momento.', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
     try {
+        const res = await fetch(url, { method: metodo, body: formData });
+        
+        if (res.ok) {
+            Swal.fire({
+                icon: 'success',
+                title: idProdutoEmEdicao ? 'Modificação feita com sucesso!' : 'Produto cadastrado!',
+                text: idProdutoEmEdicao ? 'As novas informações já estão na vitrine.' : 'O produto foi adicionado ao estoque.',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
+            
+            // Limpa o formulário por completo
+            form.reset();
+            idProdutoEmEdicao = null;
+            
+            // Restaura o botão e a obrigatoriedade da foto para novos cadastros
+            const btnSubmit = form.querySelector('button[type="submit"]');
+            if (btnSubmit) btnSubmit.innerText = 'Publicar na Vitrine';
+            
+            const inputFoto = document.getElementById('foto-produto');
+            if (inputFoto) inputFoto.setAttribute('required', 'required');
+            
+            // 🔥 CORREÇÃO: Força a busca atualizada do banco para redesenhar a tabela na hora
+            await carregarProdutos();
+            
+            // Se a vitrine existir na mesma página, atualiza também
+            if (document.getElementById('lista-produtos')) carregarProdutosVitrine();
 
-        const res = await fetch(
-            `${API_BASE}/api/produtos`
-        );
-
-        produtosLocais = await res.json();
-
-        const tabela =
-            document.getElementById(
-                'tabela-admin-produtos'
-            );
-
-        if (!tabela) return;
-
-        tabela.innerHTML =
-            produtosLocais.map(p => `
-            <tr>
-                <td>
-                    <img src="${formatarUrlImagem(p.foto)}"
-                    width="70">
-                </td>
-
-                <td>${p.nome}</td>
-
-                <td>
-                    R$ ${Number(p.preco).toFixed(2)}
-                </td>
-
-                <td>
-                    ${p.tamanhos.join(', ')}
-                </td>
-
-                <td>
-                    <button onclick="prepararEdicao('${p._id}')">
-                        Editar
-                    </button>
-
-                    <button onclick="excluirProduto('${p._id}')">
-                        Excluir
-                    </button>
-                </td>
-            </tr>
-        `).join('');
-
-    } catch (err) {
-
-        console.error(err);
+        } else {
+            const data = await res.json();
+            throw new Error(data.erro || "Erro na resposta do servidor");
+        }
+    } catch (err) { 
+        console.error("Erro ao salvar produto:", err); 
+        Swal.fire('Ops! Algo deu errado', err.message || 'Não foi possível salvar as alterações.', 'error');
     }
 }
+
 function prepararEdicao(id) {
-    console.log('Editar produto:', id);
+    const produto = produtosLocais.find(p => p._id === id);
+    if (!produto) return;
+
+    idProdutoEmEdicao = id;
+
+    const inputNome = document.getElementById('form-nome');
+    const inputPreco = document.getElementById('form-preco');
+    
+    if (inputNome) inputNome.value = produto.nome;
+    if (inputPreco) inputPreco.value = produto.preco;
+
+    // 🔥 CORREÇÃO: Remove o 'required' da foto ao editar, pois o produto já possui uma foto salva
+    const inputFoto = document.getElementById('foto-produto');
+    if (inputFoto) inputFoto.removeAttribute('required');
+
+    document.querySelectorAll('input[name="tamanho"]').forEach(cb => cb.checked = false);
+    if (Array.isArray(produto.tamanhos)) {
+        produto.tamanhos.forEach(t => {
+            const cb = document.querySelector(`input[name="tamanho"][value="${t}"]`);
+            if (cb) cb.checked = true;
+        });
+    }
+
+    const btnSubmit = document.querySelector('#form-produto button[type="submit"]');
+    if (btnSubmit) btnSubmit.innerText = '💾 Salvar Alterações';
+    
+    document.getElementById('form-produto')?.scrollIntoView({ behavior: 'smooth' });
 }
 
 // ==========================================================================
@@ -530,3 +562,4 @@ window.adicionarAoCarrinho = adicionarAoCarrinho;
 window.finalizarCompra = finalizarCompra;
 window.excluirProduto = excluirProduto;
 window.prepararEdicao = prepararEdicao;
+window.salvarProduto = salvarProduto;
