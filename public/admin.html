@@ -22,7 +22,7 @@
             <h2>Cadastrar Novo Tênis</h2>
             <p class="subtitle">Adicione novos produtos para atualizar a vitrine em tempo real.</p>
             
-           <form id="form-produto" enctype="multipart/form-data" onsubmit="salvarProduto(event)">
+           <form id="form-produto" enctype="multipart/form-data">
                 <div class="admin-group">
                     <label for="form-nome">Nome do Modelo</label>
                     <input type="text" id="form-nome" name="nome" class="admin-control" placeholder="Ex: Nike Air Max 90" required>
@@ -83,6 +83,19 @@
         </section>
 
     </main>
+
+    <template id="template-linha-tabela">
+        <tr>
+            <td><img src="" alt="" class="img-produto"></td>
+            <td><strong class="nome-produto"></strong></td>
+            <td class="preco-produto"></td>
+            <td class="tamanhos-produto"></td>
+            <td>
+                <button class="btn-editar">Editar</button>
+                <button class="btn-excluir">Excluir</button>
+            </td>
+        </tr>
+    </template>
 
     <script src="js/main.js"></script>
 </body>

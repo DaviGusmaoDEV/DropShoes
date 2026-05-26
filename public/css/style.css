@@ -315,7 +315,7 @@ header nav a:hover, header nav button:hover {
     gap: 24px;
 }
 
-.card-tenis {
+.product-card {
     background: var(--card-bg);
     border-radius: var(--radius-md);
     padding: 16px;
@@ -328,13 +328,13 @@ header nav a:hover, header nav button:hover {
     transition: var(--transition);
 }
 
-.card-tenis:hover {
+.product-card:hover {
     transform: translateY(-6px);
     box-shadow: var(--shadow-lg);
     border-color: #cbd5e1;
 }
 
-.card-tenis img {
+.product-card img {
     width: 100%;
     height: 240px;
     object-fit: cover;
@@ -343,7 +343,7 @@ header nav a:hover, header nav button:hover {
     background-color: #f1f5f9;
 }
 
-.card-tenis h3 {
+.product-card h3 {
     font-size: 16px;
     font-weight: 700;
     margin-bottom: 6px;
@@ -351,13 +351,32 @@ header nav a:hover, header nav button:hover {
     letter-spacing: -0.3px;
 }
 
-.card-tenis .preco {
+.product-card .preco {
     font-size: 20px;
     font-weight: 800;
     color: var(--dark);
     margin-bottom: 16px;
 }
-
+.btn-add-carrinho {
+    background-color: var(--text-main);
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    justify-content: center;
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+}
+.btn-add-carrinho:hover {
+    background-color: var(--success-hover);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease-in;
+    transform: translateY(-2px);
+}
 /* ==========================================================================
    🛒 COMPONENTE DE CARRINHO / CHECKOUT (Premium UI Reformulado)
    ========================================================================== */
@@ -1056,7 +1075,7 @@ select{
     transition: border-color 0.2s;
 }
 /* Container dos tamanhos */
-.produto-opcoes-checkboxes {
+.tamanhos-container {
     margin-bottom: 15px;
     display: flex;
     flex-direction: column;
@@ -1196,4 +1215,60 @@ input[type="submit"] {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
 
+}
+/* ==========================================================================
+   🛒 COMPLEMENTOS DA PÁGINA DE CARRINHO (ADICIONAR AO FIM DO CSS)
+   ========================================================================== */
+.carrinho-vazio {
+    display: none; 
+    text-align: center; 
+    padding: 20px; 
+    color: var(--text-muted);
+}
+
+.frete-calculo-container {
+    margin-top: 24px; 
+    border-top: 1px solid var(--border-color); 
+    padding-top: 20px;
+}
+
+.frete-label {
+    font-size: 11px; 
+    font-weight: 700; 
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--dark);
+    display: block;
+    margin-bottom: 8px;
+}
+
+.select-frete-largura {
+    max-width: 120px;
+}
+
+.info-frete-dinamico {
+    display: none;
+}
+
+/* Alinhamento dos itens internos do Template do Carrinho */
+.item-carrinho-flex {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+}
+
+.item-carrinho-detalhes-texto {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.item-carrinho-acoes-qtd {
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+}
+
+.btn-controle-qtd {
+    cursor: pointer; 
+    padding: 2px 8px;
 }

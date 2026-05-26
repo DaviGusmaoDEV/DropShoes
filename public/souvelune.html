@@ -1,30 +1,30 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8"><title>DropShoes | Home</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sou Velune | Moda Intima Feminina</title>
+    <link rel="stylesheet" href="./css/souvelune.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/main.js"></script>
 </head>
 <body>
-    <header>
-        <a href="index.html" class="logo">Drop<span>Shoes</span></a>
-        <nav>
-            <a href="souvelune.html">Sou Velune | MODA FEMININA </a>
-            <a href="index.html">Início</a>
-            <a href="carrinho.html">Carrinho</a>
-            <a href="produto.html">Produtos</a>
-            <a href="login.html" id="btn-auth">Minha Conta</a>
+    
+    <header class="souvelune-header">
+        <a href="souvelune.html" class="logo"><span class="logo-text">Sou</span><span class="logo-subtext">Velune</span></a>
+        <nav class="souvelune-nav">
+            <a href="souvelune.html">Início</a>
+            <a href="produto-souvelune.html">Produtos</a>
+            <a href="carrinho-souvelune.html">Carrinho</a>
+            <a href="login-souvelune.html">Minha Conta</a>
         </nav>
     </header>
+
     <main class="container">
-        <section class="hero">
-            <h1>Drop Shoes</h1>
-            <p>Os melhores drops saindo diretamente da Ilha da Magia.</p>
-        </section>
-        <h2 style="margin-bottom:20px;">Lançamentos</h2>
-        <div class="grid-produtos" id="lista-produtos"></div>
+        <h2>Moda Intima Feminina</h2>
+        <p>Descubra a coleção exclusiva de moda íntima feminina da Sou Velune. Conforto, estilo e elegância para todas as ocasiões.</p>
     </main>
-    <template id="template-card-produto">
+        <template id="template-card-produto">
     <div class="product-card">
         <div class="product-image">
             <img src="" alt="" class="img-vitrine">
@@ -49,6 +49,5 @@
         <span></span>
     </label>
 </template>
-    <script src="js/main.js"></script>
 </body>
 </html>
