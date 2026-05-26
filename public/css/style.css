@@ -228,11 +228,57 @@ a {
     background-color: var(--dark);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
-
+.btn-entrar-login {
+    background-color: var(--text-main);
+    color: #ffffff;
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: var(--transition-smooth);
+}
+.btn-entrar-login:hover {
+    background-color: var(--success-hover);
+    box-shadow: 0 4px 12px rgba(0, 245, 212, 0.2);
+    transform: translateY(-2px);
+}
+.btn-cadastro {
+    width: 100%;
+    background-color: var(--dark);
+    border: 2px solid var(--dark);
+    color: var(--card-bg);
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: var(--transition-smooth);
+}
+.btn-cadastro:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--dark);
+    box-shadow: 0 4px 12px rgba(0, 245, 212, 0.2);
+    transition: all 0.5s ease-in-out;
+    transform: translateY(-2px);
+}
 /* --- FORMULÁRIOS & INPUTS --- */
 .form-group, .nome, .email, .senha, .admin-group {
     margin-bottom: 20px;
     width: 100%;
+    border-radius: 10px;
+    padding: 12px ;
+    border: none;
+    margin: 10px 0;
+    background-color: #ffffff;
+    box-shadow: var(--shadow-sm);
+
 }
 
 .form-group label, .nome label, .admin-group label {
@@ -259,8 +305,9 @@ a {
 }
 
 .form-control:focus, .admin-control:focus {
-    border-color: var(--dark);
-    box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.06);
+    border-color: var(--primary-hover);
+    box-shadow: 0 0 0 4px #10b98133; /* Anel de foco verde suave */
+
 }
 
 /* Área de Drop/Upload de Foto Customizada */
@@ -734,6 +781,13 @@ header nav a:hover {
 .auth-container:hover, .auth-login:hover {
     transform: translateY(-4px);
     box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15);
+}
+.login-form{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border: none;
+    border-radius: var(--radius-sm);
 }
 
 /* ==========================================================================

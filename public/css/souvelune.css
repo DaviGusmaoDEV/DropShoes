@@ -209,11 +209,16 @@ a:focus-visible {
 
 
 /* Formulários Inteligentes e Semânticos */
-.form-group, .nome, .email, .senha {
+.form-group, .nome, .email-login, .senha-login {
     margin-bottom: 22px;
     width: 100%;
     display: flex;
     flex-direction: column;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    background-color: #ffffff;
+    box-shadow: var(--shadow-sm);
 }
 
 .form-group label, .nome label {
@@ -225,7 +230,7 @@ a:focus-visible {
     letter-spacing: 0.08em;
 }
 
-input, .form-control, .nome input, .email input, .senha input, select {
+input, .form-control, .nome input, .email-login, .senha-login, select {
     width: 100%;
     padding: 14px 18px;
     border: 1px solid var(--border-color);
