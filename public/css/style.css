@@ -1,61 +1,77 @@
 /* ==========================================================================
-   🎨 DESIGN SYSTEM & VARIÁVEIS (DropShoes - Premium & Modern)
+   🎨 1. DESIGN SYSTEM, TOKENS & VARIÁVEIS (DropShoes Premium)
    ========================================================================== */
 :root {
     /* Paleta de Cores (Estética Hype/Sneakerhead) */
-    --primary: #00f5d4;           /* Turquesa Mint Elétrico (Destaques e Tags) */
+    --primary: #00f5d4;           /* Turquesa Mint Elétrico */
     --primary-hover: #00d2b4;     /* Variação de clique/interação */
-    --dark: #0f172a;              /* Azul Escuro Slate (Base Tipográfica Principal) */
-    --dark-muted: #1e293b;        /* Superfícies secundárias ou escuras */
-    --light: #F8F9FA;             /* Fundo geral limpo, confortável e minimalista */
+    --dark: #0f172a;              /* Azul Escuro Slate Principal */
+    --dark-muted: #1e293b;        /* Superfícies secundárias escuras */
+    --light: #f8fafc;             /* Fundo geral ultra-limpo */
     --card-bg: #ffffff;           /* Fundo de cards puros */
     --text-main: #0f172a;         /* Texto de leitura padrão */
     --text-muted: #64748b;        /* Subtítulos e dados secundários */
-    --border-color: #e2e8f0;      /* Linhas e divisórias finas cirúrgicas */
-    --success: #10b981;           /* Verde Flat Premium para Conversão e Stripe */
+    --border-color: #e2e8f0;      /* Linhas e divisórias cirúrgicas */
+    --success: #10b981;           /* Verde Flat Premium para Conversão */
     --success-hover: #059669;
+    --danger: #ef4444;            /* Feedbacks de erro/remoção */
+    --danger-hover: #dc2626;
 
-    /* Estrutura, Cantos e Elevações */
+    /* Estrutura de Bordas (Cantos) */
     --radius-lg: 20px;            /* Banners e grandes seções */
     --radius-md: 12px;            /* Cards de produtos e Sidebars */
     --radius-sm: 8px;             /* Inputs, botões e pequenas tags */
+
+    /* Sistema de Sombras Elevadas (Shadows) */
     --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.03), 0 1px 2px rgba(15, 23, 42, 0.02);
     --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
     --shadow-lg: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Transição rápida e orgânica */
+
+    /* Transições Dinâmicas */
+    --transition-fast: all 0.2s ease;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ==========================================================================
-   ⚙️ RESET & CONFIGURAÇÕES GERAIS
+   ⚙️ 2. RESET GERAL & CONFIGURAÇÕES BASE
    ========================================================================== */
-* {
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    -webkit-font-smoothing: antialiased;
 }
 
 body {
     background-color: var(--light);
     color: var(--text-main);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
-/* Links Globais */
+/* Elementos de Mídia Responsivos */
+img, svg, video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+/* Links */
 a {
     text-decoration: none;
     color: inherit;
-    transition: var(--transition);
+    transition: var(--transition-fast);
 }
 
 /* ==========================================================================
-   🧱 COMPONENTES DE INTERFACE REUTILIZÁVEIS (UI)
+   🧱 3. COMPONENTES REUTILIZÁVEIS DE INTERFACE (UI)
    ========================================================================== */
-/* Botões Modernos e Reativos */
+
+/* --- BOTÕES --- */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -66,7 +82,7 @@ a {
     border-radius: var(--radius-sm);
     border: none;
     cursor: pointer;
-    transition: var(--transition);
+    transition: var(--transition-smooth);
     width: 100%;
     text-align: center;
     letter-spacing: -0.2px;
@@ -76,21 +92,13 @@ a {
     transform: scale(0.98);
 }
 
-.btn-dark {
+.btn-dark, .btn-primary {
     background-color: var(--dark);
     color: #ffffff;
 }
-.btn-dark:hover {
+.btn-dark:hover, .btn-primary:hover {
     background-color: var(--dark-muted);
     box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
-}
-
-.btn-primary {
-    background-color: var(--dark); /* Visual editorial contemporâneo: Botão escuro de alto contraste */
-    color: #ffffff;
-}
-.btn-primary:hover {
-    background-color: var(--dark-muted);
 }
 
 .btn-success {
@@ -101,50 +109,135 @@ a {
     background-color: var(--success-hover);
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
 }
-.btn-cadastro{
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 24px;
-    font-size: 14px;
-    font-weight: 700;
-    border-radius: var(--radius-sm);
-    border: none;
-    cursor: pointer;
-    transition: var(--transition);
-    width: 100%;
-    text-align: center;
-    letter-spacing: -0.2px;
 
+.btn-cadastro {
+    background-color: transparent;
+    border: 2px solid var(--dark);
+    color: var(--dark);
 }
-.btn-cadastro:active, .btn-cadastro:hover {
-    transform: scale(0.98);
+.btn-cadastro:hover {
     background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--dark);
     box-shadow: 0 4px 12px rgba(0, 245, 212, 0.2);
 }
+
 .btn-finalizar {
     background-color: var(--text-main);
     color: #ffffff;
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
+    padding: 14px;
+    border-radius: var(--radius-sm);
 }
 .btn-finalizar:hover {
     background-color: var(--success-hover);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    transition: all 0.3s ease-in;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transform: translateY(-2px);
 }
-/* Inputs e Elementos de Formulário */
-.form-group, .nome, .email, .senha {
+.btn-add-carrinho {
+    background-color: var(--text-main);
+    color: #ffffff;
+    padding: 10px 16px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 13px;
+    width: 100%;
+    margin-top: 10px;
+}
+.btn-add-carrinho:hover {
+    background-color: var(--success-hover);
+    box-shadow: 0 4px 12px rgba(0, 245, 212, 0.2);
+    transform: translateY(-2px);
+    transition: var(--transition-smooth);
+}
+
+/* Botões da Tabela Administrativa */
+.btn-excluir {
+    background: #fee2e2;
+    color: var(--danger);
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: var(--transition-smooth);
+}
+.btn-excluir:hover {
+    background: var(--danger);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.btn-editar {
+    background-color: #0b0f19;
+    color: var(--card-bg);
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: var(--transition-smooth);
+}
+.btn-editar:hover {
+    background-color: var(--success-hover);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* Botão de Envio do Formulário do Painel */
+.btn-salvar {
+    width: 100%;
+    background-color: var(--text-main);
+    color: #ffffff;
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    border: none;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: var(--transition-smooth);
+}
+.btn-salvar:hover {
+    background-color: var(--success-hover);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+/* Botão Especial de Retorno do Painel */
+.btn-voltar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    background-color: var(--dark-muted);
+    color: #ffffff;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+.btn-voltar:hover {
+    background-color: var(--dark);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* --- FORMULÁRIOS & INPUTS --- */
+.form-group, .nome, .email, .senha, .admin-group {
     margin-bottom: 20px;
     width: 100%;
 }
 
-.form-group label, .nome label {
+.form-group label, .nome label, .admin-group label {
     display: block;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     margin-bottom: 6px;
     color: var(--dark);
@@ -152,32 +245,60 @@ a {
     letter-spacing: 0.5px;
 }
 
-.form-control, .nome input, .email input, .senha input {
+.form-control, .admin-control {
     width: 100%;
     padding: 12px 16px;
+    margin-top: 6px;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     font-size: 14px;
     background-color: #ffffff;
     color: var(--text-main);
     outline: none;
-    transition: var(--transition);
+    transition: var(--transition-fast);
 }
 
-.form-control:focus, .nome input:focus, .email input:focus, .senha input:focus {
+.form-control:focus, .admin-control:focus {
     border-color: var(--dark);
     box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.06);
 }
 
+/* Área de Drop/Upload de Foto Customizada */
+.file-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed var(--border-color);
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+    background: #ffffff;
+}
+.file-wrapper:hover {
+    border-color: var(--primary-hover);
+    background: #fafafa;
+}
+.file-wrapper .file-icon {
+    font-size: 24px;
+    display: block;
+    margin-bottom: 8px;
+}
+.file-wrapper input[type="file"] {
+    display: none !important;
+}
+
 /* ==========================================================================
-   🔝 HEADER & NAVEGAÇÃO (Efeito Glassmorphism / Borrado)
+   🔝 4. HEADER & NAV (Navegação Inteligente/Glassmorphism)
    ========================================================================== */
-header {
-    background: #0B0B0B;
+header, .admin-header {
+    background: rgba(11, 11, 11, 0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-    padding: 16px 6%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 16px 4%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -187,26 +308,24 @@ header {
     box-shadow: var(--shadow-sm);
 }
 
-header .logo {
+header .logo, .admin-header .logo-admin {
     font-size: 22px;
     font-weight: 900;
     letter-spacing: -1.2px;
     text-transform: uppercase;
-    color: #F2F4F5;
+    color: #f2f4f5;
 }
-
-header .logo span {
-    color: var(--primary-hover);
+header .logo span, .admin-header .logo-admin span {
+    color: var(--primary);
 }
 
 header nav {
     display: flex;
     align-items: center;
+    gap: 24px;
 }
-
 header nav a, header nav button {
-    color: var(--card-bg);
-    margin-left: 28px;
+    color: #ffffff;
     font-weight: 700;
     font-size: 14px;
     background: none;
@@ -215,31 +334,42 @@ header nav a, header nav button {
     position: relative;
     padding: 4px 0;
 }
-
 header nav a::after {
     content: '';
     position: absolute;
     bottom: 0; left: 0; width: 0; height: 2px;
-    background-color: var(--card-bg);
-    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: var(--primary);
+    transition: var(--transition-smooth);
 }
-
 header nav a:hover::after {
     width: 100%;
 }
-
-header nav a:hover, header nav button:hover {
-    color: var(--card-bg);
+header nav a:hover {
+    color: var(--primary);
 }
 
 /* ==========================================================================
-   🏠 CONTAINER PRINCIPAL & LAYOUT (GRID INTERATIVO)
+   🏠 5. CONTAINERS & LAYOUT LAYERS
    ========================================================================== */
-.container {
-    max-width: 1240px;
-    margin: 30px auto;
-    padding: 0 24px;
+.container, .admin-container {
     width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 30px 24px;
+}
+
+/* Layout Principal do Painel Administrador */
+.admin-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+}
+
+/* Grid Layout da Vitrine de Clientes */
+.main-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
 }
 
 /* Hero Banner Minimalista Premium */
@@ -248,59 +378,32 @@ header nav a:hover, header nav button:hover {
     position: relative;
     overflow: hidden;
     color: #ffffff;
-    padding: 70px 40px;
+    padding: clamp(40px, 6vw, 70px) 24px;
     border-radius: var(--radius-lg);
     text-align: center;
     margin-bottom: 40px;
     box-shadow: var(--shadow-md);
-    transition: var(--transition);
+    transition: var(--transition-smooth);
 }
-
-.hero::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%; width: 100%; height: 100%;
-    background: radial-gradient(circle, rgba(0, 245, 212, 0.08) 0%, transparent 60%);
-    pointer-events: none;
-}
-
 .hero h1 {
-    font-size: 46px;
+    font-size: clamp(28px, 4vw, 46px);
     font-weight: 900;
     letter-spacing: -1.5px;
     margin-bottom: 12px;
     line-height: 1.1;
 }
-
 .hero p {
     color: #94a3b8;
-    font-size: 16px;
+    font-size: clamp(14px, 2vw, 16px);
     font-weight: 500;
     max-width: 600px;
     margin: 0 auto;
 }
-
 .hero:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
 }
 
-/* Layout Duas Colunas Adaptável */
-.main-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 32px;
-}
-
-@media (min-width: 992px) {
-    .main-layout {
-        grid-template-columns: 1.35fr 0.65fr;
-    }
-}
-
-/* ==========================================================================
-   🛍️ VITRINE & CARDS DE PRODUTO
-   ========================================================================== */
 .section-title {
     font-size: 22px;
     font-weight: 800;
@@ -309,100 +412,133 @@ header nav a:hover, header nav button:hover {
     text-transform: uppercase;
 }
 
-.grid-produtos {
+/* Estilo Base dos Painéis (Cards) */
+.admin-card {
+    background: var(--card-bg);
+    padding: clamp(20px, 4vw, 32px);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    height: fit-content;
+}
+.admin-card h2 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+    color: var(--dark);
+    margin-bottom: 4px;
+}
+.admin-card .subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+/* ==========================================================================
+   🛍️ 6. VITRINES & CARDS DE PRODUTOS
+   ========================================================================== */
+.grid-produtos, #lista-produtos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 24px;
 }
 
-.product-card {
+.product-card, .produto-card {
     background: var(--card-bg);
     border-radius: var(--radius-md);
-    padding: 16px;
+    padding: 20px;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
-    transition: var(--transition);
+    position: relative;
+    transition: var(--transition-smooth);
 }
-
-.product-card:hover {
+.product-card:hover, .produto-card:hover {
     transform: translateY(-6px);
-    box-shadow: var(--shadow-lg);
-    border-color: #cbd5e1;
+    box-shadow: 0 12px 24px -10px rgba(15, 23, 42, 0.15);
+    border-color: var(--primary-hover);
 }
 
-.product-card img {
+/* Região de Imagem do Card */
+.produto-imagem-wrapper {
     width: 100%;
-    height: 240px;
-    object-fit: cover;
+    height: 220px;
+    overflow: hidden;
+    background-color: #f1f5f9;
     border-radius: var(--radius-sm);
     margin-bottom: 16px;
-    background-color: #f1f5f9;
+}
+.produto-imagem, .product-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-smooth);
+}
+.product-card:hover img, .produto-card:hover .produto-imagem {
+    transform: scale(0.98);
 }
 
-.product-card h3 {
+/* Informações internas do produto */
+.produto-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.produto-titulo, .product-card h3 {
     font-size: 16px;
     font-weight: 700;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
+    margin-top: 10px;
     color: var(--text-main);
-    letter-spacing: -0.3px;
+    line-height: 1.3;
 }
-
-.product-card .preco {
+.produto-preco, .product-card .preco {
     font-size: 20px;
     font-weight: 800;
     color: var(--dark);
     margin-bottom: 16px;
 }
-.btn-add-carrinho {
-    background-color: var(--text-main);
-    color: #ffffff;
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
+
+/* Seletores internos dos Cards */
+.produto-opcoes {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.produto-label {
+    font-size: 13px;
     font-weight: 700;
-    cursor: pointer;
-    transition: var(--transition);
-    justify-content: center;
-    width: 100%;
-    padding: 12px;
-    margin-top: 10px;
+    color: var(--text-muted);
 }
-.btn-add-carrinho:hover {
-    background-color: var(--success-hover);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-    transition: all 0.3s ease-in;
-    transform: translateY(-2px);
+.produto-select {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 14px;
 }
+
 /* ==========================================================================
-   🛒 COMPONENTE DE CARRINHO / CHECKOUT (Premium UI Reformulado)
+   🛒 7. SISTEMA DE CARRINHO / CHECKOUT
    ========================================================================== */
 .carrinho-principal-wrapper {
     display: grid;
     grid-template-columns: 1fr;
     gap: 32px;
-    margin-top: 20px;
-}
-
-@media (min-width: 992px) {
-    .carrinho-principal-wrapper {
-        grid-template-columns: 1.35fr 0.65fr;
-    }
 }
 
 .box-sidebar {
     background: var(--card-bg);
-    padding: 32px;
-    border-radius: var(--radius-lg); 
+    padding: clamp(20px, 4vw, 32px);
+    border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     border: 1px solid var(--border-color);
     height: fit-content;
-    transition: var(--transition);
 }
-
 .box-sidebar h3 {
     font-size: 18px;
     font-weight: 900;
@@ -410,23 +546,19 @@ header nav a:hover, header nav button:hover {
     border-bottom: 2px solid var(--dark);
     padding-bottom: 14px;
     text-transform: uppercase;
-    letter-spacing: -0.3px;
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-/* Items do Carrinho */
+/* Itens de listagem do Carrinho */
 .item-carrinho {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    gap: 12px;
     padding: 20px 0;
     border-bottom: 1px solid var(--border-color);
-    gap: 16px;
-    transition: var(--transition);
 }
-
 .item-carrinho:last-of-type {
     border-bottom: none;
 }
@@ -435,95 +567,45 @@ header nav a:hover, header nav button:hover {
     font-size: 15px;
     font-weight: 800;
     color: var(--dark);
-    letter-spacing: -0.3px;
-    margin: 0;
 }
-
 .item-carrinho p {
     font-size: 12px;
     color: var(--text-muted);
-    margin-top: 4px;
     font-weight: 600;
     background: #f1f5f9;
-    padding: 2px 8px;
+    padding: 4px 10px;
     border-radius: 4px;
     display: inline-block;
+    width: fit-content;
 }
 
+.item-carrinho-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
 .item-carrinho-preco-block {
     text-align: right;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
 }
-
 .item-carrinho-preco-block b {
     font-size: 16px;
     font-weight: 900;
-    color: var(--dark);
 }
 
-.item-carrinho .btn-remover {
-    background: none;
-    border: none;
-    color: #ef4444;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    padding: 2px 0;
-    width: fit-content;
-    margin-left: auto;
-    opacity: 0.8;
-    transition: var(--transition);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.item-carrinho{
-    opacity: 1;
-    transform: translateY(-1px);
-    text-decoration: underline;
-}
-.btn-remover:hover {
-    opacity: 1;
-    color: #fafdff;
-    transform: translateY(-4px);
-    background: #dc2626;
-    border: 1px transparent solid;
-    border-radius: 10px;
-    padding: 10px;
-    inline-size: none;
-}
-.carrinho-vazio-box {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--text-muted);
-}
-
-.carrinho-vazio-icon {
-    font-size: 40px;
-    margin-bottom: 12px;
-    display: block;
-}
-
-/* Inline Shipping/Freight Container */
+/* Elemento de Frete Inline */
 .frete-container-inline {
     display: flex;
     gap: 12px;
     margin-top: 15px;
+    align-items: flex-end;
 }
-
-.frete-container-inline .form-control {
-    flex: 1;
-}
-
 .frete-container-inline .btn {
     width: auto;
-    padding-left: 20px;
-    padding-right: 20px;
+    white-space: nowrap;
 }
 
-/* Bloco Final de Totais */
+/* Caixa com dados Finais de Totais */
 .total-box {
     margin-top: 30px;
     background: #f8fafc;
@@ -531,7 +613,6 @@ header nav a:hover, header nav button:hover {
     border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
 }
-
 .resumo-linha {
     display: flex;
     justify-content: space-between;
@@ -540,23 +621,18 @@ header nav a:hover, header nav button:hover {
     font-weight: 600;
     color: var(--text-muted);
 }
-
 .resumo-linha span:last-child {
     color: var(--dark);
     font-weight: 700;
 }
-
 .resumo-linha.total-geral {
     border-top: 2px dashed #cbd5e1;
     padding-top: 16px;
     margin-bottom: 0;
     font-size: 16px;
     font-weight: 800;
-    color: var(--dark);
 }
-
 .resumo-linha.total-geral span:last-child {
-    color: var(--dark);
     font-size: 22px;
 }
 
@@ -571,206 +647,172 @@ header nav a:hover, header nav button:hover {
     display: inline-block;
 }
 
-/* ==========================================================================
-   🔑 TELAS DE AUTENTICAÇÃO ISOLADAS (LOGIN, REGISTRO)
-   ========================================================================== */
-.auth-container {
-    max-width: 400px;
-    margin: 60px auto;
-    background: var(--card-bg);
-    padding: 36px;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-    border: 1px solid var(--border-color);
+/* Seletor Avançado de Blocos de Tamanho */
+.tamanhos-container {
+    margin-block: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.tamanhos-grid, .tamanho-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
-.auth-container h2 {
+/* Oculta perfeitamente os inputs nativos (radio e checkbox) em todas as variações */
+.checkbox-tamanho-label input[type="radio"], 
+.checkbox-tamanho-label input[type="checkbox"], 
+.tamanho-selector input[type="checkbox"],
+.tamanho-selector input[type="radio"] {
+    display: none !important;
+}
+
+.checkbox-tamanho-label span, .tamanho-selector label span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 8px;
+    margin-top: 10px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-main);
+    background: #ffffff;
+    transition: var(--transition-fast);
+    user-select: none;
+}
+.checkbox-tamanho-label:hover span, .tamanho-selector label:hover span {
+    border-color: var(--text-muted);
+}
+
+/* Estados Selecionados/Ativos */
+.checkbox-tamanho-label input:checked + span,
+.tamanho-selector label input:checked + span {
+    border-color: var(--success-hover);
+    background-color: var(--success-hover);
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+}
+
+/* ==========================================================================
+   🔑 8. TELAS DE AUTENTICAÇÃO ISOLADAS (Login & Cadastro)
+   ========================================================================== */
+.auth-container, .auth-login {
+    width: 100%;
+    max-width: 480px;
+    margin: 60px auto;
+    background: var(--card-bg);
+    padding: clamp(24px, 5vw, 40px);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    transition: var(--transition-smooth);
+}
+.auth-container h2, .auth-login h2 {
     font-size: 24px;
     font-weight: 800;
     text-align: center;
     margin-bottom: 24px;
     letter-spacing: -0.8px;
 }
-
-.auth-container p {
+.auth-container p, .auth-login p {
     text-align: center;
     margin-top: 20px;
     font-size: 13px;
     color: var(--text-muted);
 }
-
-.auth-container p a {
+.auth-container p a, .auth-login p a {
     color: var(--dark);
     font-weight: 700;
     text-decoration: underline;
 }
-.form-group{
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+.auth-container:hover, .auth-login:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15);
 }
 
 /* ==========================================================================
-   🔍 ESTRUTURA PARA DETALHES DO PRODUTO (PÁGINA INTERNA)
+   💻 9. INTERFACE DO PAINEL ADMINISTRATIVO (TABELAS & DADOS)
    ========================================================================== */
-.produto-detalhe-wrapper {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 40px;
-    margin-top: 20px;
-}
 
-@media (min-width: 768px) {
-    .produto-detalhe-wrapper {
-        grid-template-columns: 1.1fr 0.9fr;
-    }
-}
-
-.produto-detalhe-imagem img {
-    width: 100%;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-}
-
-.produto-detalhe-info h1 {
-    font-size: 32px;
-    font-weight: 800;
-    margin-bottom: 12px;
-}
-
-.produto-detalhe-info .preco-grande {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--dark);
-    margin-bottom: 20px;
-}
-
-.produto-detalhe-info p {
-    color: var(--text-muted);
-    margin-bottom: 24px;
-}
-
-/* ==========================================================================
-   💻 PAINEL DE ADMINISTRAÇÃO (MODERNIZADO)
-   ========================================================================== */
-.admin-container {
-    max-width: 1100px;
-    margin: 40px auto;
-    padding: 0 20px;
-}
-
-.admin-header {
-    margin-bottom: 40px;
-}
-
-.admin-header h1 {
-    font-size: 2.2rem;
-    font-weight: 800;
-    letter-spacing: -1px;
-    color: var(--dark);
-}
-
-.admin-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 24px;
-}
-
-@media (min-width: 1024px) {
-    .admin-grid {
-        grid-template-columns: 350px 1fr;
-    }
-}
-
-.admin-card {
-    background: #ffffff;
-    padding: 28px;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition);
-}
-
-.admin-card:hover {
-    box-shadow: var(--shadow-md);
-}
-
-/* Tabela com visual Clean/Premium */
-.admin-table-container {
+/* Container de tabelas com scroll responsivo impedindo quebras */
+.table-responsive {
     background: #ffffff;
     border-radius: var(--radius-lg);
     border: 1px solid var(--border-color);
-    overflow: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .modern-table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
+    white-space: nowrap; /* Evita achatamento de textos em telas mobile */
 }
-
-.modern-table thead {
-    background: #f8fafc;
-}
-
 .modern-table th {
+    background: #f8fafc;
     padding: 16px 20px;
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     color: var(--text-muted);
     letter-spacing: 0.8px;
+    text-align: left;
 }
-
 .modern-table td {
-    padding: 20px;
+    padding: 16px 20px;
     border-top: 1px solid var(--border-color);
     font-size: 14px;
     color: var(--dark);
+    vertical-align: middle;
 }
 
-/* Badge de Preço/Ação */
-.badge-preco {
-    font-weight: 800;
+/* Estilizações específicas da linha de produtos */
+.nome-produto {
+    font-weight: 700;
     color: var(--dark);
-    font-family: 'monospace';
 }
-
-/* Estilo para imagem do produto na tabela */
+.preco-produto, .badge-preco {
+    font-weight: 800;
+    font-family: monospace;
+}
+.tamanhos-produto {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
 .img-preview {
-    width: 55px;
-    height: 55px;
+    width: 50px;
+    height: 50px;
     object-fit: cover;
     border-radius: var(--radius-sm);
     box-shadow: var(--shadow-sm);
 }
 
-/* Botão de Excluir Minimalista */
-.btn-delete {
-    background: #fee2e2;
-    color: #ef4444;
-    padding: 8px 12px;
-    border-radius: var(--radius-sm);
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 12px;
-    transition: var(--transition);
+/* Alinhamento refinado para as colunas de Ações */
+.modern-table th:last-child {
+    text-align: right;
 }
-
-.btn-delete:hover {
-    background: #fecaca;
+.modern-table td:last-child {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
 }
 
 /* ==========================================================================
-   🛠️ MODAL LEGACY (COMPATIBILIDADE DE SEGURANÇA)
+   🛠️ 10. DIÁLOGOS MODAIS LEGACY & UTILS
    ========================================================================== */
 .modal {
     display: none;
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(15, 23, 42, 0.4);
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     align-items: center;
@@ -778,13 +820,12 @@ header nav a:hover, header nav button:hover {
     z-index: 1000;
     padding: 20px;
 }
-
 .modal-content {
     background: var(--card-bg);
-    padding: 40px;
-    border-radius: var(--radius-md);
+    padding: clamp(24px, 5vw, 40px);
+    border-radius: var(--radius-lg);
     width: 100%;
-    max-width: 440px;
+    max-width: 460px;
     box-shadow: var(--shadow-lg);
     display: flex;
     flex-direction: column;
@@ -792,483 +833,63 @@ header nav a:hover, header nav button:hover {
 }
 
 /* ==========================================================================
-   📱 ADAPTAÇÕES ADICIONAIS DISPOSITIVOS MÓVEIS (MOBILE)
+   📱 11. MEDIA QUERIES (Responsividade de Alta Precisão)
    ========================================================================== */
-@media (max-width: 768px) {
-    header {
-        padding: 16px 4%;
+
+/* --- TABLETS (Min: 768px) --- */
+@media (min-width: 768px) {
+    header, .admin-header {
+        padding-inline: 6%;
+    }
+    
+    .item-carrinho {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .produto-detalhe-wrapper {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 40px;
+        margin-top: 20px;
+    }
+}
+
+/* --- NOTEBOOKS & DESKTOPS (Min: 992px) --- */
+@media (min-width: 992px) {
+    .main-layout, .carrinho-principal-wrapper {
+        grid-template-columns: 1.35fr 0.65fr;
+        align-items: start;
+    }
+    
+    /* Organiza o painel admin em duas colunas elegantes */
+    .admin-container {
+        grid-template-columns: 380px 1fr;
+        align-items: start;
+    }
+}
+
+/* --- DISPOSITIVOS ULTRA MÓVEIS (Max: 480px) --- */
+@media (max-width: 480px) {
+    header, .admin-header {
         flex-direction: column;
-        gap: 14px;
+        gap: 16px;
+        text-align: center;
     }
     header nav {
-        width: 100%;
+        flex-wrap: wrap;
         justify-content: center;
+        gap: 16px;
     }
-    header nav a, header nav button {
-        margin: 0 10px;
-        font-size: 13px;
+    .btn-voltar {
+        width: 100%;
     }
-    .hero {
-        padding: 44px 20px;
-        margin-bottom: 24px;
+    .frete-container-inline {
+        flex-direction: column;
+        align-items: stretch;
     }
-    .hero h1 {
-        font-size: 28px;
+    .frete-container-inline .btn {
+        width: 100%;
     }
-}
-.admin-body {
-    background-color: #f1f5f9;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--dark);
-    margin: 0;
-}
-
-.admin-header {
-    background: #fff;
-    padding: 1.5rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border);
-}
-
-.admin-container {
-    max-width: 1000px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-}
-
-.admin-card {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-}
-
-.admin-group {
-    margin-bottom: 1.5rem;
-}
-
-.admin-control {
-    width: 100%;
-    padding: 0.8rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-top: 0.5rem;
-    box-sizing: border-box;
-}
-
-.file-wrapper {
-    display: block;
-    border: 2px dashed var(--border);
-    padding: 2rem;
-    text-align: center;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: 0.3s;
-}
-
-.file-wrapper:hover {
-    border-color: var(--primary);
-}
-
-.file-wrapper input { display: none; }
-
-.btn-salvar {
-    background: var(--dark);
-    color: var(--light);
-    border: none;
-    padding: 1rem 2rem;
-    border-radius: 8px;
-    width: 100%;
-    font-weight: bold;
-    cursor: pointer;
-}
-.btn-salvar:hover {
-    background: var(--success-hover);
-    color: #fff;
-    transition: all 0.3s ease-in-out;
-}
-.modern-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-}
-
-.modern-table th, .modern-table td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-}
-.tamanho-selector { 
-    display: flex; 
-    gap: 10px; 
-    flex-wrap: wrap; 
-    margin-top: 10px; 
-}
-.tamanho-selector label { 
-    position: relative; 
-}
-.tamanho-selector input { 
-    display: none; 
-}
-.tamanho-selector span { 
-    display: block; 
-    width: 40px; 
-    height: 40px; 
-    border: 1px solid var(--border);
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    cursor: pointer; 
-    border-radius: 4px;
-}
-.tamanho-selector input:checked + span { background: var(--success-hover); 
-    color: white; 
-
-}
-/* Container da Vitrine (Adicione isso no elemento pai que segura os cards, ex: #lista-produtos) */
-#lista-produtos {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 20px;
-}
-
-/* O Card do Produto */
-.produto-card {
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px var(--text-main);
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #eaeaea;
-    padding: 15px;
-}
-
-/* Efeito Hover (Passar o mouse) */
-.produto-card:hover {
-    transform: translateY(-5px);
-    transition: all 0.3s ease-in-out;
-    box-shadow: 0 8px 15px var(--primary-hover);
-}
-
-/* Container da Imagem (Garante proporção e corte perfeito) */
-.produto-imagem-wrapper {
-    width: 100%;
-    height: 220px;
-    overflow: hidden;
-    background-color: #f9f9f9;
-}
-
-.produto-imagem {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Faz a imagem preencher o espaço sem distorcer */
-    transition: transform 0.5s ease;
-}
-
-.produto-card:hover .produto-imagem {
-    transform: scale(1.05); /* Zoom suave na foto ao passar o mouse */
-}
-
-/* Informações do Produto */
-.produto-info {
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1; /* Faz o botão ficar sempre alinhado embaixo */
-}
-
-.produto-titulo {
-    font-size: 1.1rem;
-    color: #333333;
-    margin: 0 0 8px 0;
-    font-weight: 600;
-    /* Limita o texto a 2 linhas se o nome do tênis for gigante */
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.produto-preco {
-    font-size: 1.3rem;
-    color: var(--primary-hover); /* Cor verde moderna para o preço */
-    font-weight: 700;
-    margin: 0 0 15px 0;
-}
-
-/* Seletor de Tamanhos */
-.produto-opcoes {
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100px;
-}
-
-.produto-label {
-    font-size: 0.85rem;
-    color: #7f8c8d;
-    font-weight: 500;
-    width: 100px;
-}
-
-.produto-select {
-    flex-grow: 1;
-    padding: 8px 12px;
-    border: 1px solid #cccccc;
-    border-radius: 6px;
-    background-color: #ffffff;
-    color: #333333;
-    font-size: 0.9rem;
-    outline: none;
-    cursor: pointer;
-    transition: border-color 0.2s;
-    width: 100px;
-}
-
-.produto-select:focus {
-    border-color: #3498db;
-}
-
-/* Botão de Compra */
-.btn-produto {
-    width: 100%;
-    padding: 12px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    margin-top: auto; /* Empurra o botão para o fim do card */
-}
-
-/* Caso queira estilizar o btn-primary padrão do seu app se ele já não existir */
-.btn-primary {
-    background-color: var(--dark);
-    color: #ffffff;
-    padding: 10px;
-    margin-top: 10px;
-}
-
-.btn-primary:hover {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: var(--primary-hover);
-}
-select{
-    width: 100%;
-    padding: 8px 12px;
-    margin-top: 10px;
-    border:  transparent ;
-    border-radius: 10px;
-    background-color: #ffffff;
-    color: #333333;
-    font-size: 1.1rem;
-    outline: none;
-    cursor: pointer;
-    transition: border-color 0.2s;
-}
-/* Container dos tamanhos */
-.tamanhos-container {
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.tamanhos-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-/* Esconde o círculo padrão do input radio */
-.checkbox-tamanho-label input[type="radio"] {
-    display: none;
-}
-
-/* Estiliza o quadradinho/botão de tamanho */
-.checkbox-tamanho-label span {
-    display: inline-block;
-    min-width: 38px;
-    height: 38px;
-    padding: 0 6px;
-    line-height: 36px;
-    text-align: center;
-    border: 2px solid #e0e0e0;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #444;
-    transition: all 0.2s ease;
-    user-select: none;
-}
-
-/* Efeito ao passar o mouse */
-.checkbox-tamanho-label:hover span {
-    border-color: #999;
-    background-color: #fafdff;
-}
-
-/* Estilo mágico: Quando o input escondido for selecionado, altera o design do span ao lado dele */
-.checkbox-tamanho-label input[type="radio"]:checked + span {
-    border-color: #2980b9;
-    background-color: var(--success-hover);
-    color: #ffffff;
-    box-shadow: 0 2px 5px rgba(41, 128, 185, 0.3);
-}
-input{
-    width: 100%;
-    padding: 12px 16px; 
-    margin-top: 10px;
-    border: 1px solid #E2E8F0;
-    border-radius: 10px;
-    background-color: #F4F4F6;
-    color: #333333;
-    font-size: 1.1rem;
-    outline: none;
-    cursor: pointer;
-    transition: border-color 0.2s;
-}
-input:focus {
-    border-color: #7FFFD4;
-    transition: border-color 1s;
-}
-input[type="submit"] {
-    background-color: var(--dark);
-    color: #ffffff;
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-.btn-entrar {
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease-in-out;
-    display: inline-flex;
-    text-align: center;
-    letter-spacing: -0.2px;
-    width: 100%;
-    padding: 12px 24px;
-    font-size: 14px;
-    height: 40px;
-    background-color: #3cc2bf;
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s ease, transform 0.2s ease
-
-}
-.btn-entrar:hover {
-    background-color: #2da19f;
-    color: #fff;
-    transition: all 0.5s ease-in-out;
-    transform: translateY(-1px);
-}
-.auth-login{
-    max-width: 600px;
-    margin: 60px auto;
-    background: #FFFFFF;
-    padding: 36px;
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-    border: 1px solid var(--border-color);
-}
-.auth-login h2 {
-    font-size: 24px;
-    font-weight: 800;
-    text-align: center;
-    margin-bottom: 24px;
-    letter-spacing: -0.8px;
-}
-.auth-login p {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 13px;
-    color: var(--text-muted);
-}
-.auth-login p a {
-    color: var(--dark);
-    font-weight: 700;
-    text-decoration: underline;
-}
-.auth-login .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-.auth-login:hover {
-    transition: all 0.3s ease-in-out;
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-
-}
-/* ==========================================================================
-   🛒 COMPLEMENTOS DA PÁGINA DE CARRINHO (ADICIONAR AO FIM DO CSS)
-   ========================================================================== */
-.carrinho-vazio {
-    display: none; 
-    text-align: center; 
-    padding: 20px; 
-    color: var(--text-muted);
-}
-
-.frete-calculo-container {
-    margin-top: 24px; 
-    border-top: 1px solid var(--border-color); 
-    padding-top: 20px;
-}
-
-.frete-label {
-    font-size: 11px; 
-    font-weight: 700; 
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--dark);
-    display: block;
-    margin-bottom: 8px;
-}
-
-.select-frete-largura {
-    max-width: 120px;
-}
-
-.info-frete-dinamico {
-    display: none;
-}
-
-/* Alinhamento dos itens internos do Template do Carrinho */
-.item-carrinho-flex {
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;
-}
-
-.item-carrinho-detalhes-texto {
-    color: var(--text-muted);
-    font-size: 13px;
-}
-
-.item-carrinho-acoes-qtd {
-    display: flex; 
-    align-items: center; 
-    gap: 10px;
-}
-
-.btn-controle-qtd {
-    cursor: pointer; 
-    padding: 2px 8px;
 }
