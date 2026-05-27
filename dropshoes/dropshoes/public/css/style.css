@@ -5,9 +5,15 @@
     /* Paleta de Cores (Estética Hype/Sneakerhead) */
     --primary: #00f5d4;           /* Turquesa Mint Elétrico */
     --primary-hover: #00d2b4;     /* Variação de clique/interação */
+<<<<<<< HEAD:dropshoes/dropshoes/public/css/style.css
+    --dark: #0f172a;              /* Azul Escuro Slate (Base Tipográfica Principal) */
+    --dark-muted: #1e293b;        /* Superfícies secundárias ou escuras */
+    --light: #f8fafc;             /* Fundo geral limpo, confortável e minimalista */
+=======
     --dark: #0f172a;              /* Azul Escuro Slate Principal */
     --dark-muted: #1e293b;        /* Superfícies secundárias escuras */
     --light: #f8fafc;             /* Fundo geral ultra-limpo */
+>>>>>>> 8a889b00900628fe00a8cb1b86fee4c48afbab4f:public/css/style.css
     --card-bg: #ffffff;           /* Fundo de cards puros */
     --text-main: #0f172a;         /* Texto de leitura padrão */
     --text-muted: #64748b;        /* Subtítulos e dados secundários */
@@ -110,6 +116,11 @@ a {
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
 }
 
+<<<<<<< HEAD:dropshoes/dropshoes/public/css/style.css
+/* Inputs e Elementos de Formulário */
+.form-group {
+    margin-bottom: 20px;
+=======
 .btn-cadastro {
     background-color: transparent;
     border: 2px solid var(--dark);
@@ -141,6 +152,7 @@ a {
     border-radius: var(--radius-sm);
     font-weight: 700;
     font-size: 13px;
+>>>>>>> 8a889b00900628fe00a8cb1b86fee4c48afbab4f:public/css/style.css
     width: 100%;
     margin-top: 10px;
 }
@@ -151,6 +163,10 @@ a {
     transition: var(--transition-smooth);
 }
 
+<<<<<<< HEAD:dropshoes/dropshoes/public/css/style.css
+.form-group label {
+    display: block;
+=======
 /* Botões da Tabela Administrativa */
 .btn-excluir {
     background: #fee2e2;
@@ -216,6 +232,7 @@ a {
     align-items: center;
     justify-content: center;
     padding: 10px 20px;
+>>>>>>> 8a889b00900628fe00a8cb1b86fee4c48afbab4f:public/css/style.css
     font-size: 13px;
     font-weight: 700;
     border-radius: var(--radius-sm);
@@ -291,7 +308,11 @@ a {
     letter-spacing: 0.5px;
 }
 
+<<<<<<< HEAD:dropshoes/dropshoes/public/css/style.css
+.form-control {
+=======
 .form-control, .admin-control {
+>>>>>>> 8a889b00900628fe00a8cb1b86fee4c48afbab4f:public/css/style.css
     width: 100%;
     padding: 12px 16px;
     margin-top: 6px;
@@ -304,6 +325,11 @@ a {
     transition: var(--transition-fast);
 }
 
+<<<<<<< HEAD:dropshoes/dropshoes/public/css/style.css
+.form-control:focus {
+    border-color: var(--dark);
+    box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.06);
+=======
 .form-control:focus, .admin-control:focus {
     border-color: var(--primary-hover);
     box-shadow: 0 0 0 4px #10b98133; /* Anel de foco verde suave */
@@ -335,13 +361,19 @@ a {
 }
 .file-wrapper input[type="file"] {
     display: none !important;
+>>>>>>> 8a889b00900628fe00a8cb1b86fee4c48afbab4f:public/css/style.css
 }
 
 /* ==========================================================================
    🔝 4. HEADER & NAV (Navegação Inteligente/Glassmorphism)
    ========================================================================== */
+<<<<<<< HEAD:dropshoes/dropshoes/public/css/style.css
+header {
+    background: rgba(255, 255, 255, 0.85);
+=======
 header, .admin-header {
     background: rgba(11, 11, 11, 0.95);
+>>>>>>> 8a889b00900628fe00a8cb1b86fee4c48afbab4f:public/css/style.css
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -360,7 +392,11 @@ header .logo, .admin-header .logo-admin {
     font-weight: 900;
     letter-spacing: -1.2px;
     text-transform: uppercase;
+<<<<<<< HEAD:dropshoes/dropshoes/public/css/style.css
+    color: var(--dark);
+=======
     color: #f2f4f5;
+>>>>>>> 8a889b00900628fe00a8cb1b86fee4c48afbab4f:public/css/style.css
 }
 header .logo span, .admin-header .logo-admin span {
     color: var(--primary);
@@ -372,7 +408,12 @@ header nav {
     gap: 24px;
 }
 header nav a, header nav button {
+<<<<<<< HEAD:dropshoes/dropshoes/public/css/style.css
+    color: var(--text-main);
+    margin-left: 28px;
+=======
     color: #ffffff;
+>>>>>>> 8a889b00900628fe00a8cb1b86fee4c48afbab4f:public/css/style.css
     font-weight: 700;
     font-size: 14px;
     background: none;
@@ -385,14 +426,25 @@ header nav a::after {
     content: '';
     position: absolute;
     bottom: 0; left: 0; width: 0; height: 2px;
+<<<<<<< HEAD:dropshoes/dropshoes/public/css/style.css
+    background-color: var(--dark);
+    transition: var(--transition);
+=======
     background-color: var(--primary);
     transition: var(--transition-smooth);
+>>>>>>> 8a889b00900628fe00a8cb1b86fee4c48afbab4f:public/css/style.css
 }
 header nav a:hover::after {
     width: 100%;
 }
+<<<<<<< HEAD:dropshoes/dropshoes/public/css/style.css
+
+header nav a:hover, header nav button:hover {
+    color: var(--dark);
+=======
 header nav a:hover {
     color: var(--primary);
+>>>>>>> 8a889b00900628fe00a8cb1b86fee4c48afbab4f:public/css/style.css
 }
 
 /* ==========================================================================
@@ -640,7 +692,45 @@ header nav a:hover {
     font-weight: 900;
 }
 
+<<<<<<< HEAD:dropshoes/dropshoes/public/css/style.css
+.item-carrinho .btn-remover {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 2px 0;
+    width: fit-content;
+    margin-left: auto;
+    opacity: 0.8;
+    transition: var(--transition);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.item-carrinho .btn-remover:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+    text-decoration: underline;
+}
+
+.carrinho-vazio-box {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+}
+
+.carrinho-vazio-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+/* Inline Shipping/Freight Container */
+=======
 /* Elemento de Frete Inline */
+>>>>>>> 8a889b00900628fe00a8cb1b86fee4c48afbab4f:public/css/style.css
 .frete-container-inline {
     display: flex;
     gap: 12px;
@@ -778,6 +868,8 @@ header nav a:hover {
     font-weight: 700;
     text-decoration: underline;
 }
+<<<<<<< HEAD:dropshoes/dropshoes/public/css/style.css
+=======
 .auth-container:hover, .auth-login:hover {
     transform: translateY(-4px);
     box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15);
@@ -789,13 +881,97 @@ header nav a:hover {
     border: none;
     border-radius: var(--radius-sm);
 }
+>>>>>>> 8a889b00900628fe00a8cb1b86fee4c48afbab4f:public/css/style.css
 
 /* ==========================================================================
    💻 9. INTERFACE DO PAINEL ADMINISTRATIVO (TABELAS & DADOS)
    ========================================================================== */
 
+<<<<<<< HEAD:dropshoes/dropshoes/public/css/style.css
+@media (min-width: 768px) {
+    .produto-detalhe-wrapper {
+        grid-template-columns: 1.1fr 0.9fr;
+    }
+}
+
+.produto-detalhe-imagem img {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.produto-detalhe-info h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.produto-detalhe-info .preco-grande {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 20px;
+}
+
+.produto-detalhe-info p {
+    color: var(--text-muted);
+    margin-bottom: 24px;
+}
+
+/* ==========================================================================
+   💻 PAINEL DE ADMINISTRAÇÃO (RESPONSIVO E INTEGRADO)
+   ========================================================================== */
+/* ==========================================================================
+   💻 PAINEL DE ADMINISTRAÇÃO (MODERNIZADO)
+   ========================================================================== */
+.admin-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.admin-header {
+    margin-bottom: 40px;
+}
+
+.admin-header h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--dark);
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+
+@media (min-width: 1024px) {
+    .admin-grid {
+        grid-template-columns: 350px 1fr;
+    }
+}
+
+.admin-card {
+    background: #ffffff;
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.admin-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+/* Tabela com visual Clean/Premium */
+.admin-table-container {
+=======
 /* Container de tabelas com scroll responsivo impedindo quebras */
 .table-responsive {
+>>>>>>> 8a889b00900628fe00a8cb1b86fee4c48afbab4f:public/css/style.css
     background: #ffffff;
     border-radius: var(--radius-lg);
     border: 1px solid var(--border-color);
