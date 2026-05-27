@@ -1,399 +1,195 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const path = require('path');
+const fs = require('fs'); // Módulo para ler e salvar arquivos locais
+require('dotenv').config(); // Carrega o .env antes de tudo
+
+// Inicializa o Stripe com uma proteção caso a chave não exista no .env
+const stripeKey = process.env.STRIPE_SECRET_KEY || 'sk_test_mock_key_se_nao_existir_env';
+const stripe = require('stripe')(stripeKey);
+
+const { google } = require('googleapis');
 const multer = require('multer');
-const fs = require('fs');
-const { MercadoPagoConfig, Preference } = require('mercadopago');
-require('dotenv').config();
+const path = require('path');
+const cors = require('cors');
 
 const app = express();
-
-// ==========================================================================
-// 📂 UPLOADS
-// ==========================================================================
-const uploadDir = path.join(__dirname, 'public/uploads');
-
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}${path.extname(file.originalname)}`);
-    }
-});
-
-const upload = multer({ storage });
-
-// ==========================================================================
-// 🌍 MIDDLEWARES
-// ==========================================================================
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(express.static('public'));
+app.use('/uploads', express.static('uploads'));
 
-app.use(express.static(path.join(__dirname, 'public')));
-
-// ==========================================================================
-// 💳 MERCADO PAGO
-// ==========================================================================
-const mpClient = new MercadoPagoConfig({
-    accessToken: process.env.MP_ACCESS_TOKEN
-});
-
-// ==========================================================================
-// 📦 MODELOS
-// ==========================================================================
-const User = mongoose.model('User', new mongoose.Schema({
-    nome: String,
-    email: { type: String, unique: true },
-    senha: String,
-    role: {
-        type: String,
-        default: 'cliente'
+// Configuração do Multer para Upload de Fotos dos Tênis
+const storage = multer.diskStorage({
+    destination: './uploads/',
+    filename: (req, file, cb) => {
+        cb(null, 'tenis-' + Date.now() + path.extname(file.originalname));
     }
-}));
+});
+const upload = multer({ storage: storage });
 
-const Produto = mongoose.model('Produto', new mongoose.Schema({
-    nome: String,
-    preco: Number,
-    tamanhos: [String],
-    foto: String
-}));
-
-// ==========================================================================
-// 👑 ADMIN PADRÃO
-// ==========================================================================
-async function criarAdminPadrao() {
+// 📁 BANCO DE DADOS EM ARQUIVO LOCAL (Evita que os produtos sumam ao reiniciar)
+let produtos = [];
+if (fs.existsSync('produtos.json')) {
     try {
-        const adminExiste = await User.findOne({
-            email: 'admin@dropshoes.com'
-        });
-
-        if (!adminExiste) {
-            await User.create({
-                nome: 'Administrador',
-                email: 'admin@dropshoes.com',
-                senha: '123456',
-                role: 'admin'
-            });
-
-            console.log('✅ Admin padrão criado');
-        }
-
+        produtos = JSON.parse(fs.readFileSync('produtos.json', 'utf-8'));
     } catch (err) {
-        console.error(err);
+        console.error("Erro ao ler o arquivo produtos.json, iniciando lista vazia.", err);
+        produtos = [];
     }
 }
 
-// ==========================================================================
-// 📝 REGISTRO
-// ==========================================================================
-app.post('/api/registro', async (req, res) => {
+let usuarios = [
+    { email: 'admin@dropshoes.com', senha: 'admin123', role: 'admin' },
+    { email: 'cliente@gmail.com', senha: 'user123', role: 'cliente' }
+];
 
+// --- INTEGRAÇÃO GOOGLE SHEETS ---
+async function salvarPedidoNoSheets(pedido) {
     try {
+        const auth = new google.auth.GoogleAuth({
+            keyFile: 'credentials.json',
+            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+        });
+        
+        const client = await auth.getClient();
+        const googleSheets = google.sheets({ version: 'v4', auth: client });
+        const spreadsheetId = process.env.GOOGLE_SHEETS_ID;
 
-        const { nome, email, senha } = req.body;
-
-        if (!nome || !email || !senha) {
-            return res.status(400).json({
-                erro: 'Todos os campos são obrigatórios.'
-            });
+        if (!spreadsheetId) {
+            console.log('⚠️ GOOGLE_SHEETS_ID não configurado no arquivo .env');
+            return;
         }
 
-        const emailFormatado = email.toLowerCase().trim();
-
-        const existe = await User.findOne({
-            email: emailFormatado
+        await googleSheets.spreadsheets.values.append({
+            auth: client,
+            spreadsheetId,
+            range: 'Engenharia de Pedidos!A:E',
+            valueInputOption: 'USER_ENTERED',
+            resource: {
+                values: [[pedido.id, pedido.cliente, pedido.produto, pedido.total, 'Pago']],
+            },
         });
+        console.log('🚀 Pedido salvo no Google Sheets com sucesso!');
+    } catch (error) {
+        console.error('Erro ao salvar no Google Sheets:', error);
+    }
+}
 
-        if (existe) {
-            return res.status(400).json({
-                erro: 'Email já cadastrado.'
-            });
-        }
+// --- ROTAS DE AUTENTICAÇÃO ---
+app.post('/api/login', (req, res) => {
+    const { email, senha } = req.body;
 
-        const novoUsuario = new User({
-            nome,
-            email: emailFormatado,
-            senha,
-            role: 'cliente'
-        });
+    console.log("Tentativa de login recebida no servidor:");
+    console.log(`E-mail digitado: ->${email}<-`);
+    console.log(`Senha digitada:  ->${senha}<-`);
 
-        await novoUsuario.save();
+    const usuarioEncontrado = usuarios.find(u => u.email === email && u.senha === senha);
 
-        res.status(201).json({
-            mensagem: 'Usuário criado com sucesso.'
-        });
-
-    } catch (err) {
-
-        console.error(err);
-
-        res.status(500).json({
-            erro: 'Erro ao cadastrar usuário.'
-        });
+    if (usuarioEncontrado) {
+        console.log(`✅ Login aceito para: ${email} (${usuarioEncontrado.role})`);
+        res.json({ email: usuarioEncontrado.email, role: usuarioEncontrado.role });
+    } else {
+        console.log(`❌ Login recusado: Dados não batem com nenhum usuário.`);
+        res.status(401).json({ erro: 'Usuário ou senha inválidos.' });
     }
 });
 
-// ==========================================================================
-// 🔐 LOGIN
-// ==========================================================================
-app.post('/api/login', async (req, res) => {
-
+// --- ROTAS DO ADMIN (PRODUTOS) ---
+app.post('/api/produtos', upload.single('foto'), (req, res) => {
     try {
-
-        const { email, senha } = req.body;
-
-        if (!email || !senha) {
-            return res.status(400).json({
-                erro: 'Email e senha obrigatórios.'
-            });
-        }
-
-        const usuario = await User.findOne({
-            email: email.toLowerCase().trim()
-        });
-
-        if (!usuario) {
-            return res.status(401).json({
-                erro: 'Usuário não encontrado.'
-            });
-        }
-
-        if (usuario.senha !== senha.trim()) {
-            return res.status(401).json({
-                erro: 'Senha incorreta.'
-            });
-        }
-
-        return res.json({
-            _id: usuario._id,
-            nome: usuario.nome,
-            email: usuario.email,
-            role: usuario.role
-        });
-
-    } catch (err) {
-
-        console.error(err);
-
-        res.status(500).json({
-            erro: 'Erro no login.'
-        });
-    }
-});
-
-// ==========================================================================
-// 📦 PRODUTOS
-// ==========================================================================
-app.post('/api/produtos', upload.single('foto'), async (req, res) => {
-
-    try {
-
         const { nome, preco, tamanhos } = req.body;
-
-        const foto = req.file
-            ? `/uploads/${req.file.filename}`
-            : '';
-
-        const produto = new Produto({
+        
+        const novoTenis = {
+            id: Date.now(),
             nome,
-            preco: Number(preco),
-            tamanhos: typeof tamanhos === 'string'
-                ? tamanhos.split(',')
-                : [],
-            foto
-        });
-
-        await produto.save();
-
-        res.status(201).json(produto);
-
-    } catch (err) {
-
-        console.error(err);
-
-        res.status(500).json({
-            erro: 'Erro ao cadastrar produto.'
-        });
-    }
-});
-
-app.get('/api/produtos', async (req, res) => {
-
-    try {
-
-        const produtos = await Produto.find().lean();
-
-        res.json(produtos);
-
-    } catch (err) {
-
-        console.error(err);
-
-        res.status(500).json({
-            erro: 'Erro ao buscar produtos.'
-        });
-    }
-});
-
-app.put('/api/produtos/:id', upload.single('foto'), async (req, res) => {
-
-    try {
-
-        const { nome, preco, tamanhos } = req.body;
-
-        const updateData = {
-            nome,
-            preco: Number(preco),
-            tamanhos: typeof tamanhos === 'string'
-                ? tamanhos.split(',')
-                : []
+            preco: parseFloat(preco) || 0,
+            tamanhos: tamanhos ? tamanhos.split(',').map(t => t.trim()) : [], 
+            foto: req.file ? `/uploads/${req.file.filename}` : ''
         };
 
-        if (req.file) {
-            updateData.foto =
-                `/uploads/${req.file.filename}`;
-        }
+        produtos.push(novoTenis);
 
-        const atualizado =
-            await Produto.findByIdAndUpdate(
-                req.params.id,
-                updateData,
-                { new: true }
-            );
+        // Salva as alterações fisicamente no arquivo produtos.json
+        fs.writeFileSync('produtos.json', JSON.stringify(produtos, null, 2));
+        console.log(`👟 Novo produto cadastrado: ${nome}`);
 
-        res.json(atualizado);
-
-    } catch (err) {
-
-        console.error(err);
-
-        res.status(500).json({
-            erro: 'Erro ao atualizar produto.'
-        });
+        res.status(201).json(novoTenis);
+    } catch (error) {
+        console.error("Erro ao cadastrar produto:", error);
+        res.status(500).json({ error: "Erro interno ao cadastrar o produto." });
     }
 });
 
-app.delete('/api/produtos/:id', async (req, res) => {
-
-    try {
-
-        await Produto.findByIdAndDelete(req.params.id);
-
-        res.json({
-            mensagem: 'Produto removido.'
-        });
-
-    } catch (err) {
-
-        console.error(err);
-
-        res.status(500).json({
-            erro: 'Erro ao remover produto.'
-        });
-    }
+app.get('/api/produtos', (req, res) => {
+    res.json(produtos);
 });
 
-// ==========================================================================
-// 💳 CHECKOUT
-// ==========================================================================
-app.post('/api/pagamentos/checkout', async (req, res) => {
+// --- ROTA DE CÁLCULO DE FRETE ---
+app.post('/api/frete', (req, res) => {
+    const { cepDestino, tipoEnvio } = req.body;
+    
+    if (!cepDestino || cepDestino.length < 8) {
+        return res.status(400).json({ error: 'CEP Inválido' });
+    }
+
+    let valorFrete = tipoEnvio === 'sedex' ? 35.00 : 18.50;
+    let prazo = tipoEnvio === 'sedex' ? '2 a 4 dias úteis' : '7 a 12 dias úteis';
+
+    res.json({ valor: valorFrete, prazo: prazo });
+});
+
+// --- ROTA DO STRIPE (CHECKOUT) ---
+app.post('/api/checkout', async (req, res) => {
+    const { itens, frete, clienteEmail } = req.body;
 
     try {
-
-        const { itens, frete } = req.body;
-
         if (!itens || itens.length === 0) {
-            return res.status(400).json({
-                erro: 'Carrinho vazio.'
-            });
+            return res.status(400).json({ error: "O carrinho está vazio." });
         }
 
-        const itemsPreference = itens.map(item => ({
-            id: String(item.id),
-            title: item.nome,
-            quantity: Number(item.qtd),
-            unit_price: Number(item.preco),
-            currency_id: 'BRL'
+        const lineItems = itens.map(item => ({
+            price_data: {
+                currency: 'brl',
+                product_data: { name: `${item.nome} (Tam: ${item.tamanho})` },
+                unit_amount: Math.round(item.preco * 100),
+            },
+            quantity: item.qtd || 1,
         }));
 
+        // Só adiciona a linha de frete se o valor for maior que zero
         if (frete > 0) {
-            itemsPreference.push({
-                id: 'frete',
-                title: 'Frete',
+            lineItems.push({
+                price_data: {
+                    currency: 'brl',
+                    product_data: { name: 'Taxa de Entrega (Florianópolis -> Destino)' },
+                    unit_amount: Math.round(frete * 100),
+                },
                 quantity: 1,
-                unit_price: Number(frete),
-                currency_id: 'BRL'
             });
         }
 
-        const preference = new Preference(mpClient);
-
-        const response = await preference.create({
-            body: {
-                items: itemsPreference,
-                back_urls: {
-                    success: 'https://dropshoes-repd.onrender.com',
-                    failure: 'https://dropshoes-repd.onrender.com/carrinho.html',
-                    pending: 'https://dropshoes-repd.onrender.com/carrinho.html'
-                },
-                auto_return: 'approved'
-            }
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card', 'pix'],
+            line_items: lineItems,
+            mode: 'payment',
+            success_url: 'http://localhost:3000/sucesso.html',
+            cancel_url: 'http://localhost:3000/cancelado.html',
         });
 
-        res.json({
-            init_point: response.init_point
+        // 🔥 CORRIGIDO: Agora calcula levando em conta a quantidade (item.preco * item.qtd)
+        const totalPedido = itens.reduce((acc, i) => acc + (i.preco * (i.qtd || 1)), 0) + (frete || 0);
+
+        await salvarPedidoNoSheets({
+            id: session.id.substring(0, 10),
+            cliente: clienteEmail || 'Cliente Anônimo',
+            produto: itens.map(i => `${i.nome} x${i.qtd || 1}`).join(', '),
+            total: totalPedido.toFixed(2)
         });
 
-    } catch (err) {
-
-        console.error(err);
-
-        res.status(500).json({
-            erro: 'Erro ao gerar checkout.'
-        });
+        res.json({ url: session.url });
+    } catch (error) {
+        console.error("Erro no checkout:", error);
+        res.status(500).json({ error: error.message });
     }
 });
 
-// ==========================================================================
-// 🌍 ROTA CORINGA
-// ==========================================================================
-app.get('*', (req, res) => {
-
-    if (req.path.startsWith('/api')) {
-        return res.status(404).json({
-            erro: 'Rota API não encontrada.'
-        });
-    }
-
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-// ==========================================================================
-// 🚀 START SERVER
-// ==========================================================================
-mongoose.connect(process.env.MONGODB_URI)
-.then(async () => {
-
-    await criarAdminPadrao();
-
-    const PORT = process.env.PORT || 3000;
-
-    app.listen(PORT, () => {
-        console.log(`🚀 Servidor rodando na porta ${PORT}`);
-    });
-
-})
-.catch(err => {
-    console.error('Erro MongoDB:', err);
-});
+app.listen(3000, () => console.log('🚀 DropShoes rodando na porta 3000'));
