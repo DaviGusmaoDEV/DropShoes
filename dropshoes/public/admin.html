@@ -46,7 +46,7 @@
                     </label>
                 </div>
 
-                <button type="submit" class="btn-salvar">Publicar na Vitrine</button>
+                <button id="btn-salvar-produto" type="submit" class="btn-salvar">Publicar na Vitrine</button>
             </form>
         </section>
 
@@ -71,6 +71,19 @@
         </section>
 
     </main>
+
+    <template id="template-linha-tabela">
+        <tr>
+            <td><img src="" alt="" class="img-preview"></td>
+            <td><strong class="nome-produto"></strong></td>
+            <td class="preco-produto"></td>
+            <td class="tamanhos-produto"></td>
+            <td>
+                <button class="btn-editar">Editar</button>
+                <button class="btn-excluir">Excluir</button>
+            </td>
+        </tr>
+    </template>
 
     <script src="js/main.js"></script>
 </body>

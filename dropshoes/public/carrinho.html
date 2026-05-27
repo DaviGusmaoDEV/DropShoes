@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8"><title>DropShoes | Carrinho</title>
-    <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropShoes | Carrinho</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
+    
     <header>
         <a href="index.html" class="logo">Drop<span>Shoes</span></a>
         <nav>
@@ -14,25 +18,70 @@
             <a href="login.html" id="btn-auth">Minha Conta</a>
         </nav>
     </header>
-<section class="box-sidebar">
-    <h3>🛒 Seu Carrinho</h3>
-    
-    <div id="itens-carrinho">
-        </div>
 
-    <div style="margin-top: 24px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-        <label style="font-size: 13px; font-weight: 700; text-transform: uppercase;">Calcular Entrega</label>
-        <div class="frete-container-inline">
-            <input type="text" id="cep" class="form-control" placeholder="Digite seu CEP">
-            <select id="tipo-envio" class="form-control" style="max-width: 120px;">
-                <option value="pac">PAC</option>
-                <option value="sedex">SEDEX</option>
-            </select>
-            <button onclick="calcularFrete()" class="btn btn-dark">Calcular</button>
-        </div>
-        <div id="info-frete" style="display: none;"></div>
-    </div>
+    <main class="container">
+        <div class="main-layout">
+            
+            <section class="box-sidebar">
+                <h3>🛒 Seu Carrinho</h3>
+                
+                <div id="itens-carrinho"></div>
+                <p id="carrinho-vazio-mensagem" class="carrinho-vazio">Seu carrinho está vazio.</p>
 
+                <div class="frete-calculo-container">
+                    <label class="frete-label">Calcular Entrega</label>
+                    <div class="frete-container-inline">
+                        <input type="text" id="cep" class="form-control" placeholder="Digite seu CEP">
+                        <select id="tipo-envio" class="form-control select-frete-largura">
+                            <option value="pac">PAC</option>
+                            <option value="sedex">SEDEX</option> 
+                        </select>
+                        <button onclick="calcularFrete()" class="btn btn-dark">Calcular</button>
+                    </div>
+                    <div id="info-frete" class="info-frete-dinamico"></div>
+                </div>
+
+                <div class="resumo-carrinho">
+                    <h3>Resumo do Pedido</h3>
+                    <hr>
+                    <div class="resumo-linha">
+                        <span>Subtotal:</span>
+                        <strong id="cart-subtotal">R$ 0,00</strong> 
+                    </div>
+                    <div class="resumo-linha">
+                        <span>Taxa de Entrega:</span>
+                        <strong id="cart-frete">R$ 0,00</strong>    
+                    </div>
+                    <hr>
+                    <div class="resumo-linha total">
+                        <span>Total:</span>
+                        <strong id="cart-total">R$ 0,00</strong>    
+                    </div>
+                    <button class="btn-finalizar" onclick="finalizarCompra()">Finalizar Compra</button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <template id="template-item-carrinho">
+        <div class="item-carrinho-linha item-carrinho-flex">
+            <div>
+                <h4 class="carrinho-item-nome"></h4>
+                <small class="carrinho-item-detalhes item-carrinho-detalhes-texto"></small>
+            </div>
+            <div class="item-carrinho-acoes-qtd">
+                <button class="btn-qtd-menos btn-controle-qtd">-</button>
+                <span class="carrinho-item-qtd"></span>
+                <button class="btn-qtd-mais btn-controle-qtd">+</button>
+            </div>
+            <div>
+                <strong class="carrinho-item-total"></strong>
+            </div>
+        </div>
+    </template>
+
+<<<<<<< HEAD:dropshoes/dropshoes/public/carrinho.html
     <div class="total-box">
         <div class="resumo-linha">
             <span>Subtotal</span>
@@ -52,7 +101,8 @@
         Finalizar Pedido via Stripe
     </button>
 </section>
+=======
+>>>>>>> 8a889b00900628fe00a8cb1b86fee4c48afbab4f:public/carrinho.html
     <script src="js/main.js"></script>
-    <script>document.addEventListener("DOMContentLoaded", renderizarPaginaCarrinho);</script>
 </body>
 </html>

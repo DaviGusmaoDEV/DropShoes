@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DropShoes | Detalhes do Produto</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>DropShoes | Produ tos</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     
@@ -18,9 +19,35 @@
     </header>
 
     <main class="container">
-        <div class="produto-detalhe-wrapper" id="detalhe-produto">
-            </div>
+        <h2 style="margin-bottom:20px;">Todos os Produtos</h2>
+        <div class="grid-produtos" id="lista-produtos"></div>
     </main>
+
+    <template id="template-card-produto">
+        <div class="product-card">
+            <div class="product-image">
+                <img src="" alt="" class="img-vitrine">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title titulo-vitrine"></h3>
+                <p class="product-price preco-vitrine"></p>
+                
+                <div class="product-sizes">
+                    <span class="sizes-label">Tamanhos:</span>
+                    <div class="sizes-grid container-tamanhos-dinamicos"></div>
+                </div>
+                
+                <button id="btn-add-carrinho" class="btn-add-carrinho">🛒 Adicionar ao Carrinho</button>
+            </div>
+        </div>
+    </template>
+
+    <template id="template-radio-tamanho">
+        <label class="checkbox-tamanho-label">
+            <input type="radio" value="">
+            <span></span>
+        </label>
+    </template>
 
     <script src="js/main.js"></script>
     <script src="js/detalhes.js"></script> </body>
