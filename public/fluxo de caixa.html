@@ -52,6 +52,10 @@
                         <label for="data-final">Data Final:</label>
                         <input type="date" id="data-final" name="data-final" class="form-control">
                     </div>
+                    <div class="form-group-inline">
+                        <label for="gestao">Pesquisa</label>
+                        <input class="pesquisa" type="text" name="funcionario" id="funcionario">
+                    </div>
                     <button class="btn btn-primary" onclick="filtrarFluxoCaixa()">Filtrar</button>
                     
                     <button class="btn btn-success btn-adicionar" id="btnAbrirModalTransacao">
@@ -91,6 +95,10 @@
                     <div class="card-financeiro">
                         <span>Saldo Líquido</span>
                         <h2 id="saldo-liquido">R$ 0,00</h2>
+                    </div>
+                    <div class="card-financeiro">
+                        <span>Despesa Funcionario</span>
+                        <h2 id="total-despesa-funcionario">R$ 0,00</h2>
                     </div>
                 </div>
                 <!-- ── FIM DA SEÇÃO: CARDS DE RESUMO ── -->
@@ -142,6 +150,7 @@
                     <select id="tipo" class="form-control" required>
                         <option value="receita">Receita</option>
                         <option value="despesa">Despesa</option>
+                        <option value="despesa-funcionario">Despesa Funcionario</option>
                     </select>
                 </div>
                 
