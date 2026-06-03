@@ -4,8 +4,10 @@ const el = {
     formTransacao: document.getElementById("form-transacao"),
     btnAbrirTransacao: document.getElementById("btnAbrirModalTransacao"),
     btnFecharTransacao: document.getElementById("btnFecharModalTransacao-add"),
-    btnFecharModalEdicao: document.getElementById("btnFecharModalTransacao-edit"),
-    btnSalvarEdicao: document.getElementById("btnSalvarEdicao"),
+    btnFecharModalEdicao: document.getElementById("btn-edicao-fechar"),
+    btnSalvarEdicao: document.getElementById("btnSalvarTransacao"),
+    btnAbrirEdicao: document.getElementById("btn-edicao"),
+    dialogEdicao: document.getElementById("modalEditar"),
     btnExcluirTransacao: document.getElementById("btnExcluirTransacao"),
     inputDescricao: document.getElementById("descricao"),
     selectTipo: document.getElementById("tipo"),
@@ -43,6 +45,13 @@ if (el.modalTransacao) {
     el.modalTransacao.addEventListener("click", (e) => {
         if (e.target === el.modalTransacao) {
             el.modalTransacao.close();
+        }
+    });
+}
+if (el.btnAbrirEdicao) {
+    el.btnAbrirEdicao.addEventListener("click", () => {
+        if (el.modalTransacao) {
+            el.modalTransacao.showModal();
         }
     });
 }
@@ -185,11 +194,19 @@ function exibirTransacoes() {
             clone.querySelector(".col-valor").classList.add("status-despesa");
             clone.querySelector(".badge-tipo").classList.add("status-despesa");
         }
+        else if (transacao.tipo === "total-despesa-funcionario") {
+            clone.querySelector(".col-valor").classList.add("status-despesa-funcionario");
+            clone.querySelector(".badge-tipo").classList.add("status-despesa-funcionario");
+        }
         
         // Adicionar listeners aos botões de editar e excluir
         clone.querySelector(".btn-edicao").addEventListener("click", () => {
             console.log("Editar transação:", transacao);
             // TODO: Implementar edição
+                if (el.dialogEdicao) {
+                    el.dialogEdicao.showModal();
+                }
+
         });
         
         clone.querySelector(".btn-exclusao").addEventListener("click", () => {
@@ -227,24 +244,30 @@ function exibirTransacoes() {
 function calcularTotais() {
     let totalFaturamento = 0;
     let totalDespesa = 0;
+    let totalDespesaFuncionario = 0;
     
     // Somar receitas e despesas
     transacoes.forEach((transacao) => {
         if (transacao.tipo === "receita") {
             totalFaturamento += transacao.valor;
-        } else if (transacao.tipo === "despesa") {
+        } 
+        else if (transacao.tipo === "despesa") {
             totalDespesa += transacao.valor;
+        }
+        else if (transacao.tipo === "total-despesa-funcionario") {
+            totalDespesaFuncionario += transacao.valor;
         }
     });
     
     // Calcular saldo líquido
-    const saldoLiquido = totalFaturamento - totalDespesa;
+    const saldoLiquido = totalFaturamento - totalDespesa - totalDespesaFuncionario;
     
     // Atualizar elementos do HTML
     const elFaturamento = document.getElementById("total-faturamento");
     const elDespesa = document.getElementById("total-despesa");
+    const elDespesaFuncionario = document.getElementById("total-despesa-funcionario");
     const elSaldo = document.getElementById("saldo-liquido");
-    
+
     if (elFaturamento) {
         elFaturamento.textContent = `R$ ${totalFaturamento.toFixed(2).replace(".", ",")}`;
     }
@@ -253,6 +276,10 @@ function calcularTotais() {
         elDespesa.textContent = `R$ ${totalDespesa.toFixed(2).replace(".", ",")}`;
     }
     
+    if (elDespesaFuncionario) {
+        elDespesaFuncionario.textContent = `R$ ${totalDespesaFuncionario.toFixed(2).replace(".", ",")}`;
+    }
+
     if (elSaldo) {
         elSaldo.textContent = `R$ ${saldoLiquido.toFixed(2).replace(".", ",")}`;
         // Colorir saldo: verde se positivo, vermelho se negativo
@@ -263,7 +290,7 @@ function calcularTotais() {
         }
     }
     
-    console.log(`Faturamento: R$ ${totalFaturamento.toFixed(2)} | Despesa: R$ ${totalDespesa.toFixed(2)} | Saldo: R$ ${saldoLiquido.toFixed(2)}`);
+    console.log(`Faturamento: R$ ${totalFaturamento.toFixed(2)} | Despesa: R$ ${totalDespesa.toFixed(2)} | Saldo: R$ ${saldoLiquido.toFixed(2)} | Despesa Funcionario: R$ ${totalDespesaFuncionario.toFixed(2)}`);
 }
 
 // Carregar e exibir transações ao inicializar a página

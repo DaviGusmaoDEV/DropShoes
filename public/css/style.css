@@ -16,6 +16,7 @@
     --success-hover: #059669;
     --danger: #ef4444;                     /* Feedbacks de erro/remoção */
     --danger-hover: #dc2626;
+    --despesa-funcionario: #8b5cf6;            /* Cor exclusiva para despesas de funcionários */
 
     /* Estrutura de Bordas & Componentes */
     --radius-lg: 20px;                     /* Banners e grandes seções */
@@ -565,6 +566,7 @@ a {
 
 .badge-tipo.status-receita, .col-valor.status-receita { color: var(--success); }
 .badge-tipo.status-despesa, .col-valor.status-despesa { color: var(--danger); }
+.badge-tipo.status-despesa-funcionario, .col-valor.status-despesa-funcionario { color: var(--despesa-funcionario); }
 
 .mensagem-tabela-vazia { text-align: center; color: var(--text-muted); padding: 32px; }
 .mensagem-tabela-erro  { text-align: center; color: var(--danger); font-weight: bold; padding: 32px; }
@@ -832,8 +834,13 @@ dialog:not([open]) {
 }
 .pesquisa{
     width: 100%;
-    padding: 10px;
+    padding: 20px;
     height: 10px;
     border: 1px solid #0b0f19;
-    border-radius: 10px;
+    border-radius: 20px;
+}
+.pesquisa:focus{
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(255, 167, 3, 0.15);
 }
