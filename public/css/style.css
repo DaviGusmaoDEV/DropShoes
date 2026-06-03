@@ -1,0 +1,829 @@
+/* ==========================================================================
+   🎨 1. DESIGN SYSTEM, TOKENS & VARIÁVEIS (DropShoes Premium)
+   ========================================================================== */
+:root {
+    /* Paleta de Cores (Estética Hype/Sneakerhead) */
+    --primary: rgb(255, 167, 3);           /* Laranja/Ouro Hype */
+    --primary-hover: rgb(197, 128, 0);     /* Variação de clique/interação */
+    --dark: #0f172a;                       /* Azul Escuro Slate Principal */
+    --dark-muted: #1e293b;                 /* Superfícies secundárias escuras */
+    --light: #f8fafc;                      /* Fundo geral ultra-limpo */
+    --card-bg: #ffffff;                    /* Fundo de cards puros */
+    --text-main: #0f172a;                  /* Texto de leitura padrão */
+    --text-muted: #64748b;                 /* Subtítulos e dados secundários */
+    --border-color: #e2e8f0;               /* Linhas e divisórias cirúrgicas */
+    --success: #10b981;                    /* Verde Flat Premium para Conversão */
+    --success-hover: #059669;
+    --danger: #ef4444;                     /* Feedbacks de erro/remoção */
+    --danger-hover: #dc2626;
+
+    /* Estrutura de Bordas & Componentes */
+    --radius-lg: 20px;                     /* Banners e grandes seções */
+    --radius-md: 12px;                     /* Cards de produtos e Sidebars */
+    --radius-sm: 8px;                      /* Inputs, botões e pequenas tags */
+    --sidebar-width: 260px;                /* Largura padrão da barra lateral */
+
+    /* Sistema de Sombras Elevadas (Shadows) */
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.03), 0 1px 2px rgba(15, 23, 42, 0.02);
+    --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
+    --shadow-lg: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+
+    /* Transições Dinâmicas */
+    --transition-fast: all 0.2s ease;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   ⚙️ 2. RESET GERAL & CONFIGURAÇÕES BASE
+   ========================================================================== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--light);
+    color: var(--text-main);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    min-height: 100vh;
+}
+
+img, svg, video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition-fast);
+}
+
+/* ==========================================================================
+   🔀 3. ESTRUTURA DE LAYOUT COM SIDEBAR (Layout Principal)
+   ========================================================================== */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: #0b0f19;
+    color: #ffffff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 24px;
+    z-index: 200;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sidebar .logo {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -1.2px;
+    text-transform: uppercase;
+    color: #f2f4f5;
+    margin-bottom: 48px;
+}
+
+.sidebar .logo span {
+    color: var(--primary);
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-grow: 1;
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-smooth);
+}
+
+.sidebar-nav a:hover, 
+.sidebar-nav a.active {
+    color: #ffffff;
+    background: var(--dark-muted);
+}
+
+.sidebar-nav a.active {
+    background: var(--primary);
+    color: var(--dark);
+}
+
+.main-wrapper {
+    margin-left: var(--sidebar-width);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* ==========================================================================
+   🧱 4. COMPONENTES DE INTERFACE - BOTÕES (UI BUTTONS)
+   ========================================================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    letter-spacing: -0.2px;
+}
+
+.btn:active { 
+    transform: scale(0.98); 
+}
+
+.btn-primary {
+    background-color: var(--dark);
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-success {
+    background-color: var(--success);
+    color: #ffffff;
+}
+
+.btn-success:hover {
+    background-color: var(--success-hover);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    background-color: var(--danger-hover);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+.btn-cancelar {
+    background-color: #cbd5e1;
+    color: #475569;
+}
+
+.btn-cancelar:hover {
+    background-color: #94a3b8;
+}
+
+.btn-edicao, .btn-exclusao {
+    background: none;
+    border: none;
+    padding: 6px;
+    margin: 0 4px;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-edicao { 
+    color: #3498db; 
+}
+
+.btn-edicao:hover { 
+    background-color: rgba(52, 152, 219, 0.1); 
+    transform: translateY(-1px);
+}
+
+.btn-exclusao { 
+    color: var(--danger); 
+}
+
+.btn-exclusao:hover { 
+    background-color: rgba(239, 68, 68, 0.1); 
+    transform: translateY(-1px);
+}
+.btn-adicionar {
+    margin-left: auto;
+    display: flex; /* Garante que o alinhamento funcione */
+}
+.btn-finalizar {
+    background-color: var(--primary);
+    color: #ffffff;
+    padding: 14px 28px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    margin-top: 20px;
+}
+.btn-finalizar:hover {
+    background-color: var(--primary-hover);
+    box-shadow: var(--shadow-md);
+}
+.btn-calcular {
+    background-color: var(--primary);
+    color: #ffffff;
+    padding: 10px 20px;
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+.btn-calcular:hover {
+    background-color: var(--primary-hover);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   🧱 5. COMPONENTES DE INTERFACE - FORMULÁRIOS & FILTROS
+   ========================================================================== */
+.form-group {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    background-color: #ffffff;
+    color: var(--text-main);
+    outline: none;
+    transition: var(--transition-fast);
+    margin-top: 14px;
+}
+
+.form-control:focus {
+    border-color: var(--primary-hover);
+    box-shadow: 0 0 0 4px rgba(255, 167, 3, 0.15);
+}
+
+.filtros-fluxo-caixa {
+    background: var(--card-bg);
+    padding: 20px 24px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.form-group-inline {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.form-group-inline label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--dark);
+    text-transform: uppercase;
+}
+
+.btn-adicionar {
+    margin-left: auto;
+}
+
+.file-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed var(--border-color);
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    background: #ffffff;
+    transition: var(--transition-fast);
+}
+
+.file-wrapper:hover {
+    border-color: var(--primary-hover);
+    background: #fafafa;
+}
+
+.file-wrapper input[type="file"] { 
+    display: none !important; 
+}
+
+/* ==========================================================================
+   🏠 6. LAYOUT LAYER & HERO (Estruturas de Bloco Gerais)
+   ========================================================================== */
+.main-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+}
+
+.hero {
+    background: linear-gradient(135deg, #0b0f19 0%, #1e2640 100%);
+    color: #ffffff;
+    padding: clamp(40px, 5vw, 60px) 24px;
+    border-radius: var(--radius-lg);
+    text-align: center;
+    box-shadow: var(--shadow-md);
+}
+
+.hero h1 {
+    font-size: clamp(26px, 3.5vw, 40px);
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    margin-bottom: 12px;
+}
+
+.hero p {
+    color: #94a3b8;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.card-footer {
+    text-align: center;
+    padding: 20px 0;
+    color: var(--text-muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* ==========================================================================
+   🛍️ 7. VITRINES & CARDS DE PRODUTOS
+   ========================================================================== */
+.grid-produtos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+}
+
+.product-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: var(--transition-smooth);
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+}
+
+.produto-imagem-wrapper {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background-color: #f1f5f9;
+    border-radius: var(--radius-sm);
+    margin-bottom: 16px;
+}
+
+.produto-imagem-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.titulo-vitrine {
+    font-size: 18px;
+    font-weight: 800;
+    color: #1e272e;
+    margin-bottom: 6px;
+}
+
+.preco-vitrine {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary-hover);
+    margin-bottom: 12px;
+}
+
+.secao-tamanhos {
+    margin-bottom: 20px;
+}
+
+.rotulo-tamanhos {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.tamanho-selector {
+    display: flex;
+    gap: 8px;
+}
+
+.tamanho-selector input[type="radio"],
+.tamanho-selector input[type="checkbox"] {
+    display: none !important;
+}
+
+.tamanho-selector label span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: var(--transition-fast);
+}
+
+.tamanho-selector label input:checked + span {
+    border-color: var(--success);
+    background-color: var(--success);
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   💻 8. TABELAS MODERNAS & TRATAMENTO DO FLUXO DE CAIXA
+   ========================================================================== */
+.table-responsive {
+    background: #ffffff;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    overflow-x: auto;
+    box-shadow: var(--shadow-sm);
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    white-space: nowrap;
+}
+
+.modern-table th {
+    background: #f8fafc;
+    padding: 16px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+}
+
+.modern-table td {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border-color);
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.col-descricao .txt-descricao {
+    display: block;
+    font-weight: 500;
+}
+
+.col-descricao .badge-origem {
+    display: block;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+.col-acoes-head {
+    text-align: center;
+    width: 110px;
+}
+
+.col-acoes-corpo {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.badge-tipo { font-weight: 700; }
+.col-valor   { font-weight: 600; }
+
+.badge-tipo.status-receita, .col-valor.status-receita { color: var(--success); }
+.badge-tipo.status-despesa, .col-valor.status-despesa { color: var(--danger); }
+
+.mensagem-tabela-vazia { text-align: center; color: var(--text-muted); padding: 32px; }
+.mensagem-tabela-erro  { text-align: center; color: var(--danger); font-weight: bold; padding: 32px; }
+
+/* ==========================================================================
+   📊 9. ESTILIZAÇÃO DOS CARDS DE RESUMO FINANCEIRO MENSAL
+   ========================================================================== */
+.cards-resumo-mensal {
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+    gap: 16px; 
+    margin-top: 32px;
+    margin-bottom: 8px;
+    padding-top: 24px;
+    border-top: 1px dashed var(--border-color);
+}
+
+.card-financeiro {
+    background: var(--card-bg, #ffffff); 
+    padding: 20px; 
+    border-radius: var(--radius-md); 
+    border: 1px solid var(--border-color); 
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-fast);
+}
+
+.card-financeiro:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.card-financeiro span {
+    font-size: 11px; 
+    font-weight: 700; 
+    color: var(--text-muted); 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card-financeiro h2 {
+    font-size: 24px; 
+    font-weight: 800; 
+    margin-top: 6px;
+}
+
+#total-faturamento { color: var(--success); }
+#total-despesa     { color: var(--danger); }
+#saldo-liquido     { color: var(--dark); }
+
+/* ==========================================================================
+   🎯 10. DIALOGS & MODAIS (Alinhamento Central Absoluto)
+   ========================================================================== */
+dialog {
+    margin: auto;
+    border: none;
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 32px;
+    max-width: 500px;
+    width: calc(100% - 32px);
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+dialog[open] {
+    animation: fadeUpIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+dialog::backdrop {
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    animation: fadeInOverlay 0.2s ease forwards;
+}
+
+dialog .form-control {
+    background-color: #f8fafc;
+}
+
+.form-dialog {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 320px;
+    padding: 8px;
+}
+
+.form-dialog h2, .modal-exclusao-container h2 {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.botoes-dialog {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.botoes-dialog .btn {
+    flex: 1;
+}
+
+.modal-exclusao-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 280px;
+    padding: 8px;
+}
+
+.modal-exclusao-container p {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+@keyframes fadeUpIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes fadeInOverlay {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ==========================================================================
+   📱 11. MEDIA QUERIES (Responsividade de Alta Precision)
+   ========================================================================== */
+@media (max-width: 992px) {
+    .sidebar {
+        width: 70px;
+        padding: 24px 12px;
+        align-items: center;
+    }
+    .sidebar .logo, 
+    .sidebar-nav a span {
+        display: none; 
+    }
+    .main-wrapper {
+        margin-left: 70px;
+    }
+    .container {
+        padding: 30px 20px;
+    }
+    .main-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    body {
+        flex-direction: column;
+    }
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 16px 20px;
+    }
+    .sidebar .logo {
+        display: block;
+        margin-bottom: 0;
+    }
+    .sidebar-nav {
+        flex-direction: row;
+        gap: 12px;
+    }
+    .main-wrapper {
+        margin-left: 0;
+    }
+    .filtros-fluxo-caixa {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .btn-adicionar {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+@media (min-width: 992px) {
+    .main-layout {
+        grid-template-columns: 1.35fr 0.65fr;
+    }
+}
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f8fafc;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.card-login {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.card-login h2 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: #1e293b;
+}
+
+.login-footer {
+    margin-top: 15px;
+    font-size: 0.9rem;
+}
+@media (max-width: 992px) {
+    /* ... seu código existente ... */
+    .sidebar .logo, 
+    .sidebar-nav a span:not(.material-symbols-outlined) { /* Garante que só o texto suma */
+        display: none; 
+    }
+    .sidebar-nav a {
+        justify-content: center; /* Centraliza o ícone quando o texto some */
+    }
+}
+.box-sidebar{
+    background: var(--card-bg);
+    padding: 20px 24px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+}
+.box-sidebar h3 { 
+    color: var(--dark); 
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    margin-top: 20px;
+}
+.pac-container {
+    z-index: 10000 !important;
+}
+.modal {
+    display: none; /* Oculto por padrão */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+}
