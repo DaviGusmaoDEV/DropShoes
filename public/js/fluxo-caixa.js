@@ -55,15 +55,31 @@ if (el.btnFecharModalEdicao) {
 }
 if (el.btnExcluirTransacao) {
     el.btnExcluirTransacao.addEventListener("click", () => {
-        if (confirm("Tem certeza que deseja excluir esta transação?")) {
-            const id = parseInt(el.btnExcluirTransacao.dataset.id);
-            transacoes = transacoes.filter(t => t.id !== id);
-            localStorage.setItem("transacoes", JSON.stringify(transacoes));
-            exibirTransacoes();
-            if (el.modalTransacao) {
-                el.modalTransacao.close();
+        Swal.fire({
+            title: 'Excluir transação?',
+            text: 'Essa ação não pode ser desfeita.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim, excluir',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const id = parseInt(el.btnExcluirTransacao.dataset.id);
+                transacoes = transacoes.filter(t => t.id !== id);
+                localStorage.setItem("transacoes", JSON.stringify(transacoes));
+                exibirTransacoes();
+                if (el.modalTransacao) {
+                    el.modalTransacao.close();
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Excluída',
+                    text: 'Transação excluída com sucesso.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
             }
-        }
+        });
     });
 }
 
@@ -102,7 +118,13 @@ if (el.formTransacao) {
             
             console.log("Transação registrada:", novaTransacao);
             console.log("Total de transações:", transacoes);
-            alert("Transação salva com sucesso!");
+            Swal.fire({
+                icon: 'success',
+                title: 'Transação salva',
+                text: 'Sua transação foi registrada com sucesso.',
+                timer: 1800,
+                showConfirmButton: false,
+            });
             
             // Limpar formulário
             el.formTransacao.reset();
@@ -115,7 +137,11 @@ if (el.formTransacao) {
             // Atualizar tabela
             exibirTransacoes();
         } catch (erro) {
-            alert(erro.message);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: erro.message,
+            });
             console.error(erro.message);
         }
     });
@@ -167,11 +193,27 @@ function exibirTransacoes() {
         });
         
         clone.querySelector(".btn-exclusao").addEventListener("click", () => {
-            if (confirm("Tem certeza que deseja excluir esta transação?")) {
-                transacoes = transacoes.filter(t => t.id !== transacao.id);
-                localStorage.setItem("transacoes", JSON.stringify(transacoes));
-                exibirTransacoes();
-            }
+            Swal.fire({
+                title: 'Excluir transação?',
+                text: 'Essa ação não pode ser desfeita.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, excluir',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    transacoes = transacoes.filter(t => t.id !== transacao.id);
+                    localStorage.setItem("transacoes", JSON.stringify(transacoes));
+                    exibirTransacoes();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Excluída',
+                        text: 'Transação excluída com sucesso.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            });
         });
         
         corpoTabela.appendChild(clone);

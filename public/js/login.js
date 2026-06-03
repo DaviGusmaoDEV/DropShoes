@@ -12,7 +12,11 @@ export function realizarLogin(usuario, senha) {
         console.log("Login realizado com sucesso!");
         return true;
     } catch (erro) {
-        alert(erro.message);
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro de login',
+            text: erro.message,
+        });
         return false;
     }
 }

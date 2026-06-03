@@ -8,7 +8,11 @@ export function adicionarAoCarrinho(produto) {
             console.log(`Sucesso: ${produto.nome} adicionado!`);
         }
     } catch (erro) {
-        alert(erro.message); // Alerta visual se estiver no navegador
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro no carrinho',
+            text: erro.message,
+        });
         console.error(erro.message);
     }
 }
