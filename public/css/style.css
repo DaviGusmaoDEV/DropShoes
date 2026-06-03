@@ -827,3 +827,6 @@ dialog .form-control {
     justify-content: center;
     align-items: center;
 }
+dialog:not([open]) {
+  display: none;
+}

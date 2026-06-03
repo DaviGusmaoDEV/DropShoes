@@ -1,106 +1,230 @@
-/**
- * SISTEMA INTEGRADO DELICIAS DA LUCY - VERSÃO CORRIGIDA
- */
-
-// Objeto DOM para busca segura de elementos
-const DOM = {
-    get: () => ({
-        corpoTabela: document.getElementById('corpo-tabela-fluxo-caixa'),
-        modalAdicionar: document.getElementById('modalTransacao'),
-        modalEditar: document.getElementById('modalEditar'),
-        modalExclusao: document.getElementById('modalExclusao'),
-        formAdicionar: document.getElementById('form-transacao')
-    })
+// fluxo-caixa.js
+const el = {
+    modalTransacao: document.getElementById("modalTransacao"),
+    formTransacao: document.getElementById("form-transacao"),
+    btnAbrirTransacao: document.getElementById("btnAbrirModalTransacao"),
+    btnFecharTransacao: document.getElementById("btnFecharModalTransacao-add"),
+    btnFecharModalEdicao: document.getElementById("btnFecharModalTransacao-edit"),
+    btnSalvarEdicao: document.getElementById("btnSalvarEdicao"),
+    btnExcluirTransacao: document.getElementById("btnExcluirTransacao"),
+    inputDescricao: document.getElementById("descricao"),
+    selectTipo: document.getElementById("tipo"),
+    inputValor: document.getElementById("valor"),
+    inputData: document.getElementById("data"),
 };
 
-const App = {
-    state: {
-        transacoes: JSON.parse(localStorage.getItem('mock_transacoes')) || [],
-        usuario: JSON.parse(localStorage.getItem("usuario_logado")) || { nome: "Visitante", email: "", regra: "cliente" },
-        categorias: JSON.parse(localStorage.getItem("lucy_categorias")) || ["Hype Running", "Retro Classic"]
-    },
+let transacoes = [];
 
-    init() {
-        this.initPerfil();
-        this.initFluxoCaixa();
-        this.initCategorias();
-        this.initAuthHandlers();
-    },
+// Carregar transações do localStorage se existirem
+if (localStorage.getItem("transacoes")) {
+    transacoes = JSON.parse(localStorage.getItem("transacoes"));
+}
 
-    // MÉTODOS DE MODAL (Agora acessíveis pelo HTML)
-    abrirModal(nome) {
-        const dom = DOM.get();
-        if (nome === 'Adicionar') dom.modalAdicionar?.showModal();
-        if (nome === 'Editar') dom.modalEditar?.showModal();
-        if (nome === 'Exclusao') dom.modalExclusao?.showModal();
-    },
+// Abrir modal
+if (el.btnAbrirTransacao) {
+    el.btnAbrirTransacao.addEventListener("click", () => {
+        if (el.modalTransacao) {
+            el.modalTransacao.showModal();
+        }
+    });
+}
 
-    fecharModal(nome) {
-        const dom = DOM.get();
-        if (nome === 'Adicionar') dom.modalAdicionar?.close();
-        if (nome === 'Editar') dom.modalEditar?.close();
-        if (nome === 'Exclusao') dom.modalExclusao?.close();
-    },
+// Fechar modal
+if (el.btnFecharTransacao) {
+    el.btnFecharTransacao.addEventListener("click", () => {
+        if (el.modalTransacao) {
+            el.modalTransacao.close();
+        }
+    });
+}
 
-    // FLUXO DE CAIXA
-    initFluxoCaixa() {
-        const dom = DOM.get();
-        dom.formAdicionar?.addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.state.transacoes.unshift({
-                descricao: document.getElementById('descricao').value,
-                tipo: document.getElementById('tipo').value,
-                valor: parseFloat(document.getElementById('valor').value),
-                data: document.getElementById('data').value
-            });
-            this.salvar();
-            this.renderTabela(this.state.transacoes);
-            dom.modalAdicionar?.close();
-            dom.formAdicionar.reset();
-        });
-        this.renderTabela(this.state.transacoes);
-    },
+// Fechar modal quando clicar no backdrop
+if (el.modalTransacao) {
+    el.modalTransacao.addEventListener("click", (e) => {
+        if (e.target === el.modalTransacao) {
+            el.modalTransacao.close();
+        }
+    });
+}
+if (el.btnFecharModalEdicao) {
+    el.btnFecharModalEdicao.addEventListener("click", () => {
+        if (el.modalTransacao) {
+            el.modalTransacao.close();
+        }
+    });
+}
+if (el.btnExcluirTransacao) {
+    el.btnExcluirTransacao.addEventListener("click", () => {
+        if (confirm("Tem certeza que deseja excluir esta transação?")) {
+            const id = parseInt(el.btnExcluirTransacao.dataset.id);
+            transacoes = transacoes.filter(t => t.id !== id);
+            localStorage.setItem("transacoes", JSON.stringify(transacoes));
+            exibirTransacoes();
+            if (el.modalTransacao) {
+                el.modalTransacao.close();
+            }
+        }
+    });
+}
 
-    renderTabela(lista) {
-        const corpo = document.getElementById('corpo-tabela-fluxo-caixa');
-        if (!corpo) return;
-        corpo.innerHTML = lista.map((t, i) => `
-            <tr>
-                <td>${t.data}</td>
-                <td>${t.descricao}</td>
-                <td>R$ ${Number(t.valor).toFixed(2)}</td>
-                <td><button onclick="App.deletar(${i})">Excluir</button></td>
-            </tr>
-        `).join('');
-    },
-
-    filtrarFluxoCaixa() {
-        const inicio = document.getElementById('data-inicial').value;
-        const fim = document.getElementById('data-final').value;
-        if (!inicio || !fim) return this.renderTabela(this.state.transacoes);
+// Registrar transação ao submeter form
+if (el.formTransacao) {
+    el.formTransacao.addEventListener("submit", (e) => {
+        e.preventDefault();
         
-        const filtradas = this.state.transacoes.filter(t => t.data >= inicio && t.data <= fim);
-        this.renderTabela(filtradas);
-    },
+        try {
+            const descricao = el.inputDescricao?.value.trim();
+            const tipo = el.selectTipo?.value;
+            const valor = parseFloat(el.inputValor?.value);
+            const data = el.inputData?.value;
+            
+            // Validações
+            if (!descricao) throw new Error("Descrição é obrigatória.");
+            if (!tipo) throw new Error("Tipo é obrigatório.");
+            if (isNaN(valor) || valor <= 0) throw new Error("Valor deve ser um número positivo.");
+            if (!data) throw new Error("Data é obrigatória.");
+            
+            // Criar transação
+            const novaTransacao = {
+                id: Date.now(),
+                descricao,
+                tipo,
+                valor,
+                data,
+                dataCriacao: new Date().toISOString()
+            };
+            
+            // Adicionar ao array
+            transacoes.push(novaTransacao);
+            
+            // Salvar no localStorage
+            localStorage.setItem("transacoes", JSON.stringify(transacoes));
+            
+            console.log("Transação registrada:", novaTransacao);
+            console.log("Total de transações:", transacoes);
+            alert("Transação salva com sucesso!");
+            
+            // Limpar formulário
+            el.formTransacao.reset();
+            
+            // Fechar modal
+            if (el.modalTransacao) {
+                el.modalTransacao.close();
+            }
+            
+            // Atualizar tabela
+            exibirTransacoes();
+        } catch (erro) {
+            alert(erro.message);
+            console.error(erro.message);
+        }
+    });
+}
 
-    deletar(i) {
-        this.state.transacoes.splice(i, 1);
-        this.salvar();
-        this.renderTabela(this.state.transacoes);
-    },
+// Função para exibir transações na tabela
+function exibirTransacoes() {
+    const corpoTabela = document.getElementById("corpo-tabela-fluxo-caixa");
+    const template = document.getElementById("template-linha-transacao");
+    
+    if (!corpoTabela || !template) return;
+    
+    // Limpar tabela
+    corpoTabela.innerHTML = "";
+    
+    // Se não há transações, mostrar mensagem
+    if (transacoes.length === 0) {
+        corpoTabela.innerHTML = '<tr><td colspan="5" style="text-align:center; color: #999;">Nenhuma transação registrada</td></tr>';
+        return;
+    }
+    
+    // Adicionar cada transação à tabela
+    transacoes.forEach((transacao) => {
+        const clone = template.content.cloneNode(true);
+        
+        // Formatar data (DD/MM/YYYY)
+        const data = new Date(transacao.data + "T00:00:00");
+        const dataFormatada = data.toLocaleDateString("pt-BR");
+        
+        // Preencher campos
+        clone.querySelector(".col-data").textContent = dataFormatada;
+        clone.querySelector(".txt-descricao").textContent = transacao.descricao;
+        clone.querySelector(".badge-tipo").textContent = transacao.tipo.charAt(0).toUpperCase() + transacao.tipo.slice(1);
+        clone.querySelector(".col-valor").textContent = `R$ ${transacao.valor.toFixed(2).replace(".", ",")}`;
+        
+        // Adicionar classe de cor baseada no tipo
+        if (transacao.tipo === "receita") {
+            clone.querySelector(".col-valor").classList.add("status-receita");
+            clone.querySelector(".badge-tipo").classList.add("status-receita");
+        } else if (transacao.tipo === "despesa") {
+            clone.querySelector(".col-valor").classList.add("status-despesa");
+            clone.querySelector(".badge-tipo").classList.add("status-despesa");
+        }
+        
+        // Adicionar listeners aos botões de editar e excluir
+        clone.querySelector(".btn-edicao").addEventListener("click", () => {
+            console.log("Editar transação:", transacao);
+            // TODO: Implementar edição
+        });
+        
+        clone.querySelector(".btn-exclusao").addEventListener("click", () => {
+            if (confirm("Tem certeza que deseja excluir esta transação?")) {
+                transacoes = transacoes.filter(t => t.id !== transacao.id);
+                localStorage.setItem("transacoes", JSON.stringify(transacoes));
+                exibirTransacoes();
+            }
+        });
+        
+        corpoTabela.appendChild(clone);
+    });
+    
+    // Calcular e exibir totais após atualizar a tabela
+    calcularTotais();
+}
 
-    salvar() {
-        localStorage.setItem('mock_transacoes', JSON.stringify(this.state.transacoes));
-        localStorage.setItem('lucy_categorias', JSON.stringify(this.state.categorias));
-    },
+// Função para calcular totais de faturamento e despesa
+function calcularTotais() {
+    let totalFaturamento = 0;
+    let totalDespesa = 0;
+    
+    // Somar receitas e despesas
+    transacoes.forEach((transacao) => {
+        if (transacao.tipo === "receita") {
+            totalFaturamento += transacao.valor;
+        } else if (transacao.tipo === "despesa") {
+            totalDespesa += transacao.valor;
+        }
+    });
+    
+    // Calcular saldo líquido
+    const saldoLiquido = totalFaturamento - totalDespesa;
+    
+    // Atualizar elementos do HTML
+    const elFaturamento = document.getElementById("total-faturamento");
+    const elDespesa = document.getElementById("total-despesa");
+    const elSaldo = document.getElementById("saldo-liquido");
+    
+    if (elFaturamento) {
+        elFaturamento.textContent = `R$ ${totalFaturamento.toFixed(2).replace(".", ",")}`;
+    }
+    
+    if (elDespesa) {
+        elDespesa.textContent = `R$ ${totalDespesa.toFixed(2).replace(".", ",")}`;
+    }
+    
+    if (elSaldo) {
+        elSaldo.textContent = `R$ ${saldoLiquido.toFixed(2).replace(".", ",")}`;
+        // Colorir saldo: verde se positivo, vermelho se negativo
+        if (saldoLiquido >= 0) {
+            elSaldo.style.color = "var(--success)";
+        } else {
+            elSaldo.style.color = "var(--danger)";
+        }
+    }
+    
+    console.log(`Faturamento: R$ ${totalFaturamento.toFixed(2)} | Despesa: R$ ${totalDespesa.toFixed(2)} | Saldo: R$ ${saldoLiquido.toFixed(2)}`);
+}
 
-    // Outros métodos necessários...
-    initPerfil() { /* ... */ },
-    initCategorias() { /* ... */ },
-    initAuthHandlers() { /* ... */ }
-};
-
-// Vinculação Global
-document.addEventListener("DOMContentLoaded", () => App.init());
-window.App = App;
-window.filtrarFluxoCaixa = () => App.filtrarFluxoCaixa();
+// Carregar e exibir transações ao inicializar a página
+document.addEventListener("DOMContentLoaded", () => {
+    exibirTransacoes();
+});
