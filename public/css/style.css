@@ -762,7 +762,7 @@ dialog .form-control {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f8fafc;
+    background-color: #ffffff;
 }
 
 .login-container {
@@ -770,24 +770,50 @@ dialog .form-control {
     max-width: 400px;
     padding: 20px;
 }
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
 
 .card-login {
-    background: white;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    width: 450px;
+  background: #ffffff; /* Cor interna do card */
+  color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
 }
+
 
 .card-login h2 {
     margin-bottom: 20px;
     font-size: 1.5rem;
     color: #1e293b;
+    padding: 20px;
+}
+.card-login::before {
+  content: '';
+  position: absolute;
+  inset: -4px; /* Espessura da borda */
+  z-index: -1;
+  background: conic-gradient(from var(--angle), rgb(255, 167, 3), rgb(197, 128, 0));
+  border-radius: 14px;
+  animation: spin 3s linear infinite;
 }
 
 .login-footer {
     margin-top: 15px;
     font-size: 0.9rem;
+}
+@keyframes spin {
+  to {
+    --angle: 360deg;
+  }
 }
 @media (max-width: 992px) {
     /* ... seu código existente ... */

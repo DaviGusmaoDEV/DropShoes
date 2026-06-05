@@ -1,4 +1,16 @@
 <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil | Cliente</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+    
+</body>
+</html><!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -24,9 +36,8 @@
 
     <nav class="sidebar-nav">
         <a href="principal.html" class="nav-item"><span class="material-symbols-outlined">home</span> Início</a>
-        <a href="fluxo de caixa.html" class="nav-item"><span class="material-symbols-outlined">payments</span> Fluxo de Caixa</a>
         <a href="produtos.html" class="nav-item"><span class="material-symbols-outlined">inventory_2</span> Meus Produtos</a>
-        <a href="Meu Perfil.html" class="nav-item"><span class="material-symbols-outlined">person</span> Meu Perfil</a>
+        <a href="meu perfil paciente.html" class="nav-item"><span class="material-symbols-outlined">person</span> Meu Perfil</a>
         <a href="carrinho.html" class="nav-item"><span class="material-symbols-outlined">shopping_cart</span> Carrinho</a>
         <a href="login.html" class="nav-item"><span class="material-symbols-outlined">login</span> Login</a>
     </nav>
@@ -40,8 +51,7 @@
         <main class="container">
             
             <header class="hero">
-                <h1 id="boas-vindas-usuario">Carregando Perfil...</h1>
-                <p id="subtitulo-perfil">Acessando suas informações de segurança e preferências profissionais.</p>
+                <h1 id="boas-vindas-usuario">Esse é o seu perfil de Cliente do restaurante. </h1>
                 
             </header>
 
@@ -49,16 +59,16 @@
                 <h2 class="card-title">Meus Dados Cadastrais</h2>
                 <div class="grid-dados">
                     <div class="dado-grupo">
-                        <label>Nome Completo</label>
-                        <p id="user-nome">-</p>
+                        <label>Nome Completo: </label>
+                        <p id="user-nome"></p>
                     </div>
                     <div class="dado-grupo">
-                        <label>E-mail</label>
-                        <p id="user-email">-</p>
+                        <label>E-mail:</label>
+                        <p id="user-email"></p>
                     </div>
                     <div class="dado-grupo">
-                        <label>Nível de Acesso</label>
-                        <p id="user-nivel">-</p>
+                        <label>Seu Numero Telefone: </label>
+                            <p id="user-fone"></p>
                     </div>
                 </div>
             </section>
@@ -84,35 +94,6 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
-            </section>
-
-            <section id="painel-admin-donoloja" class="card-painel panel-oculto">
-                <div class="admin-header">
-                    <h2 class="card-title display-flex-center">
-                        <span class="material-symbols-outlined icon-admin">admin_panel_settings</span> 
-                        Controladora Interna da Loja
-                    </h2>
-                    <a href="produtos.html" class="btn btn-success btn-sm no-decoration">
-                        + Gerenciar Produtos
-                    </a>
-                </div>
-
-                <div class="form-bg-box">
-                    <h3 class="form-box-title">Criar Nova Categoria de Linha/Gama</h3>
-                    <form id="form-nova-categoria" class="form-inline">
-                        <div class="form-group">
-                            <label for="nome-categoria">Nome da Categoria</label>
-                            <input type="text" id="nome-categoria" class="form-control" placeholder="Ex: Hype Running, Limited Edition" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Salvar Categoria</button>
-                    </form>
-                </div>
-
-                <div>
-                    <h3 class="sub-label-tags">Categorias Ativas</h3>
-                    <ul id="lista-categorias-ativas" class="tag-list">
-                        </ul>
                 </div>
             </section>
 

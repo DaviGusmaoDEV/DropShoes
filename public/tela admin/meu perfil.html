@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delicias da Lucy | Meu Perfil</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+    
+    <link rel="stylesheet" href="../css/style.css">
+    
+    <script src="./js/fluxo-caixa.js" defer></script>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="principal.html" class="logo">Delicias<span> Da Lucy</span></a>
+        <h2>Painel de Navegação</h2>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a href="principal.html" class="nav-item"><span class="material-symbols-outlined">home</span> Início</a>
+        <a href="fluxo de caixa.html" class="nav-item"><span class="material-symbols-outlined">payments</span> Fluxo de Caixa</a>
+        <a href="produtos.html" class="nav-item"><span class="material-symbols-outlined">inventory_2</span> Meus Produtos</a>
+        <a href="Meu Perfil.html" class="nav-item"><span class="material-symbols-outlined">person</span> Meu Perfil</a>
+        <a href="carrinho.html" class="nav-item"><span class="material-symbols-outlined">shopping_cart</span> Carrinho</a>
+        <a href="login.html" class="nav-item"><span class="material-symbols-outlined">login</span> Login</a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="#" class="nav-item"><span class="material-symbols-outlined">logout</span> Sair</a>
+    </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <main class="container">
+            
+            <header class="hero">
+                <h1 id="boas-vindas-usuario">Carregando Perfil...</h1>
+                <p id="subtitulo-perfil">Acessando suas informações de segurança e preferências profissionais.</p>
+                
+            </header>
+
+            <section class="card-painel">
+                <h2 class="card-title">Meus Dados Cadastrais</h2>
+                <div class="grid-dados">
+                    <div class="dado-grupo">
+                        <label>Nome Completo</label>
+                        <p id="user-nome">-</p>
+                    </div>
+                    <div class="dado-grupo">
+                        <label>E-mail</label>
+                        <p id="user-email">-</p>
+                    </div>
+                    <div class="dado-grupo">
+                        <label>Nível de Acesso</label>
+                        <p id="user-nivel">-</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="painel-cliente-pedidos" class="card-painel panel-oculto">
+                <h2 class="card-title">🛍️ Meu Histórico de Pedidos</h2>
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Pedido</th>
+                                <th>Data</th>
+                                <th>Status</th>
+                                <th class="text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="font-bold">#1024</td>
+                                <td>01/06/2026</td>
+                                <td class="status-entregue">Entregue</td>
+                                <td class="text-right font-bold">R$ 45,00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="painel-admin-donoloja" class="card-painel panel-oculto">
+                <div class="admin-header">
+                    <h2 class="card-title display-flex-center">
+                        <span class="material-symbols-outlined icon-admin">admin_panel_settings</span> 
+                        Controladora Interna da Loja
+                    </h2>
+                    <a href="../tela admin/produtos.html" class="btn btn-success btn-sm no-decoration">
+                        + Gerenciar Produtos
+                    </a>
+                </div>
+
+                <div class="form-bg-box">
+                    <h3 class="form-box-title">Criar Nova Categoria de Linha/Gama</h3>
+                    <form id="form-nova-categoria" class="form-inline">
+                        <div class="form-group">
+                            <label for="nome-categoria">Nome da Categoria</label>
+                            <input type="text" id="nome-categoria" class="form-control" placeholder="Ex: Hype Running, Limited Edition" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar Categoria</button>
+                    </form>
+                </div>
+
+                <div>
+                    <h3 class="sub-label-tags">Categorias Ativas</h3>
+                    <ul id="lista-categorias-ativas" class="tag-list">
+                        </ul>
+                </div>
+            </section>
+
+            <footer class="card-footer">
+                <p>© 2026 DropShoes Premium. Sistema Administrativo Operacional.</p>
+            </footer>
+        </main>
+    </div>
+
+</body>
+</html>
