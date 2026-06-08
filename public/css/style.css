@@ -312,6 +312,7 @@ a {
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     font-size: 14px;
+    font-weight: 800;
     background-color: #ffffff;
     color: var(--text-main);
     outline: none;
@@ -414,6 +415,9 @@ a {
     color: var(--text-muted);
     font-size: 13px;
     border-top: 1px solid var(--border-color);
+}
+.card-auth{
+    box-shadow: var(--shadow-lg);
 }
 
 /* ==========================================================================
@@ -819,13 +823,13 @@ dialog .form-control {
     text-align: center;
 }
 .card-login::before {
-  content: '';
-  position: absolute;
-  inset: -4px; /* Espessura da borda */
-  z-index: -1;
-  background: conic-gradient(from var(--angle), rgb(255, 167, 3), rgb(197, 128, 0));
-  border-radius: 14px;
-  animation: spin 3s linear infinite;
+    content: '';
+    position: absolute;
+    inset: -4px; /* Espessura da borda */
+    z-index: -1;
+    background: conic-gradient(from var(--angle), rgb(255, 167, 3), rgb(197, 128, 0));
+    border-radius: 14px;
+    animation: spin 3s linear infinite;
 }
 
 .login-footer {
@@ -912,8 +916,8 @@ dialog:not([open]) {
     
     /* Cria o padrão ondulado usando gradientes nativos */
     background-image: 
-        radial-gradient(circle at 50% 100%, transparent 3px, var(--primary) 3px, var(--primary) 5px, transparent 5px),
-        radial-gradient(circle at 50% 0%, transparent 3px, var(--primary) 3px, var(--primary) 5px, transparent 5px);
+    radial-gradient(circle at 50% 100%, transparent 3px, var(--primary) 3px, var(--primary) 5px, transparent 5px),
+    radial-gradient(circle at 50% 0%, transparent 3px, var(--primary) 3px, var(--primary) 5px, transparent 5px);
     background-size: 16px 6px;
     background-repeat: repeat-x;
     background-position: 0 0, 8px 0; /* Alinha as duas metades da onda */
@@ -931,3 +935,31 @@ dialog:not([open]) {
         background-position: 16px 0, 24px 0; /* Move exatamente a largura do padrão */
     }
 }
+
+/* Container de ícone no input */
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon .material-symbols-outlined {
+    position: absolute;
+    left: 12px;
+    color: var(--text-muted);
+    font-size: 20px;
+    font-weight: 8000;
+}
+
+.input-with-icon input {
+    padding-left: 40px !important; /* Espaço para o ícone */
+}
+.opcoes-cadastro { display: flex; flex-direction: column; gap: 15px; }
+.btn-opcao-moderno {
+    display: flex; align-items: center; gap: 15px;
+    padding: 20px; border: 2px solid var(--border-color);
+    border-radius: var(--radius-md); text-align: left;
+    transition: var(--transition-smooth);
+}
+.btn-opcao-moderno:hover { border-color: var(--primary); background: #fffdf5; }
+.btn-opcao-moderno p { font-size: 12px; color: var(--text-muted); margin: 0; }
