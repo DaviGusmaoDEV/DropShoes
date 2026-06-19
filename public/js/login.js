@@ -1,73 +1,47 @@
+import Swal from 'https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js';
+
+// Defina a URL base. Use o link do seu Render que você copiou do painel.
+const API_URL = 'https://delicias-da-lucy.onrender.com'; 
+
 document.addEventListener("DOMContentLoaded", () => {
     const formLogin = document.getElementById("form-login");
     if (formLogin) {
         formLogin.addEventListener("submit", async (e) => {
             e.preventDefault();
-            const email = document.getElementById("email").value;
+            const identificador = document.getElementById("nome-usuario").value; 
             const senha = document.getElementById("senha").value;
-            await realizarLogin(email, senha);
+            await realizarLogin(identificador, senha);
         });
-    }
-
-    const formPaciente = document.getElementById("form-cadastro-paciente");
-    const formCliente = document.getElementById("form-cadastro-cliente");
-
-    if (formPaciente) {
-        formPaciente.addEventListener("submit", (e) => handleCadastro(e, 'paciente'));
-    }
-    if (formCliente) {
-        formCliente.addEventListener("submit", (e) => handleCadastro(e, 'cliente'));
     }
 });
 
-async function handleCadastro(e, role) {
-    e.preventDefault();
-    
-    // Captura os dados básicos
-    const dados = {
-        nome: document.getElementById("nome").value,
-        email: document.getElementById("email").value || null,
-        senha: document.getElementById("senha").value || null,
-        role: role
-    };
-
-    // Tenta capturar telefone se existir na página
-    const telInput = document.getElementById("telefoneCliente");
-    dados.telefone = telInput ? telInput.value : "00000000000"; // Valor padrão se não existir
-
+export async function realizarLogin(identificador, senha) {
     try {
-        // CORREÇÃO: Usar http, não https
-        const resposta = await fetch('http://localhost:3000/api/register', {
+        // Agora apontando para o seu serviço no Render
+        const resposta = await fetch(`${API_URL}/api/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dados)
-        });
-
-        const resDados = await resposta.json();
-        if (!resposta.ok) throw new Error(resDados.erro || "Erro ao cadastrar.");
-
-        Swal.fire({ icon: 'success', title: 'Sucesso!', text: 'Cadastro realizado!', timer: 2000 });
-    } catch (err) {
-        Swal.fire({ icon: 'error', title: 'Erro', text: err.message });
-    }
-}
-
-async function realizarLogin(email, senha) {
-    try {
-        // CORREÇÃO: Usar http
-        const resposta = await fetch('http://localhost:3000/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, senha })
+            body: JSON.stringify({ identificador, senha })
         });
 
         const dados = await resposta.json();
         if (!resposta.ok) throw new Error(dados.erro || "Falha na autenticação.");
 
+        // Guardando dados com segurança
         localStorage.setItem('token', dados.token);
         localStorage.setItem('role', dados.role);
-        window.location.href = dados.role === 'admin' ? '../tela admin/principal.html' : '../tela cliente/principal.html';
+        localStorage.setItem('nomeUsuario', dados.nome);
+        
+        // Redirecionamento baseado na role
+        const destino = dados.role.includes('admin') ? '../tela admin/Meu Perfil.html' : '../tela cliente/principal.html';
+        window.location.href = destino;
+        return true;
     } catch (erro) {
-        Swal.fire({ icon: 'error', title: 'Erro', text: erro.message });
+        Swal.fire({ 
+            icon: 'error', 
+            title: 'Erro de Login', 
+            text: erro.message 
+        });
+        return false;
     }
 }

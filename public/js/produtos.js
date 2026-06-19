@@ -1,268 +1,115 @@
-// produtos.js
+import Swal from 'https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js';
+
+// --- CONFIGURAÇÃO DE ELEMENTOS (DOM) ---
 const el = {
+    listaProdutos: document.getElementById("lista-produtos"),
+    templateCard: document.getElementById("template-card-produto"),
+    modal: document.getElementById("modal-produto"),
     formProduto: document.getElementById("form-produto"),
-    modalProdutoInfo: document.getElementById("modal-produto"),
-    modalProdutoTitulo: document.getElementById("modal-produto-titulo"),
+    modalEspecial: document.getElementById("modal-produto-especial"),
+    formProdutoEspecial: document.getElementById("form-produto-especial"),
     inputId: document.getElementById("prod-id"),
     inputNome: document.getElementById("prod-nome"),
     inputPreco: document.getElementById("prod-preco"),
-    inputImagem: document.getElementById("prod-imagem"),
-    btnAbrirModal: document.getElementById("abrirModalProduto"),
-    btnFecharModal: document.getElementById("btn-fechar-modal"),
-    listaProdutos: document.getElementById("lista-produtos"),
-    templateCard: document.getElementById("template-card-produto"),
+    inputIdEspecial: document.getElementById("prod-id-especial"),
+    inputNomeEspecial: document.getElementById("prod-nome-especial"),
+    inputPrecoEspecial: document.getElementById("prod-preco-especial")
 };
 
-let produtos = [];
-let carrinho = [];
-const fretePadrao = 7.00;
+const API_URL = 'https://delicias-da-lucy.onrender.com';
 
-function carregarProdutos() {
-    const data = localStorage.getItem("produtos");
-    if (data) {
-        try {
-            produtos = JSON.parse(data);
-        } catch (erro) {
-            produtos = [];
-            console.error("Erro ao carregar produtos:", erro);
-        }
-    }
-}
-
-function carregarCarrinho() {
-    const data = localStorage.getItem("carrinho");
-    if (data) {
-        try {
-            carrinho = JSON.parse(data);
-        } catch (erro) {
-            carrinho = [];
-            console.error("Erro ao carregar carrinho:", erro);
-        }
-    }
-}
-
-function salvarProdutos() {
-    localStorage.setItem("produtos", JSON.stringify(produtos));
-}
-
-function salvarCarrinho() {
-    localStorage.setItem("carrinho", JSON.stringify(carrinho));
-}
-
-function abrirModalCadastro() {
-    if (!el.modalProdutoInfo) return;
-    el.modalProdutoTitulo.textContent = "Novo Produto";
-    if (el.inputId) el.inputId.value = "";
-    if (el.inputNome) el.inputNome.value = "";
-    if (el.inputPreco) el.inputPreco.value = "";
-    if (el.inputImagem) el.inputImagem.value = "";
-    el.modalProdutoInfo.showModal();
-}
-
-function abrirModalEdicao(produto) {
-    if (!el.modalProdutoInfo || !produto) return;
-    el.modalProdutoTitulo.textContent = "Editar Produto";
-    if (el.inputId) el.inputId.value = produto.id;
-    if (el.inputNome) el.inputNome.value = produto.nome;
-    if (el.inputPreco) el.inputPreco.value = produto.preco;
-    if (el.inputImagem) el.inputImagem.value = "";
-    el.modalProdutoInfo.showModal();
-}
-
-function fecharModal() {
-    if (!el.modalProdutoInfo) return;
-    el.modalProdutoInfo.close();
-}
-
-function lerImagemSelecionada() {
-    return new Promise((resolve) => {
-        if (!el.inputImagem || !el.inputImagem.files || el.inputImagem.files.length === 0) {
-            return resolve(null);
-        }
-        const arquivo = el.inputImagem.files[0];
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => resolve(null);
-        reader.readAsDataURL(arquivo);
-    });
-}
-
-async function salvarProduto(event) {
-    event.preventDefault();
-    if (!el.formProduto) return;
-
-    const nome = el.inputNome?.value.trim() || "";
-    const preco = parseFloat(el.inputPreco?.value.replace(",", "."));
-    const imagem = await lerImagemSelecionada();
-    const id = el.inputId?.value || null;
-
-    if (!nome) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Campo obrigatório',
-            text: 'O nome do produto é obrigatório.',
+// --- BUSCA DE DADOS ---
+async function carregarProdutos() {
+    const token = localStorage.getItem('token');
+    try {
+        const resposta = await fetch(`${API_URL}/api/produtos`, {
+            headers: { 'Authorization': `Bearer ${token}` }
         });
-        return;
+        if (!resposta.ok) throw new Error("Erro ao buscar.");
+        const lista = await resposta.json();
+        exibirProdutos(lista);
+    } catch (erro) {
+        Swal.fire({ icon: 'error', title: 'Erro', text: 'Não foi possível carregar os produtos.' });
     }
-
-    if (isNaN(preco) || preco <= 0) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Preço inválido',
-            text: 'Informe um preço válido.',
-        });
-        return;
-    }
-
-    if (id) {
-        const indice = produtos.findIndex((item) => String(item.id) === String(id));
-        if (indice === -1) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Produto não encontrado',
-                text: 'Não foi possível encontrar o produto para edição.',
-            });
-            return;
-        }
-        produtos[indice].nome = nome;
-        produtos[indice].preco = preco;
-        if (imagem) {
-            produtos[indice].imagem = imagem;
-        }
-    } else {
-        produtos.push({
-            id: Date.now(),
-            nome,
-            preco,
-            imagem: imagem || "",
-            criadoEm: new Date().toISOString(),
-        });
-    }
-
-    salvarProdutos();
-    exibirProdutos();
-    fecharModal();
 }
 
-function excluirProduto(id) {
-    Swal.fire({
-        title: 'Excluir produto?',
-        text: 'Essa ação não pode ser desfeita.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sim, excluir',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            produtos = produtos.filter((produto) => String(produto.id) !== String(id));
-            salvarProdutos();
-            exibirProdutos();
-            Swal.fire({
-                icon: 'success',
-                title: 'Produto excluído',
-                timer: 1500,
-                showConfirmButton: false
-            });
-        }
-    });
-}
-
-function adicionarAoCarrinho(produto) {
-    if (!produto || typeof produto.preco !== 'number' || produto.preco <= 0) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Erro ao adicionar',
-            text: 'Produto inválido ou preço incorreto.',
-        });
-        return;
-    }
-
-    const valorProduto = produto.preco;
-    const total = valorProduto + fretePadrao;
-    carrinho.push({
-        id: produto.id,
-        nome: produto.nome,
-        preco: valorProduto,
-        frete: fretePadrao,
-        total: total,
-        imagem: produto.imagem || ""
-    });
-    salvarCarrinho();
-
-    Swal.fire({
-        icon: 'success',
-        title: 'Adicionado ao carrinho',
-        html: `Produto: <strong>${produto.nome}</strong><br>
-               Valor: <strong>R$ ${valorProduto.toFixed(2).replace('.', ',')}</strong><br>
-               Taxa de entrega: <strong>R$ ${fretePadrao.toFixed(2).replace('.', ',')}</strong><br>
-               Total: <strong>R$ ${total.toFixed(2).replace('.', ',')}</strong>`,
-        confirmButtonText: 'Continuar comprando',
-    });
-}
-
-function exibirProdutos() {
+// --- RENDERIZAÇÃO ---
+function exibirProdutos(lista) {
     if (!el.listaProdutos || !el.templateCard) return;
     el.listaProdutos.innerHTML = "";
 
-    if (produtos.length === 0) {
-        el.listaProdutos.innerHTML = `<div style="width:100%; text-align:center; color:#666; padding: 48px 0;">Nenhum produto cadastrado ainda.</div>`;
-        return;
-    }
-
-    produtos.forEach((produto) => {
+    lista.forEach(produto => {
         const clone = el.templateCard.content.cloneNode(true);
-        const imagemEl = clone.querySelector(".img-vitrine");
-        const tituloEl = clone.querySelector(".titulo-vitrine");
-        const precoEl = clone.querySelector(".preco-vitrine");
-        const btnEditar = clone.querySelector(".btn-editar");
-        const btnExcluir = clone.querySelector(".btn-excluir");
-
-        if (imagemEl) {
-            imagemEl.src = produto.imagem || "https://via.placeholder.com/300x200?text=Produto";
-            imagemEl.alt = produto.nome;
-        }
-        if (tituloEl) tituloEl.textContent = produto.nome;
-        if (precoEl) precoEl.textContent = `R$ ${produto.preco.toFixed(2).replace(".", ",")}`;
-
-        const btnAdicionarCarrinho = clone.querySelector(".btn-add-cart");
-        if (btnAdicionarCarrinho) {
-            btnAdicionarCarrinho.addEventListener("click", () => adicionarAoCarrinho(produto));
-        }
-        if (btnEditar) {
-            btnEditar.addEventListener("click", () => abrirModalEdicao(produto));
-        }
-        if (btnExcluir) {
-            btnExcluir.addEventListener("click", () => excluirProduto(produto.id));
-        }
+        
+        clone.querySelector(".titulo-vitrine").textContent = produto.nome;
+        clone.querySelector(".preco-vitrine").textContent = `R$ ${parseFloat(produto.preco).toFixed(2).replace(".", ",")}`;
+        
+        clone.querySelector(".btn-editar")?.addEventListener("click", () => abrirEdicao(produto));
+        clone.querySelector(".btn-excluir")?.addEventListener("click", () => confirmarExclusao(produto.id));
 
         el.listaProdutos.appendChild(clone);
     });
 }
 
-function inicializarProdutos() {
-    carregarProdutos();
-    carregarCarrinho();
-    exibirProdutos();
-
-    if (el.btnAbrirModal) {
-        el.btnAbrirModal.addEventListener("click", abrirModalCadastro);
-    }
-
-    if (el.btnFecharModal) {
-        el.btnFecharModal.addEventListener("click", fecharModal);
-    }
-
-    if (el.modalProdutoInfo) {
-        el.modalProdutoInfo.addEventListener("click", (event) => {
-            if (event.target === el.modalProdutoInfo) {
-                fecharModal();
-            }
-        });
-    }
-
-    if (el.formProduto) {
-        el.formProduto.addEventListener("submit", salvarProduto);
+// --- SUPORTE À EDIÇÃO ---
+function abrirEdicao(produto) {
+    if (produto.isEspecial) {
+        el.inputIdEspecial.value = produto.id;
+        el.inputNomeEspecial.value = produto.nome;
+        el.inputPrecoEspecial.value = produto.preco.toString().replace(".", ",");
+        el.modalEspecial.showModal();
+    } else {
+        el.inputId.value = produto.id;
+        el.inputNome.value = produto.nome;
+        el.inputPreco.value = produto.preco.toString().replace(".", ",");
+        el.modal.showModal();
     }
 }
 
-document.addEventListener("DOMContentLoaded", inicializarProdutos);
+// --- ENVIO DE DADOS (POST/PUT) ---
+async function processarFormulario(event, tipoModal) {
+    event.preventDefault();
+    const esEspecial = (tipoModal === 'especial');
+    
+    const id = esEspecial ? el.inputIdEspecial.value : el.inputId.value;
+    const nome = esEspecial ? el.inputNomeEspecial.value : el.inputNome.value;
+    const preco = parseFloat((esEspecial ? el.inputPrecoEspecial.value : el.inputPreco.value).replace(",", "."));
+
+    const produto = { id: id || null, nome, preco, isEspecial: esEspecial };
+
+    const token = localStorage.getItem('token');
+    const metodo = produto.id ? 'PUT' : 'POST';
+
+    const res = await fetch(`${API_URL}/api/produtos`, {
+        method: metodo,
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify(produto)
+    });
+
+    if (res.ok) {
+        Swal.fire({ icon: 'success', title: 'Salvo!', timer: 1500 });
+        carregarProdutos();
+        esEspecial ? el.modalEspecial.close() : el.modal.close();
+    }
+}
+
+// --- EXCLUSÃO ---
+async function confirmarExclusao(id) {
+    const res = await Swal.fire({ title: 'Excluir este item?', icon: 'warning', showCancelButton: true });
+    if (res.isConfirmed) {
+        await fetch(`${API_URL}/api/produtos/${id}`, { 
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+        carregarProdutos();
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    carregarProdutos();
+    el.formProduto?.addEventListener("submit", (e) => processarFormulario(e, 'tradicional'));
+    el.formProdutoEspecial?.addEventListener("submit", (e) => processarFormulario(e, 'especial'));
+});
